@@ -15,7 +15,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <SessionProvider session={session} baseUrl={process.env.NEXTAUTH_URL!}>
+    <SessionProvider session={session}>
       <Layout>
         <main className={notoSansKR.className}>
           <Component {...pageProps} />
