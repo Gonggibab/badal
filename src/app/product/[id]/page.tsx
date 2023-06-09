@@ -6,6 +6,8 @@ import Image from "next/image";
 import ImageGallery from "common/components/Product/ImageGallery";
 import RatingStar from "common/components/Icons/RatingStar";
 import Option from "common/components/Product/Option";
+import Review from "common/components/Product/Review";
+
 import detailImage from "assets/product-detail.png";
 
 type ProductDetailProps = {
@@ -23,7 +25,6 @@ const data = {
   ],
   price: 38000,
   rating: 4.2,
-  reviews: [],
   options: [
     {
       id: "1",
@@ -36,6 +37,32 @@ const data = {
     },
   ],
   detailImg: detailImage,
+  reviews: [
+    {
+      id: "1",
+      userId: "1",
+      name: "정진우",
+      rating: 4,
+      updatedAt: "2022-10-09T09:50:04.555+03:00",
+      images: [
+        "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
+        "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
+      ],
+      content:
+        "위하여 뜨거운지라, 현저하게 청춘 아니한 있으랴? 심장은 같은 넣는 뿐이다. 되는 그러므로 밥을 공자는 보라. 내려온 넣는 청춘의 싸인 뿐이다. 피가 새가 어디 것은 생생하며, 위하여 내는 꽃 방황하였으며, 아름다우냐? 찾아 든 청춘에서만 이는 불러 노년에게서 것이다. 목숨이 인간의 이상이 철환하였는가? 때까지 얼음과 이상, 설레는 끓는 같이 황금시대를 청춘은 황금시대다. 아니한 있으며, 이상은 황금시대를 그들의 이상 열매를 곳이 피다. 동산에는 쓸쓸한 사랑의 있는 같이 앞이 사랑의 피다.<br/>사랑의 천지는 이성은 없으면 곳이 스며들어 방지하는 구할 피다. 열락의 그들을 있을 천고에 천자만홍이 구하지 이상의 남는 착목한는 듣는다. 생명을 바이며, 대중을 그들은 것은 길지 힘있다. 이상, 놀이 고동을 바이며, 열락의 것이다. 거친 전인 같이, 노래하며 봄날의 것이다. 동산에는 인류의 살 봄바람이다. 불러 방황하여도, 열락의 하는 것이다. 그들의 그들에게 열락의 만물은 부패를 이것이다. 보는 인류의 구할 같이, 사라지지 것이다. 산야에 곳으로 밥을 피가 이것이다. 만물은 꽃이 가슴에 가슴이 없으면 위하여서, 천자만홍이 청춘 이것이다. 기관과 돋고, 뜨거운지라, 예수는 같은 용기가 눈에 듣는다. 찾아다녀도, 많이 심장의 속에서 옷을 청춘 고동을 때문이다.<br/>찾아다녀도, 노년에게서 모래뿐일 되는 같은 인간이 커다란 끝에 이 약동하다. 별과 싸인 있는 때까지 끓는 우는 그들은 철환하였는가? 낙원을 사랑의 얼음에 창공에 있는 너의 투명하되 얼마나 피다. 황금시대의 공자는 눈이 피다. 창공에 있는 대고, 같이, 청춘 이상이 인생에 자신과 칼이다. 영원히 장식하는 넣는 가장 곳이 가진 하는 투명하되 봄바람이다.<br/>주는 노년에게서 광야에서 불러 방지하는 구할 별과 사는가 웅대한 이것이다. 우리 설레는 지혜는 살았으며, 인간이 피부가 눈이 아름다우냐?",
+    },
+    {
+      id: "2",
+      userId: "2",
+      name: "김모씨",
+      rating: 5,
+      updatedAt: "2022-11-19T09:50:04.555+03:00",
+      images: [],
+      content: "좋아요",
+    },
+  ],
 };
 
 export default function ProductDetail({ params }: ProductDetailProps) {
@@ -50,6 +77,19 @@ export default function ProductDetail({ params }: ProductDetailProps) {
         options={option.options}
         price={price}
         setPrice={setPrice}
+      />
+    );
+  });
+
+  const renderReviews = data.reviews.map((review) => {
+    return (
+      <Review
+        key={review.id}
+        name={review.name}
+        rating={review.rating}
+        updatedAt={review.updatedAt}
+        images={review.images}
+        content={review.content}
       />
     );
   });
@@ -113,50 +153,6 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                   {price.toLocaleString("ko-KR")} 원
                 </p>
 
-                {/* <!-- Reviews --> */}
-                <div className="mt-6">
-                  <div className="flex items-center">
-                    <div className="flex items-center">
-                      <RatingStar
-                        size={5}
-                        color={
-                          data.rating >= 1 ? "text-gray-900" : "text-gray-200"
-                        }
-                      />
-                      <RatingStar
-                        size={5}
-                        color={
-                          data.rating >= 2 ? "text-gray-900" : "text-gray-200"
-                        }
-                      />
-                      <RatingStar
-                        size={5}
-                        color={
-                          data.rating >= 3 ? "text-gray-900" : "text-gray-200"
-                        }
-                      />
-                      <RatingStar
-                        size={5}
-                        color={
-                          data.rating >= 4 ? "text-gray-900" : "text-gray-200"
-                        }
-                      />
-                      <RatingStar
-                        size={5}
-                        color={
-                          data.rating >= 5 ? "text-gray-900" : "text-gray-200"
-                        }
-                      />
-                    </div>
-                    <a
-                      href="#"
-                      className="ml-3 text-sm font-semibold text-indigo-600 hover:text-indigo-500"
-                    >
-                      {data.reviews.length} 리뷰
-                    </a>
-                  </div>
-                </div>
-
                 <form className="mt-6">
                   {renderOptions}
 
@@ -200,6 +196,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                   <Image
                     src={data.detailImg}
                     alt="제품 상세 정보 이미지"
+                    quality={100}
                     width="0"
                     height="0"
                     sizes="100vw"
@@ -207,7 +204,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                   />
                 </div>
               ) : (
-                <></>
+                <div className="w-full flex flex-col">{renderReviews}</div>
               )}
             </div>
           </div>

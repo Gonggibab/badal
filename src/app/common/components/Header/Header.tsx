@@ -3,10 +3,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import logo from "assets/logo.svg";
-import MenuBtn from "../Icons/MenuBtn";
-import LoginBtn from "../Icons/LoginBtn";
+import MenuIcon from "../Icons/MenuIcon";
+import LoginIcon from "../Icons/LoginIcon";
 import MobileMenu from "./MobileMenu";
+import logo from "assets/logo.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -22,14 +22,10 @@ export default function Header() {
           <Image
             src={logo}
             alt="FO:CEL"
-            priority
-            fill
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-            }}
+            width="0"
+            height="0"
+            sizes="100vw"
+            className="w-full h-auto"
           />
         </Link>
 
@@ -55,13 +51,30 @@ export default function Header() {
         </div>
 
         <div className="hidden lg:flex">
-          <Link href="/login" className="relative h-full text-gray-900">
-            <LoginBtn width={20} height={20} />
+          <Link
+            href="/login"
+            className="relative h-full inline-flex items-center justify-center text-gray-900"
+          >
+            <button
+              type="button"
+              className="relative inline-flex items-center justify-center text-inherit"
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <span className="sr-only">Login</span>
+              <LoginIcon width={20} height={20} />
+            </button>
           </Link>
         </div>
 
         <div className="flex lg:hidden">
-          <MenuBtn width={20} height={20} onClick={() => setIsMenuOpen(true)} />
+          <button
+            type="button"
+            className="relative inline-flex items-center justify-center text-inherit"
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <span className="sr-only">Open menu</span>
+            <MenuIcon width={20} height={20} />
+          </button>
         </div>
       </nav>
 

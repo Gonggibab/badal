@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import logo from "assets/logo.svg";
+import CloseIcon from "../Icons/CloseIcon";
 
 type MobileMenuProps = {
   isMenuOpen: boolean;
@@ -27,13 +28,10 @@ export default function MobileMenu({
             <Image
               src={logo}
               alt="FO:CEL"
-              priority
-              fill
-              style={{
-                height: "100%",
-                objectFit: "cover",
-                objectPosition: "center",
-              }}
+              width="0"
+              height="0"
+              sizes="100vw"
+              className="w-full h-auto"
             />
           </Link>
           <button
@@ -42,20 +40,7 @@ export default function MobileMenu({
             onClick={() => setIsMenuOpen(false)}
           >
             <span className="sr-only">Close menu</span>
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon size={6} />
           </button>
         </div>
         <div className="mt-6 flow-root">
