@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 import ImageGallery from "common/components/Product/ImageGallery";
-import RatingStar from "common/components/Icons/RatingStar";
 import Option from "common/components/Product/Option";
 import Review from "common/components/Product/Review";
 
