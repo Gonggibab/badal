@@ -1,7 +1,6 @@
 "use client";
-import Image from "next/image";
 
-import logo from "assets/logo2.svg";
+import Logo from "assets/logo2.svg";
 
 export default function Login() {
   return (
@@ -9,14 +8,7 @@ export default function Login() {
       <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="relative mx-auto">
           <span className="sr-only">FO:CEL</span>
-          <Image
-            src={logo}
-            alt="FO:CEL"
-            width="0"
-            height="0"
-            sizes="100vw"
-            className="w-full h-auto"
-          />
+          <Logo className="w-full h-auto" />
         </div>
         <h1 className="text-2xl font-semibold leading-6 tracking-wider text-gray-900">
           간편 로그인
@@ -31,6 +23,11 @@ export default function Login() {
               text-sm font-normal leading-6 tracking-wider text-white shadow-sm hover:bg-[#1ec800ab] 
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
               focus-visible:outline-indigo-600"
+            onClick={() =>
+              fetch(`/api/`, {
+                method: "GET",
+              })
+            }
           >
             <svg
               className="absolute left-[23px] w-5 h-5"

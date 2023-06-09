@@ -1,9 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
-import logo from "assets/logo.svg";
-import CloseIcon from "../Icons/CloseIcon";
+import Logo from "assets/logo.svg";
+import CloseIcon from "assets/icon/close.svg";
 
 type MobileMenuProps = {
   isMenuOpen: boolean;
@@ -25,14 +24,7 @@ export default function MobileMenu({
         <div className="h-6 flex items-center justify-between">
           <Link href="/" className="relative w-16 h-full">
             <span className="sr-only">FO:CEL</span>
-            <Image
-              src={logo}
-              alt="FO:CEL"
-              width="0"
-              height="0"
-              sizes="100vw"
-              className="w-full h-auto"
-            />
+            <Logo className="w-full h-auto" />
           </Link>
           <button
             type="button"
@@ -40,7 +32,7 @@ export default function MobileMenu({
             onClick={() => setIsMenuOpen(false)}
           >
             <span className="sr-only">Close menu</span>
-            <CloseIcon size={6} />
+            <CloseIcon className="w-6 h-6" strokeWidth="1.5" />
           </button>
         </div>
         <div className="mt-6 flow-root">

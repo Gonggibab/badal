@@ -2,8 +2,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-import RatingStar from "../Icons/RatingStar";
 import ImageInspector from "./ImageInspector";
+import StarIcon from "assets/icon/star.svg";
 
 type ReviewProps = {
   name: string;
@@ -62,25 +62,30 @@ export default function Review({
       <div className="flex justify-between items-start mb-4 space-x-4">
         <div>
           <div className="flex items-center">
-            <RatingStar
-              size={5}
-              color={rating >= 1 ? "text-yellow-400" : "text-gray-200"}
+            <StarIcon
+              className={`${
+                rating >= 1 ? "text-yellow-400" : "text-gray-200"
+              } w-5 h-5`}
             />
-            <RatingStar
-              size={5}
-              color={rating >= 2 ? "text-yellow-400" : "text-gray-200"}
+            <StarIcon
+              className={`${
+                rating >= 2 ? "text-yellow-400" : "text-gray-200"
+              } w-5 h-5`}
             />
-            <RatingStar
-              size={5}
-              color={rating >= 3 ? "text-yellow-400" : "text-gray-200"}
+            <StarIcon
+              className={`${
+                rating >= 3 ? "text-yellow-400" : "text-gray-200"
+              } w-5 h-5`}
             />
-            <RatingStar
-              size={5}
-              color={rating >= 4 ? "text-yellow-400" : "text-gray-200"}
+            <StarIcon
+              className={`${
+                rating >= 4 ? "text-yellow-400" : "text-gray-200"
+              } w-5 h-5`}
             />
-            <RatingStar
-              size={5}
-              color={rating >= 5 ? "text-yellow-400" : "text-gray-200"}
+            <StarIcon
+              className={`${
+                rating >= 5 ? "text-yellow-400" : "text-gray-200"
+              } w-5 h-5`}
             />
           </div>
 

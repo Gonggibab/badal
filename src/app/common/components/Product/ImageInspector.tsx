@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import Image from "next/image";
-import CloseIcon from "../Icons/CloseIcon";
-import ArrowIcon from "../Icons/ArrowIcon";
+import CloseIcon from "assets/icon/close.svg";
+import ArrowIcon from "assets/icon/arrow.svg";
 
 type ImageInspectorProps = {
   isOpen: boolean;
@@ -83,7 +83,7 @@ export default function ImageInspector({
                 text-gray-900 rounded-md bg-white shadow-sm transition-all hover:scale-105"
               onClick={closeModal}
             >
-              <CloseIcon size={6} />
+              <CloseIcon className="w-6 h-6" strokeWidth="2" />
             </button>
 
             <div
@@ -100,7 +100,7 @@ export default function ImageInspector({
                 rounded-md bg-white shadow-sm transition-all hover:scale-105"
                 onClick={onLeftBtnClicked}
               >
-                <ArrowIcon size={6} />
+                <ArrowIcon className="w-6 h-6" />
               </button>
             )}
             {index < images.length - 1 && (
@@ -110,7 +110,7 @@ export default function ImageInspector({
                 rounded-md bg-white shadow-sm transition-all hover:scale-105"
                 onClick={onRightBtnClicked}
               >
-                <ArrowIcon size={6} />
+                <ArrowIcon className="w-6 h-6" />
               </button>
             )}
           </div>

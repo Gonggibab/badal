@@ -1,12 +1,11 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
-import MenuIcon from "../Icons/MenuIcon";
-import LoginIcon from "../Icons/LoginIcon";
 import MobileMenu from "./MobileMenu";
-import logo from "assets/logo.svg";
+import Logo from "assets/logo.svg";
+import LoginIcon from "assets/icon/login.svg";
+import MenuIcon from "assets/icon/menu.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -19,14 +18,7 @@ export default function Header() {
       >
         <Link href="/" className="relative w-16 h-full flex">
           <span className="sr-only">FO:CEL</span>
-          <Image
-            src={logo}
-            alt="FO:CEL"
-            width="0"
-            height="0"
-            sizes="100vw"
-            className="w-full h-auto"
-          />
+          <Logo className="w-full h-auto" />
         </Link>
 
         <div className="hidden lg:flex lg:gap-x-16">
@@ -61,7 +53,7 @@ export default function Header() {
               onClick={() => setIsMenuOpen(true)}
             >
               <span className="sr-only">Login</span>
-              <LoginIcon width={20} height={20} />
+              <LoginIcon className="w-5 h-5" />
             </button>
           </Link>
         </div>
@@ -73,7 +65,7 @@ export default function Header() {
             onClick={() => setIsMenuOpen(true)}
           >
             <span className="sr-only">Open menu</span>
-            <MenuIcon width={20} height={20} />
+            <MenuIcon className="w-5 h-5" />
           </button>
         </div>
       </nav>
