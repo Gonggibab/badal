@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.KAKAO_SECRET!,
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export default NextAuth(authOptions);
