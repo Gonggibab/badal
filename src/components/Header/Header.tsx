@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
+import MobileMenu from "./MobileMenu";
 import Logo from "assets/logo.svg";
 import LoginIcon from "assets/icon/login.svg";
+import LogoutIcon from "assets/icon/logout.svg";
 import MenuIcon from "assets/icon/menu.svg";
-import MobileMenu from "./MobileMenu";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const { data } = useSession();
+  console.log(data);
 
   return (
     <header className="bg-white z-30 sticky top-0">
@@ -42,19 +46,24 @@ export default function Header() {
         </div>
 
         <div className="hidden lg:flex">
-          <Link
-            href="/login"
-            className="relative h-full inline-flex items-center justify-center text-gray-900"
-          >
+          {data ? (
             <button
               type="button"
               className="relative inline-flex items-center justify-center text-inherit"
               onClick={() => setIsMenuOpen(true)}
             >
+              <span className="sr-only">Logout</span>
+              <LogoutIcon className="w-5 h-5" />
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="relative h-full inline-flex items-center justify-center text-gray-900"
+            >
               <span className="sr-only">Login</span>
               <LoginIcon className="w-5 h-5" />
-            </button>
-          </Link>
+            </Link>
+          )}
         </div>
 
         <div className="flex lg:hidden">
@@ -69,7 +78,11 @@ export default function Header() {
         </div>
       </nav>
 
-      <MobileMenu isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+      <MobileMenu
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        session={data}
+      />
     </header>
   );
 }

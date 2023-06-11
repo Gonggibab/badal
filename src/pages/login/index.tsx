@@ -1,11 +1,8 @@
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 import Logo from "assets/logo2.svg";
 
 export default function Login() {
-  const { data } = useSession();
-  console.log(data);
-
   return (
     <main className="flex h-[calc(100vh-280px)] flex-col justify-center px-6 py-12 lg:px-8">
       <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-sm">

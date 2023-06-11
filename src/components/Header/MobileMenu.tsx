@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 
 import Logo from "assets/logo.svg";
 import CloseIcon from "assets/icon/close.svg";
@@ -7,11 +9,13 @@ import CloseIcon from "assets/icon/close.svg";
 type MobileMenuProps = {
   isMenuOpen: boolean;
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
+  session: Session | null;
 };
 
 export default function MobileMenu({
   isMenuOpen,
   setIsMenuOpen,
+  session,
 }: MobileMenuProps) {
   return (
     <div className="lg:hidden" role="dialog" aria-modal="true">
@@ -61,13 +65,23 @@ export default function MobileMenu({
               </Link>
             </div>
             <div className="py-6">
-              <Link
-                href="/login"
-                className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                로그인
-              </Link>
+              {session ? (
+                <button
+                  className="-mx-3 block rounded-lg px-3 py-2.5 w-full text-left
+                    text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  onClick={() => signOut()}
+                >
+                  로그아웃
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  로그인
+                </Link>
+              )}
             </div>
           </div>
         </div>
