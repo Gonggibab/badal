@@ -21,25 +21,25 @@ export const authOptions: NextAuthOptions = {
         user.name = profile.response?.name || user.name;
         user.email = profile.response?.email || user.email;
       }
-      return true;
-      // try {
-      //   // 데이터베이스에 유저가 있는지 확인
-      //   const existingUser = await prisma.user.findUnique({
-      //     where: { email: user.email! },
-      //   });
 
-      //   // 없으면 데이터베이스에 유저 추가
-      //   if (!existingUser) {
-      //     await prisma.user.create({
-      //       data: { name: user.name!, email: user.email! },
-      //     });
-      //   }
+      try {
+        // 데이터베이스에 유저가 있는지 확인
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        });
 
-      //   return true;
-      // } catch (error) {
-      //   console.log("로그인 도중 에러가 발생했습니다. " + error);
-      //   return false;
-      // }
+        // 없으면 데이터베이스에 유저 추가
+        if (!existingUser) {
+          await prisma.user.create({
+            data: { name: user.name!, email: user.email! },
+          });
+        }
+
+        return true;
+      } catch (error) {
+        console.log("로그인 도중 에러가 발생했습니다. " + error);
+        return false;
+      }
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
