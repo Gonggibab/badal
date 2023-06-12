@@ -11,8 +11,14 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
+
+  if (pathname.startsWith("/my") || pathname.startsWith("/cart")) {
+    if (!session) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+  }
 }
 
 export const config = {
-  matcher: ["/login"],
+  matcher: ["/login", "/my", "/cart"],
 };

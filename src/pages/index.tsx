@@ -12,7 +12,7 @@ export default function Home() {
           content="피부 걱정 없이 살아가는 모두를 위한 솔루션."
         />
       </Head>
-      <main className="flex flex-col items-center justify-between">
+      <article className="flex flex-col items-center justify-between">
         <section className="relative w-screen h-screen">
           <Image
             src={image}
@@ -27,7 +27,7 @@ export default function Home() {
         </section>
 
         <section className="w-screen h-screen bg-slate-300">test</section>
-      </main>
+      </article>
     </>
   );
 }

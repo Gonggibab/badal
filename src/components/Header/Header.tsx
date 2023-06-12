@@ -4,14 +4,14 @@ import { useSession } from "next-auth/react";
 
 import MobileMenu from "./MobileMenu";
 import Logo from "assets/logo.svg";
+import UserIcon from "assets/icon/user.svg";
+import CartIcon from "assets/icon/cart.svg";
 import LoginIcon from "assets/icon/login.svg";
-import LogoutIcon from "assets/icon/logout.svg";
 import MenuIcon from "assets/icon/menu.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { data } = useSession();
-  console.log(data);
 
   return (
     <header className="bg-white z-30 sticky top-0">
@@ -47,14 +47,28 @@ export default function Header() {
 
         <div className="hidden lg:flex">
           {data ? (
-            <button
-              type="button"
-              className="relative inline-flex items-center justify-center text-inherit"
-              onClick={() => setIsMenuOpen(true)}
-            >
-              <span className="sr-only">Logout</span>
-              <LogoutIcon className="w-5 h-5" />
-            </button>
+            <>
+              <Link
+                href="/my"
+                className="relative inline-flex items-center justify-center text-inherit"
+              >
+                <span className="sr-only">My Page</span>
+                <UserIcon className="w-7 h-7" />
+              </Link>
+              <Link
+                href="/cart"
+                className="relative ml-4 inline-flex items-center justify-center text-inherit"
+              >
+                <span className="sr-only">Shopping Cart</span>
+                <CartIcon className="w-7 h-7" />
+                <span
+                  className="absolute -top-3 right-[5px] w-4 h-4 text-xs font-semibold
+                  text-white text-center bg-indigo-700 rounded-full"
+                >
+                  0
+                </span>
+              </Link>
+            </>
           ) : (
             <Link
               href="/login"

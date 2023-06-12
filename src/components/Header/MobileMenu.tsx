@@ -66,13 +66,36 @@ export default function MobileMenu({
             </div>
             <div className="py-6">
               {session ? (
-                <button
-                  className="-mx-3 block rounded-lg px-3 py-2.5 w-full text-left
+                <div className="space-y-2">
+                  <Link
+                    href="/my"
+                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    마이페이지
+                  </Link>
+                  <Link
+                    href="/cart"
+                    className="-mx-3 flex items-center rounded-lg px-3 py-2 
+                      text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    장바구니
+                    <span
+                      className="ml-2 w-5 h-5 text-xs flex justify-center items-center
+                        font-semibold text-white bg-indigo-700 rounded-full"
+                    >
+                      0
+                    </span>
+                  </Link>
+                  <button
+                    className="-mx-3 block rounded-lg px-3 py-2 w-full text-left
                     text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  onClick={() => signOut()}
-                >
-                  로그아웃
-                </button>
+                    onClick={() => signOut()}
+                  >
+                    로그아웃
+                  </button>
+                </div>
               ) : (
                 <Link
                   href="/login"

@@ -21,11 +21,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           src={image}
           alt="제품 이미지"
           fill
-          style={{
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
+          sizes="100vw 100vh"
+          priority
         />
       </div>
     );
@@ -39,11 +36,7 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
           src={images[index]}
           alt="제품 이미지"
           fill
-          style={{
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
+          sizes="100vw 100vh"
         />
       </div>
       <div className="grid grid-cols-5 gap-2 lg:gap-4">{renderImages}</div>
