@@ -46,11 +46,7 @@ export default function Review({
           src={image}
           alt="제품 이미지"
           fill
-          style={{
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-          }}
+          sizes="100vw 100vh"
         />
       </div>
     );

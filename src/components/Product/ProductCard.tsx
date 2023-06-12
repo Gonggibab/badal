@@ -31,7 +31,7 @@ export default function ProductCard({
       </div>
       <h3 className="mt-4 text-sm text-gray-700">{title}</h3>
       <p className="mt-1 text-lg font-medium text-gray-900">
-        ₩ {price.toLocaleString("ko-KR")}
+        {price.toLocaleString("ko-KR")} 원
       </p>
     </Link>
   );

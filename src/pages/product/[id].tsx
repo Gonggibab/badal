@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
 import Review from "components/Product/Review";
+import Modal from "components/Modal";
+import Notification from "components/Notification";
 
 import detailImage from "assets/product-detail.png";
+import PlusIcon from "assets/icon/plus.svg";
+import MinusIcon from "assets/icon/minus.svg";
 
 type ProductDetailProps = {
   params: { id: string };
 };
 
-const data = {
+export type SelectedOptionType = {
+  categoryId: string;
+  optionId: string;
+  title: string;
+  value: number;
+};
+
+const tdata = {
   id: "1",
   title: "레시틴 콩크림",
   images: [
@@ -23,7 +36,7 @@ const data = {
   ],
   price: 38000,
   rating: 4.2,
-  options: [
+  categories: [
     {
       id: "1",
       title: "용량",
@@ -31,6 +44,14 @@ const data = {
         { id: "1", title: "50ml", value: 0, stock: 11 },
         { id: "2", title: "80ml", value: 5000, stock: 200 },
         { id: "3", title: "120ml", value: 8000, stock: 0 },
+      ],
+    },
+    {
+      id: "2",
+      title: "색상",
+      options: [
+        { id: "1", title: "파랑", value: 0, stock: 11 },
+        { id: "2", title: "노랑", value: 5000, stock: 200 },
       ],
     },
   ],
@@ -64,22 +85,53 @@ const data = {
 };
 
 export default function ProductDetail({ params }: ProductDetailProps) {
-  const [price, setPrice] = useState<number>(data.price);
+  const { data } = useSession();
+  const router = useRouter();
+  const [price, setPrice] = useState<number>(tdata.price);
+  const [qty, setQty] = useState<number>(1);
   const [isReviewShown, setIsReviewShown] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptionType[]>(
+    tdata.categories.map((category) => {
+      return {
+        categoryId: category.id,
+        optionId: category.options[0].id,
+        title: category.options[0].title,
+        value: category.options[0].value,
+      };
+    })
+  );
 
-  const renderOptions = data.options.map((option) => {
+  // 옵션 및 수량선택 마다 가격 업데이트
+  useEffect(() => {
+    let tmpPrice = tdata.price;
+    selectedOptions.forEach((opt) => (tmpPrice += opt.value));
+    setPrice(tmpPrice * qty);
+  }, [selectedOptions, qty]);
+
+  const onAddCartClicked = () => {
+    if (!data) {
+      setIsModalOpen(true);
+    } else {
+      setIsNotifOpen(true);
+    }
+  };
+
+  const renderOptions = tdata.categories.map((category) => {
     return (
       <Option
-        key={option.id}
-        title={option.title}
-        options={option.options}
-        price={price}
-        setPrice={setPrice}
+        key={category.id}
+        id={category.id}
+        title={category.title}
+        options={category.options}
+        selectedOptions={selectedOptions}
+        setSelectedOptions={setSelectedOptions}
       />
     );
   });
 
-  const renderReviews = data.reviews.map((review) => {
+  const renderReviews = tdata.reviews.map((review) => {
     return (
       <Review
         key={review.id}
@@ -123,11 +175,11 @@ export default function ProductDetail({ params }: ProductDetailProps) {
               </li>
               <li className="text-sm">
                 <Link
-                  href={`/product/${data.id}`}
+                  href={`/product/${tdata.id}`}
                   aria-current="page"
                   className="font-medium text-gray-500 hover:text-gray-600"
                 >
-                  {data.title}
+                  {tdata.title}
                 </Link>
               </li>
             </ol>
@@ -138,29 +190,77 @@ export default function ProductDetail({ params }: ProductDetailProps) {
             lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16"
           >
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-              <ImageGallery images={data.images} />
+              <ImageGallery images={tdata.images} />
             </div>
 
             {/* <!-- Options --> */}
             <div className="relative mt-4 lg:row-span-3 lg:mt-0">
               <div className="sticky top-20">
-                <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-xl">
-                  {data.title}
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                  {tdata.title}
                 </h1>
-                <p className="mt-2 text-base tracking-tight text-gray-900">
-                  {price.toLocaleString("ko-KR")} 원
-                </p>
 
                 <form className="mt-6">
                   {renderOptions}
 
+                  <div className="mt-6 pt-4 flex flex-col text-gray-900 border-t border-gray-200">
+                    <span className="mb-4 font-semibold">수량</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">
+                        {tdata.title}
+                        {selectedOptions.map((opt) => ` / ${opt.title}`)}
+                      </span>
+
+                      <div className="ml-4 shrink-0 flex items-center text-lg font-semibold border border-gray-200">
+                        <button
+                          className="p-1 border-r border-gray-200"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            if (qty < 2) return;
+                            setQty(qty - 1);
+                          }}
+                        >
+                          <MinusIcon className="w-6 h-6" />
+                        </button>
+                        <span className="px-4 text-sm font-semibold">
+                          {qty}
+                        </span>
+                        <button
+                          className="p-1 border-l border-gray-200"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setQty(qty + 1);
+                          }}
+                        >
+                          <PlusIcon className="w-6 h-6" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 flex justify-between items-center border-t border-gray-200">
+                    <span className="font-semibold">총 합계</span>
+                    <p className="text-base tracking-tight text-gray-900">
+                      {price.toLocaleString("ko-KR")} 원
+                    </p>
+                  </div>
+
                   <button
-                    type="submit"
+                    type="button"
                     className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent 
-                    bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 
+                    bg-indigo-600 px-8 py-2.5 text-base font-medium text-white hover:bg-indigo-700 
                     focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    onClick={onAddCartClicked}
                   >
                     장바구니에 추가
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent 
+                    bg-indigo-600 px-8 py-2.5 text-base font-medium text-white hover:bg-indigo-700 
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    바로 주문하기
                   </button>
                 </form>
               </div>
@@ -192,13 +292,13 @@ export default function ProductDetail({ params }: ProductDetailProps) {
               {!isReviewShown ? (
                 <div className="relative w-full">
                   <Image
-                    src={data.detailImg}
+                    className="w-full h-auto"
+                    src={tdata.detailImg}
                     alt="제품 상세 정보 이미지"
                     quality={100}
                     width="0"
                     height="0"
-                    sizes="100vw"
-                    className="w-full h-auto"
+                    sizes="100vw 100vh"
                   />
                 </div>
               ) : (
@@ -208,6 +308,27 @@ export default function ProductDetail({ params }: ProductDetailProps) {
           </div>
         </div>
       </section>
+
+      <Modal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        title="로그인이 필요합니다!"
+        content="로그인이 필요한 컨텐츠 입니다. 로그인 하시겠습니까?"
+        btnTitle="로그인"
+        callback={() => {
+          router.push("/login");
+        }}
+      />
+
+      <Notification
+        isOpen={isNotifOpen}
+        setIsOpen={setIsNotifOpen}
+        content="장바구니에 추가되었습니다."
+        btnTitle="장바구니 보기"
+        callback={() => {
+          router.push("/cart");
+        }}
+      />
     </main>
   );
 }
