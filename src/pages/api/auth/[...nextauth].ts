@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
         // 없으면 데이터베이스에 유저 추가
         if (!existingUser) {
           await prisma.user.create({
-            data: { name: user.name, email: user.email },
+            data: { name: user.name!, email: user.email! },
           });
         }
 
