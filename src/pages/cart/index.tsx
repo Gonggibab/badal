@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import CartItem from "components/Cart/CartItem";
 import { CartItemType } from "common/types/cart";
 import Link from "next/link";
-import prisma from "common/lib/prisma";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 const data = {
   id: "1",
@@ -29,16 +27,13 @@ const data = {
   ],
 };
 
-export default function Cart({
-  user,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Cart() {
   const [cartItems, setCartItems] = useState<CartItemType[]>(data.itmes);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     let price = 0;
     data.itmes.forEach((item) => (price += item.price * item.quantity));
     return price;
   });
-  console.log(user);
 
   useEffect(() => {
     let price = 0;
@@ -67,7 +62,6 @@ export default function Cart({
         className="mx-auto max-w-3xl px-4 py-16 pt-10 w-full text-center
           sm:px-6 sm:py-24 sm:pt-20 lg:px-8"
       >
-        {user.email}
         <h2 className="mb-2 text-3xl font-bold text-gray-900">카트 목록</h2>
         <div className="mt-8 ">
           <ul
@@ -111,15 +105,3 @@ export default function Cart({
     </article>
   );
 }
-
-export const getServerSideProps: GetServerSideProps<{
-  user: any;
-}> = async () => {
-  const user = await prisma.user.findUnique({
-    where: { email: "rr1747@naver.com" },
-  });
-
-  return {
-    props: { user },
-  };
-};

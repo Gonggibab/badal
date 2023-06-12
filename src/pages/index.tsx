@@ -2,7 +2,12 @@ import Image from "next/image";
 import Head from "next/head";
 import image from "assets/test_photo.webp";
 
-export default function Home() {
+import prisma from "common/lib/prisma";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+
+export default function Home({
+  user,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Head>
@@ -14,6 +19,7 @@ export default function Home() {
       </Head>
       <article className="flex flex-col items-center justify-between">
         <section className="relative w-screen h-screen">
+          {user.email}
           <Image
             src={image}
             alt="배경 이미지"
@@ -31,3 +37,15 @@ export default function Home() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  user: any;
+}> = async () => {
+  const user = await prisma.user.findUnique({
+    where: { email: "rr1747@naver.com" },
+  });
+
+  return {
+    props: { user },
+  };
+};
