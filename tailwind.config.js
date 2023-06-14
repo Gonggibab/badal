@@ -11,6 +11,21 @@ module.exports = {
         "[auto,auto,1fr]": "auto auto 1fr",
       },
     },
+    animation: {
+      fadein: "fadein 1s ease-in-out",
+    },
+    keyframes: {
+      fadein: {
+        from: {
+          transform: "translate(0px, 10px)",
+          opacity: 0,
+        },
+        to: {
+          transform: "translate(0px, 0px)",
+          opacity: 1,
+        },
+      },
+    },
   },
   plugins: [require("@tailwindcss/aspect-ratio")],
 };

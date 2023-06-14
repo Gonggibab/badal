@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
+import axios, { AxiosError } from "axios";
 
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
@@ -13,14 +14,11 @@ import Notification from "components/Notification";
 import detailImage from "assets/product-detail.png";
 import PlusIcon from "assets/icon/plus.svg";
 import MinusIcon from "assets/icon/minus.svg";
-
-type ProductDetailProps = {
-  params: { id: string };
-};
+import AddCartIcon from "assets/icon/addCart.svg";
 
 export type SelectedOptionType = {
-  categoryId: string;
   optionId: string;
+  optionItemId: string;
   title: string;
   value: number;
 };
@@ -36,11 +34,11 @@ const tdata = {
   ],
   price: 38000,
   rating: 4.2,
-  categories: [
+  options: [
     {
       id: "1",
       title: "용량",
-      options: [
+      optionItems: [
         { id: "1", title: "50ml", value: 0, stock: 11 },
         { id: "2", title: "80ml", value: 5000, stock: 200 },
         { id: "3", title: "120ml", value: 8000, stock: 0 },
@@ -49,7 +47,7 @@ const tdata = {
     {
       id: "2",
       title: "색상",
-      options: [
+      optionItems: [
         { id: "1", title: "파랑", value: 0, stock: 11 },
         { id: "2", title: "노랑", value: 5000, stock: 200 },
       ],
@@ -84,24 +82,43 @@ const tdata = {
   ],
 };
 
-export default function ProductDetail({ params }: ProductDetailProps) {
+export default function ProductDetail() {
   const { data } = useSession();
   const router = useRouter();
+  const [productData, setProductData] = useState(null);
   const [price, setPrice] = useState<number>(tdata.price);
   const [qty, setQty] = useState<number>(1);
   const [isReviewShown, setIsReviewShown] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
+  const [notifInfo, setNotifInfo] = useState({
+    content: "장바구니에 추가되었습니다.",
+    btnTitle: "장바구니 보기",
+    callback: () => {
+      router.push("/cart");
+    },
+  });
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptionType[]>(
-    tdata.categories.map((category) => {
+    tdata.options.map((option) => {
       return {
-        categoryId: category.id,
-        optionId: category.options[0].id,
-        title: category.options[0].title,
-        value: category.options[0].value,
+        optionId: option.id,
+        optionItemId: option.optionItems[0].id,
+        title: option.optionItems[0].title,
+        value: option.optionItems[0].value,
       };
     })
   );
+
+  useEffect(() => {
+    // 제품 데이터를 불러온다
+    const getProductData = async () => {
+      const { data } = await axios.get(`/api/product/${router.query.id}`);
+      console.log(data);
+      setProductData(data.data);
+    };
+
+    if (router.isReady) getProductData();
+  }, [router.isReady, router.query.id]);
 
   // 옵션 및 수량선택 마다 가격 업데이트
   useEffect(() => {
@@ -110,21 +127,64 @@ export default function ProductDetail({ params }: ProductDetailProps) {
     setPrice(tmpPrice * qty);
   }, [selectedOptions, qty]);
 
-  const onAddCartClicked = () => {
+  const onAddCartClicked = async () => {
     if (!data) {
+      // 로그인을 안했으면 로그인 의사를 물어본다.
       setIsModalOpen(true);
     } else {
-      setIsNotifOpen(true);
+      try {
+        await axios.post("/api/cart/item", {
+          userId: data.user?.id,
+          productId: router.query.id,
+          title:
+            tdata.title +
+            " / " +
+            selectedOptions.map((opt) => opt.title).join(" / "),
+          image: tdata.images[0],
+          price: price,
+          quantity: qty,
+        });
+
+        setNotifInfo({
+          content: "장바구니에 추가되었습니다.",
+          btnTitle: "장바구니 보기",
+          callback: () => {
+            router.push("/cart");
+          },
+        });
+        setIsNotifOpen(true);
+      } catch (error) {
+        if (axios.isAxiosError<{ message: string }>(error)) {
+          console.log("카트에 동일한 물품을 넣을 수 없습니다. " + error);
+
+          setNotifInfo({
+            content: "카트에 이미 동일한 물품이 있습니다.",
+            btnTitle: "",
+            callback: () => {},
+          });
+        } else {
+          console.log("서버와의 통신중에 오류가 발생했습니다. " + error);
+
+          setNotifInfo({
+            content:
+              "서버와의 통신중에 오류가 발생했습니다. 다시 시도해주세요.",
+            btnTitle: "",
+            callback: () => {},
+          });
+        }
+
+        setIsNotifOpen(true);
+      }
     }
   };
 
-  const renderOptions = tdata.categories.map((category) => {
+  const renderOptions = tdata.options.map((option) => {
     return (
       <Option
-        key={category.id}
-        id={category.id}
-        title={category.title}
-        options={category.options}
+        key={option.id}
+        id={option.id}
+        title={option.title}
+        optionItmes={option.optionItems}
         selectedOptions={selectedOptions}
         setSelectedOptions={setSelectedOptions}
       />
@@ -245,35 +305,42 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent 
-                    bg-indigo-600 px-8 py-2.5 text-base font-medium text-white hover:bg-indigo-700 
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={onAddCartClicked}
-                  >
-                    장바구니에 추가
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-4 flex w-full items-center justify-center rounded-md border border-transparent 
-                    bg-indigo-600 px-8 py-2.5 text-base font-medium text-white hover:bg-indigo-700 
-                    focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  >
-                    바로 주문하기
-                  </button>
+                  <div className="mt-10 w-full flex items-center gap-x-4">
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-center rounded-md border border-transparent 
+                        py-3 text-sm font-medium text-gray-900 shadow hover:translate-y-[1px] hover:shadow-lg
+                        transition-all focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                      onClick={onAddCartClicked}
+                    >
+                      <AddCartIcon className="mr-2 w-6 h-6" />
+                      카트에 담기
+                    </button>
+                    <button
+                      type="button"
+                      className="flex w-full items-center justify-center rounded-md border border-transparent 
+                        py-3 text-sm font-semibold text-white bg-orange-500 shadow 
+                        hover:translate-y-[1px] hover:shadow-lg hover:bg-orange-400 transition-all 
+                        focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                    >
+                      바로 주문하기
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
 
             <div
-              className="py-6 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 
+              className="mt-10 py-6 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 
               lg:pb-16 lg:pr-8 lg:pt-6"
             >
-              <div className="mb-10 w-full flex justify-center items-center gap-2 border-b border-gray-200">
+              <div
+                className="z-10 sticky top-[80px] mb-10  w-full flex justify-center items-center gap-2 
+                  border-y border-gray-200 bg-white"
+              >
                 <h2
                   className={`${
-                    !isReviewShown && "border-b border-gray-400"
+                    !isReviewShown && "border-b border-gray-400 font-semibold"
                   } p-4 text-base font-medium text-gray-900 cursor-pointer transition-all`}
                   onClick={() => setIsReviewShown(false)}
                 >
@@ -281,7 +348,7 @@ export default function ProductDetail({ params }: ProductDetailProps) {
                 </h2>
                 <h2
                   className={`${
-                    isReviewShown && "border-b border-gray-400"
+                    isReviewShown && "border-b border-gray-400 font-semibold"
                   } p-4 text-base font-medium text-gray-900 cursor-pointer transition-all`}
                   onClick={() => setIsReviewShown(true)}
                 >
@@ -323,11 +390,9 @@ export default function ProductDetail({ params }: ProductDetailProps) {
       <Notification
         isOpen={isNotifOpen}
         setIsOpen={setIsNotifOpen}
-        content="장바구니에 추가되었습니다."
-        btnTitle="장바구니 보기"
-        callback={() => {
-          router.push("/cart");
-        }}
+        content={notifInfo.content}
+        btnTitle={notifInfo.btnTitle}
+        callback={notifInfo.callback}
       />
     </main>
   );

@@ -1,6 +1,6 @@
 import { signIn } from "next-auth/react";
 
-import Logo from "assets/logo2.svg";
+import Logo from "assets/logo.svg";
 
 export default function Login() {
   return (
@@ -8,21 +8,18 @@ export default function Login() {
       <div className="flex flex-col items-center sm:mx-auto sm:w-full sm:max-w-sm">
         <div className="relative mx-auto">
           <span className="sr-only">FO:CEL</span>
-          <Logo className="w-full h-auto" />
+          <Logo className="w-full h-auto text-black" />
+          <hr className="mx-auto my-4 w-[60%] border-b-4 border-gray-900" />
         </div>
-        <h1 className="text-2xl font-semibold leading-6 tracking-wider text-gray-900">
-          간편 로그인
-        </h1>
-        <hr className="mt-6 w-[90%] border-gray-300" />
       </div>
 
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
         <div>
           <button
             className="px-3 py-2.5 relative flex w-full justify-center items-center rounded-sm bg-[#1ec800] 
-              text-sm font-normal leading-6 tracking-wider text-white shadow-sm hover:bg-[#1ec800ab] 
+              text-sm font-normal leading-6 tracking-wider text-white shadow-sm hover:shadow-lg hover:translate-y-[1px]
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-              focus-visible:outline-indigo-600"
+              focus-visible:outline-orange-600 transition-all"
             onClick={() => signIn("naver")}
           >
             <svg
@@ -38,9 +35,9 @@ export default function Login() {
         <div className="mt-4">
           <button
             className="px-3 py-2.5 relative flex w-full justify-center items-center rounded-sm bg-[#fee500] 
-              text-sm font-normal leading-6 tracking-wider text-black shadow-sm hover:bg-[#fee500b9]  
+              text-sm font-normal leading-6 tracking-wider text-black shadow-sm hover:shadow-lg hover:translate-y-[1px]  
               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-              focus-visible:outline-indigo-600"
+              focus-visible:outline-orange-600"
             onClick={() => signIn("kakao")}
           >
             <svg

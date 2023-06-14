@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import axios from "axios";
+
 import CartItem from "components/Cart/CartItem";
 import { CartItemType } from "common/types/cart";
-import Link from "next/link";
 
-const data = {
+const tdata = {
   id: "1",
   itmes: [
     {
@@ -28,12 +31,25 @@ const data = {
 };
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItemType[]>(data.itmes);
+  const { data } = useSession();
+  const [cartItems, setCartItems] = useState<CartItemType[]>(tdata.itmes);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     let price = 0;
-    data.itmes.forEach((item) => (price += item.price * item.quantity));
+    tdata.itmes.forEach((item) => (price += item.price * item.quantity));
     return price;
   });
+
+  useEffect(() => {
+    // 제품 데이터를 불러온다
+    if (!data?.user) return;
+
+    const getCartData = async () => {
+      const cart = await axios.get(`/api/cart/${data?.user?.id}`);
+      console.log(cart.data.data);
+    };
+
+    getCartData();
+  }, [data]);
 
   useEffect(() => {
     let price = 0;

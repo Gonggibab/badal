@@ -24,22 +24,44 @@ export const authOptions: NextAuthOptions = {
 
       try {
         // 데이터베이스에 유저가 있는지 확인
-        const existingUser = await prisma.user.findUnique({
+        let db_user = await prisma.user.findUnique({
           where: { email: user.email! },
         });
 
         // 없으면 데이터베이스에 유저 추가
-        if (!existingUser) {
-          await prisma.user.create({
-            data: { name: user.name!, email: user.email! },
+        if (!db_user) {
+          db_user = await prisma.user.create({
+            data: {
+              name: user.name!,
+              email: user.email!,
+              cart: {
+                create: {},
+              },
+            },
           });
         }
 
+        // 유저 정보에 데이터베이스 아이디 연결
+        user.id = db_user.id;
         return true;
       } catch (error) {
         console.log("로그인 도중 에러가 발생했습니다. " + error);
         return false;
       }
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      //세션에 유저 아이디 정보 저장
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

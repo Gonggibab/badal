@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { OptionType } from "common/types/product";
+import { OptionItemType } from "common/types/product";
 import { SelectedOptionType } from "pages/product/[id]";
 
 type OptionProps = {
   id: string;
   title: string;
-  options: OptionType[];
+  optionItmes: OptionItemType[];
   selectedOptions: SelectedOptionType[];
   setSelectedOptions: Dispatch<SetStateAction<SelectedOptionType[]>>;
 };
@@ -14,19 +14,19 @@ type OptionProps = {
 export default function Option({
   id,
   title,
-  options,
+  optionItmes,
   selectedOptions,
   setSelectedOptions,
 }: OptionProps) {
-  const onOptionClicked = (option: OptionType) => {
+  const onOptionClicked = (option: OptionItemType) => {
     if (option.stock < 1) return;
 
     setSelectedOptions((prevOpts) =>
       prevOpts.map((opt) => {
-        if (opt.categoryId === id) {
+        if (opt.optionId === id) {
           return {
             ...opt,
-            optionId: option.id,
+            optionItemId: option.id,
             title: option.title,
             value: option.value,
           };
@@ -36,51 +36,51 @@ export default function Option({
     );
   };
 
-  const renderOptions = options.map((option) => {
+  const renderOptions = optionItmes.map((optItem) => {
     const isSelected =
-      selectedOptions.filter((opt) => opt.categoryId === id)[0].optionId ===
-      option.id;
+      selectedOptions.filter((opt) => opt.optionId === id)[0].optionItemId ===
+      optItem.id;
 
     return (
       <label
-        key={option.id}
+        key={optItem.id}
         id="choice-label"
-        className={`${isSelected && "ring-2 ring-indigo-500"} ${
-          option.stock > 0
+        className={`${isSelected && "ring-2 ring-orange-500"} ${
+          optItem.stock > 0
             ? "cursor-pointer bg-white"
             : "cursor-not-allowed bg-gray-50"
         } group relative py-3 px-4 flex flex-col items-center justify-center rounded-md 
           border hover:bg-gray-50 focus:outline-none shadow-sm sm:flex-1 sm:py-6 transition-all`}
-        onClick={() => onOptionClicked(option)}
+        onClick={() => onOptionClicked(optItem)}
       >
         <input
           type="radio"
-          name={`${option.title}-option`}
-          value={option.title}
+          name={`${optItem.title}-option`}
+          value={optItem.title}
           className="sr-only"
           aria-labelledby="choice-label"
         />
         <span
           id="choice-label"
           className={`${
-            option.stock > 0 ? "text-gray-900" : "text-gray-200"
+            optItem.stock > 0 ? "text-gray-900" : "text-gray-200"
           } text-md font-semibold `}
         >
-          {option.title}
+          {optItem.title}
         </span>
-        {option.value !== 0 && (
+        {optItem.value !== 0 && (
           <span
             id="choice-label"
             className={`${
-              option.stock > 0 ? "text-indigo-600" : "text-gray-200"
+              optItem.stock > 0 ? "text-orange-500" : "text-gray-200"
             } mt-1 text-xs font-bold `}
           >
-            {option.value > 0 ? "+" : "-"}
-            {option.value}원
+            {optItem.value > 0 ? "+" : "-"}
+            {optItem.value}원
           </span>
         )}
 
-        {option.stock < 1 && (
+        {optItem.stock < 1 && (
           <span
             aria-hidden="true"
             className="pointer-events-none absolute -inset-px rounded-md border-2 border-gray-200"

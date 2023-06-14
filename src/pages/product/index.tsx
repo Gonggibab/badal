@@ -1,17 +1,21 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 import ProductCard from "components/Product/ProductCard";
+import { ProductType } from "common/types/product";
 
 export default function Product() {
-  const renderPosts = testProductCardData.map((data) => {
-    return (
-      <ProductCard
-        key={data.id}
-        id={data.id}
-        image={data.image}
-        title={data.title}
-        price={data.price}
-      />
-    );
-  });
+  const [productData, setProductData] = useState<ProductType[] | null>(null);
+
+  useEffect(() => {
+    // 전체 제품 데이터를 불러온다
+    const getProductData = async () => {
+      const { data } = await axios.get("/api/product");
+      setProductData(data.data);
+    };
+
+    getProductData();
+  }, []);
 
   return (
     <article className="w-screen h-full flex flex-col items-center justify-between">
@@ -29,20 +33,19 @@ export default function Product() {
             className="grid grid-cols-1 gap-x-6 gap-y-10 
             sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
           >
-            {renderPosts}
+            {productData &&
+              productData.map((data) => (
+                <ProductCard
+                  key={data.id}
+                  id={data.id}
+                  image={data.images[0]}
+                  title={data.title}
+                  price={data.price}
+                />
+              ))}
           </div>
         </div>
       </section>
     </article>
   );
 }
-
-const testProductCardData = [
-  {
-    id: "1",
-    image:
-      "https://tailwindui.com/img/ecommerce-images/category-page-04-image-card-01.jpg",
-    title: "레시틴 콩크림",
-    price: 38000,
-  },
-];
