@@ -20,6 +20,9 @@ export default async function handler(
         const { id } = req.query;
         const data = await prisma.cart.findUnique({
           where: { userId: id as string },
+          include: {
+            items: true,
+          },
         });
 
         res.status(200).json({ success: true, data: data });

@@ -113,7 +113,6 @@ export default function ProductDetail() {
     // 제품 데이터를 불러온다
     const getProductData = async () => {
       const { data } = await axios.get(`/api/product/${router.query.id}`);
-      console.log(data);
       setProductData(data.data);
     };
 

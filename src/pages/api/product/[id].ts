@@ -12,12 +12,12 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { method } = req;
+  const { id } = req.query;
 
   switch (method) {
     case "GET":
       // Product 정보 가져오기
       try {
-        const { id } = req.query;
         const data = await prisma.product.findUnique({
           where: { id: id as string },
         });

@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import NaverProvider from "next-auth/providers/naver";
 import KakaoProvider from "next-auth/providers/kakao";
-import type { NextAuthOptions } from "next-auth";
 import prisma from "common/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -41,8 +41,10 @@ export const authOptions: NextAuthOptions = {
           });
         }
 
-        // 유저 정보에 데이터베이스 아이디 연결
+        // 유저 정보에 데이터베이스 아이디, 역할 연결
         user.id = db_user.id;
+        user.role = db_user.role;
+
         return true;
       } catch (error) {
         console.log("로그인 도중 에러가 발생했습니다. " + error);
@@ -52,13 +54,16 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.role = user.role;
       }
+
       return token;
     },
     async session({ session, token }) {
-      //세션에 유저 아이디 정보 저장
+      // 세션에 유저 정보 저장
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
 
       return session;
