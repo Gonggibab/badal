@@ -38,7 +38,7 @@ export default function Product() {
                 <ProductCard
                   key={data.id}
                   id={data.id}
-                  image={data.images[0]}
+                  image={data.images && data.images[0]}
                   title={data.title}
                   price={data.price}
                 />
