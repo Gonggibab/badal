@@ -1,9 +1,15 @@
+import { useRouter } from "next/router";
+
 import Header from "components/Header/Header";
+import AdminHeader from "components/Header/AdminHeader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useRouter();
+  const isAdmin = pathname.includes("/admin");
+
   return (
     <>
-      <Header />
+      {isAdmin ? <AdminHeader /> : <Header />}
       {children}
     </>
   );

@@ -13,6 +13,7 @@ module.exports = {
     },
     animation: {
       fadein: "fadein 1s ease-in-out",
+      rotate: "rotate 1s linear infinite",
     },
     keyframes: {
       fadein: {
@@ -25,7 +26,18 @@ module.exports = {
           opacity: 1,
         },
       },
+      rotate: {
+        from: {
+          transform: "rotate(0deg)",
+        },
+        to: {
+          transform: "rotate(360deg)",
+        },
+      },
     },
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [
+    require("@tailwindcss/aspect-ratio"),
+    require("@tailwindcss/forms"),
+  ],
 };

@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";

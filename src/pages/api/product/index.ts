@@ -1,6 +1,9 @@
 import prisma from "common/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { OptionType } from "pages/admin/product/add";
+import { ImageType } from "common/types/image";
+
 type Data = {
   success: boolean;
   data?: any;
@@ -17,7 +20,15 @@ export default async function handler(
     case "GET":
       // 모든 Product 데이터 가져오기
       try {
-        const data = await prisma.product.findMany();
+        const data = await prisma.product.findMany({
+          include: {
+            options: {
+              include: {
+                optionItems: true,
+              },
+            },
+          },
+        });
 
         res.status(200).json({ success: true, data: data });
       } catch (error) {
@@ -26,39 +37,58 @@ export default async function handler(
       }
 
       break;
+
     case "POST":
-      // Product 데이터베이스에 추가하기
+      const options: OptionType[] = req.body.options;
+      const images: ImageType[] = req.body.images;
+      const detailImage: ImageType = req.body.detailImage;
+
       try {
-        const data = await prisma.product.create({
+        // Product 데이터베이스에 추가하기
+        const product = await prisma.product.create({
           data: {
-            images: req.body.images,
-            detailImage: req.body.detailImage,
             title: req.body.title,
             price: req.body.price,
             options: {
-              createMany: {
-                data: [
-                  {
-                    title: req.body.optionTitle,
-                    // optionItems: {
-                    //   createMany: {
-                    //     data: [
-                    //       {
-                    //         title: req.body.optItemTitle,
-                    //         value: req.body.optItemValue,
-                    //         stock: req.body.optItemStock,
-                    //       },
-                    //     ],
-                    //   },
-                    // },
-                  },
-                ],
-              },
+              create: options.map((option) => ({
+                title: option.title,
+                optionItems: {
+                  create: option.optionItems.map((item) => ({
+                    title: item.title,
+                    value: item.value || 0,
+                    stock: item.stock || 0,
+                  })),
+                },
+              })),
+            },
+            images: {
+              create: images.map((image) => ({
+                asset_id: image.asset_id,
+                public_id: image.public_id,
+                signature: image.signature,
+                url: image.url,
+                secure_url: image.secure_url,
+                createdAt: new Date(image.createdAt),
+              })),
             },
           },
         });
 
-        res.status(200).json({ success: true, data: data });
+        if (detailImage) {
+          await prisma.detailImage.create({
+            data: {
+              productId: product.id,
+              asset_id: detailImage.asset_id,
+              public_id: detailImage.public_id,
+              signature: detailImage.signature,
+              url: detailImage.url,
+              secure_url: detailImage.secure_url,
+              createdAt: new Date(detailImage.createdAt),
+            },
+          });
+        }
+
+        res.status(200).json({ success: true });
       } catch (error) {
         console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
