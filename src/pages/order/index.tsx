@@ -13,7 +13,6 @@ export default function Order() {
 
   const selector = "#payment-widget";
   const clientKey = process.env.NEXT_PUBLIC_PAYMENTS_CLIENT!;
-  const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
 
   const customerKey = "8-X2_Fv00mheTNL34hqNj"; // 이후에 고객 디비 아이디로 교체
   const price = 38000; // 결제 가격
