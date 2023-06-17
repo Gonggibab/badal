@@ -27,6 +27,7 @@ export default async function handler(
                 optionItems: true,
               },
             },
+            images: true,
           },
         });
 
@@ -88,13 +89,14 @@ export default async function handler(
           });
         }
 
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, data: product });
       } catch (error) {
         console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 
       break;
+
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);

@@ -147,7 +147,7 @@ export default function Option({
         <button
           type="button"
           className="p-1 flex justify-center items-center text-red-600 rounded-md shadow
-              hover:shadow-lg hover:translate-y-[1px]"
+              hover:shadow-lg hover:translate-y-[1px] focus:ring-2 focus:ring-inset focus:ring-orange-500"
           onClick={onOptionDeleteClicked}
         >
           <DeleteIcon className="w-4 h-4" />

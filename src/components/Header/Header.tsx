@@ -12,7 +12,6 @@ import MenuIcon from "assets/icon/menu.svg";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { data } = useSession();
-  console.log(data);
 
   return (
     <header className="bg-white z-30 sticky top-0">

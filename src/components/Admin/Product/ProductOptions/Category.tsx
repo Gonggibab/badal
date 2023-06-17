@@ -212,7 +212,8 @@ export default function Category({
           <button
             type="button"
             className="py-2 w-full flex justify-center items-center text-sm text-gray-700
-            rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]"
+            rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]
+            focus:ring-2 focus:ring-inset focus:ring-orange-500"
             onClick={onOptionAddClicked}
           >
             옵션 추가하기

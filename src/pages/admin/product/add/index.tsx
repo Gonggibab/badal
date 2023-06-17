@@ -6,11 +6,11 @@ import OptionInput from "components/Admin/Product/ProductOptions/OptionInput";
 import UploadImage from "components/Admin/Product/ProductImages/UploadImage";
 import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
-import isEmpty from "common/utils/isEmpty";
-import cloudinary from "common/utils/cloudinary";
 
 import { ImageType } from "common/types/image";
 import debounce from "common/utils/debounce";
+import isEmpty from "common/utils/isEmpty";
+import cloudinary from "common/utils/cloudinary";
 
 export type ImageFileType = {
   image: File;
@@ -134,16 +134,21 @@ export default function ProductAdd() {
         setIsLoading(false);
         router.push("/admin/product");
       } catch (error) {
-        // 클라우드에 저장 시켰던 이미지를 삭제한다.
+        // 클라우드에 저장 시켰던 이미지를 삭제
+        const deletePromises = [];
         if (cloudImage.length > 0) {
-          for (const img of cloudImage) {
-            await cloudinary.delete(img.public_id);
-          }
+          deletePromises.push(
+            cloudImage.map(async (img) => {
+              await cloudinary.delete(img.public_id);
+            })
+          );
         }
-
         if (cloudDetailImage) {
-          await cloudinary.delete(cloudDetailImage.public_id);
+          deletePromises.push(
+            await cloudinary.delete(cloudDetailImage.public_id)
+          );
         }
+        if (deletePromises.length > 0) await Promise.all(deletePromises);
 
         setNotifInfo({
           content: "제품 등록중에 에러가 발생했습니다. 다시 시도해주세요.",
@@ -295,15 +300,18 @@ export default function ProductAdd() {
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
               type="button"
-              className="text-sm font-semibold leading-6 text-gray-900"
+              className="px-4 py-2.5 text-sm font-semibold leading-6 text-gray-900 
+                rounded-md shadow hover:shadow-lg hover:translate-y-[1px] transition-all
+                focus:ring-2 focus:ring-inset focus:ring-orange-500"
+              onClick={() => router.push("/admin/product")}
             >
               취소
             </button>
             <button
               type="button"
-              className="rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white 
-                shadow-sm hover:bg-orange-400 focus-visible:outline focus-visible:outline-2 
-                focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+              className="rounded-md bg-orange-500 px-6 py-2.5 text-sm font-semibold text-white 
+                shadow hover:shadow-lg hover:translate-y-[1px] focus-visible:outline focus-visible:outline-2 
+                focus-visible:outline-offset-2 focus-visible:outline-orange-500 transition-all"
               onClick={handleSubmit}
             >
               등록하기

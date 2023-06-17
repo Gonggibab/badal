@@ -3,6 +3,8 @@ import Link from "next/link";
 import axios from "axios";
 
 import Item from "components/Admin/Product/Item";
+import Modal from "components/Modal";
+import Notification from "components/Notification";
 import Spinner from "components/Loader/Spinner";
 import { ProductType } from "common/types/product";
 
@@ -10,11 +12,15 @@ import SearchIcon from "assets/icon/search.svg";
 import DeleteIcon from "assets/icon/delete.svg";
 import RefreshIcon from "assets/icon/refresh.svg";
 import PlusIcon from "assets/icon/plus.svg";
+import EmptyBoxIcon from "assets/icon/emptyCart.svg";
 
 export default function ProductAdmin() {
   const allCheckRef = useRef<HTMLInputElement>(null);
   const [productData, setProductData] = useState<ProductType[] | null>(null);
   const [selectedData, setSelectedData] = useState<Set<string>>(new Set());
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
+  const [notifContent, setNotifContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getProductData = async () => {
@@ -26,15 +32,6 @@ export default function ProductAdmin() {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (!allCheckRef.current || !productData) return;
-
-    // 모든 제품에 체크가 되어 있지 않으면 전체 체크버튼 비활성화
-    if (selectedData.size === productData.length)
-      allCheckRef.current.checked = true;
-    else allCheckRef.current.checked = false;
-  }, [productData, selectedData]);
-
   const onCheckChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (productData) {
       if (e.currentTarget.checked)
@@ -45,10 +42,37 @@ export default function ProductAdmin() {
     }
   };
 
-  const onDeleteClicked = () => {};
+  const onDeleteClicked = () => {
+    if (selectedData.size < 1) {
+      setNotifContent("삭제할 제품을 선택해 주세요!");
+      setIsNotifOpen(true);
+      return;
+    }
+    setIsModalOpen(true);
+  };
 
-  const onRefreshClicked = () => {
-    getProductData();
+  const deleteProducts = async () => {
+    setIsLoading(true);
+    setIsModalOpen(false);
+
+    try {
+      await Promise.all(
+        Array.from(selectedData).map((productId) =>
+          axios.delete(`/api/product/${productId}`)
+        )
+      );
+      setNotifContent(
+        `성공적으로 ${selectedData.size}개의 제품을 삭제했습니다.`
+      );
+      setIsNotifOpen(true);
+
+      selectedData.clear(); // 선택 데이터 삭제
+      getProductData(); // 제품 리스트 업데이트
+    } catch (error) {
+      setNotifContent("에러가 발생해 삭제에 실패 했습니다!");
+      setIsNotifOpen(true);
+      setIsLoading(false);
+    }
   };
 
   // 화면 로드시 데이터 가져옴
@@ -56,10 +80,19 @@ export default function ProductAdmin() {
     getProductData();
   }, []);
 
+  useEffect(() => {
+    if (!allCheckRef.current || !productData) return;
+
+    // 모든 제품에 체크가 되어 있지 않으면 전체 체크버튼 비활성화
+    if (selectedData.size === productData.length && selectedData.size !== 0)
+      allCheckRef.current.checked = true;
+    else allCheckRef.current.checked = false;
+  }, [productData, selectedData]);
+
   return (
     <article className="p-4 md:ml-64">
       <div
-        className="p-2 flex flex-col w-full h-[calc(100vh-120px)] overflow-x-scroll
+        className="p-2 flex flex-col items-center w-full h-[calc(100vh-120px)] overflow-x-scroll
           shadow-md sm:rounded-lg md:h-[calc(100vh-40px)]"
       >
         <div className="pb-4 w-full flex flex-col justify-between items-center text-sm sm:flex-row">
@@ -95,7 +128,7 @@ export default function ProductAdmin() {
             <button
               className="ml-4 px-2.5 h-10 flex items-center text-orange-500 rounded-md shadow
                 hover:shadow-lg hover:translate-y-[1px] transition-all"
-              onClick={onRefreshClicked}
+              onClick={getProductData}
             >
               <RefreshIcon className="mr-2 w-4 h-4 sm:m-0 lg:mr-2" />
               <span className="block sm:hidden lg:block">새로고침</span>
@@ -157,6 +190,35 @@ export default function ProductAdmin() {
               })}
           </tbody>
         </table>
+
+        {productData?.length === 0 && (
+          <div className="mt-10 w-full flex flex-col justify-center items-center">
+            <EmptyBoxIcon className="w-24 h-24" />
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-orange-500">
+              텅텅
+            </h1>
+            <p className="mt-2 text-sm font-medium leading-7 text-gray-900">
+              등록되어 있는 제품이 없습니다.
+            </p>
+          </div>
+        )}
+
+        <Modal
+          isOpen={isModalOpen}
+          setIsOpen={setIsModalOpen}
+          title="삭제하시겠습니까?"
+          content={`정말로 제품 ${selectedData.size}개를 삭제하시겠습니까?`}
+          btnTitle="확인"
+          callback={deleteProducts}
+        />
+
+        <Notification
+          isOpen={isNotifOpen}
+          setIsOpen={setIsNotifOpen}
+          content={notifContent}
+          btnTitle=""
+          callback={() => {}}
+        />
 
         <Spinner isLoading={isLoading} />
       </div>

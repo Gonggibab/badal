@@ -36,14 +36,14 @@ export default function Notification({
       id="notification-undo"
       role="alert"
     >
-      <div className="flex items-center w-full max-w-sm px-6 py-4 text-gray-800 bg-white rounded-lg shadow">
-        <div className="text-sm font-semibold">{content}</div>
+      <div className="flex items-center w-full max-w-sm px-6 py-4 bg-white rounded-lg shadow-lg">
+        <div className="text-sm font-semibold text-orange-600">{content}</div>
         {btnTitle !== "" && (
           <div className="flex items-center ml-auto space-x-2">
             <button
               role="button"
               className="ml-2 p-1.5 text-sm font-semibold text-blue-600 
-            rounded-lg hover:text-blue-400 "
+                rounded-lg hover:text-blue-400 "
               onClick={callback}
             >
               {btnTitle}

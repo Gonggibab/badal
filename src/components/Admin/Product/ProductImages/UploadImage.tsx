@@ -130,6 +130,7 @@ export default function UploadImage({
               <input
                 ref={productImgRef}
                 className="sr-only"
+                tabIndex={-1}
                 id="file-upload"
                 name="file-upload"
                 type="file"
@@ -180,6 +181,7 @@ export default function UploadImage({
               <input
                 ref={detailImgRef}
                 className="sr-only"
+                tabIndex={-1}
                 id="detail-upload"
                 name="detail-upload"
                 type="file"

@@ -12,6 +12,10 @@ import UserIcon from "assets/icon/users.svg";
 export default function AdminHeader() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  const closeSideMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <header className="bg-white z-30 sticky top-0">
       <nav
@@ -43,7 +47,7 @@ export default function AdminHeader() {
         <div className="h-full p-6 overflow-y-auto">
           <div className="w-full flex justify-between items-center">
             <Logo className="w-auto h-8" />
-            <button className="md:hidden" onClick={() => setIsOpen(false)}>
+            <button className="md:hidden" onClick={closeSideMenu}>
               <CloseIcon className="w-8 h-8" />
             </button>
           </div>
@@ -53,7 +57,8 @@ export default function AdminHeader() {
               <Link
                 href="/admin"
                 className="-mx-3 px-3 py-2 flex items-center rounded-lg gap-x-5
-                text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                onClick={closeSideMenu}
               >
                 <DashboardIcon className="w-6 h-6" />
                 대시보드
@@ -63,7 +68,8 @@ export default function AdminHeader() {
               <Link
                 href="/admin/transaction"
                 className="-mx-3 px-3 py-2 flex items-center rounded-lg gap-x-5
-                text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                onClick={closeSideMenu}
               >
                 <TransactionIcon className="w-6 h-6" />
                 트랜잭션
@@ -73,7 +79,8 @@ export default function AdminHeader() {
               <Link
                 href="/admin/product"
                 className="-mx-3 px-3 py-2 flex items-center rounded-lg gap-x-5
-                text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                onClick={closeSideMenu}
               >
                 <ProductIcon className="w-6 h-6" />
                 상품
@@ -83,7 +90,8 @@ export default function AdminHeader() {
               <Link
                 href="/admin/user"
                 className="-mx-3 px-3 py-2 flex items-center rounded-lg gap-x-5
-                text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                onClick={closeSideMenu}
               >
                 <UserIcon className="w-6 h-6" />
                 사용자

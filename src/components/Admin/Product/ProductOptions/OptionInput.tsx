@@ -68,7 +68,8 @@ function OptionInput({ options, setOptions }: OptionInputProps) {
         <button
           type="button"
           className="mt-4 px-3 py-2 flex justify-center items-center text-sm text-orange-500
-            rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]"
+            rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]
+            focus:ring-2 focus:ring-inset focus:ring-orange-500"
           onClick={onCategoryAddClicked}
         >
           <PlusIcon className="-ml-2 mr-1 w-6 h-6" />
