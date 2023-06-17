@@ -17,7 +17,7 @@ model User {
   email         String    @unique 
   role          Role      @default(USER)
   cart          Cart?
-  review        Review[]
+  reviews       Review[]
 }
 
 model Product {
@@ -27,8 +27,8 @@ model Product {
   images        Image[]
   detailImage   DetailImage?
   options       Option[]
-  cartItem      CartItem[]
-  review        Review[]
+  cartItems     CartItem[]
+  reviews       Review[]
 }
 
 model Option {
@@ -62,7 +62,7 @@ model CartItem {
   product       Product   @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   productId     String    @db.ObjectId
   title         String
-  image         String
+  image         String?
   price         Int
   quantity      Int
   createdAt     DateTime  @default(now())

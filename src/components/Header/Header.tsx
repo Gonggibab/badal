@@ -1,8 +1,11 @@
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRecoilState } from "recoil";
+import axios from "axios";
+import Link from "next/link";
 
 import MobileMenu from "./MobileMenu";
+import cartSizeAtom from "common/recoil/atom";
 import Logo from "assets/logo.svg";
 import UserIcon from "assets/icon/user.svg";
 import CartIcon from "assets/icon/cart.svg";
@@ -10,8 +13,21 @@ import LoginIcon from "assets/icon/login.svg";
 import MenuIcon from "assets/icon/menu.svg";
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { data } = useSession();
+  const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    // 제품 데이터를 불러온다
+    if (!data?.user) return;
+
+    const getCartData = async () => {
+      const cart = await axios.get(`/api/cart/${data?.user?.id}`);
+      setCartSize(cart.data.data.items.length);
+    };
+
+    getCartData();
+  }, [data?.user, setCartSize]);
 
   return (
     <header className="bg-white z-30 sticky top-0">
@@ -65,7 +81,7 @@ export default function Header() {
                   className="absolute -top-3 right-[5px] w-4 h-4 text-xs font-semibold
                   text-white text-center bg-indigo-700 rounded-full"
                 >
-                  0
+                  {cartSize}
                 </span>
               </Link>
             </>

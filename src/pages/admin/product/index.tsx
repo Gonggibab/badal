@@ -61,17 +61,17 @@ export default function ProductAdmin() {
           axios.delete(`/api/product/${productId}`)
         )
       );
+
+      selectedData.clear(); // 선택 데이터 삭제
+      getProductData(); // 제품 리스트 업데이트
       setNotifContent(
         `성공적으로 ${selectedData.size}개의 제품을 삭제했습니다.`
       );
       setIsNotifOpen(true);
-
-      selectedData.clear(); // 선택 데이터 삭제
-      getProductData(); // 제품 리스트 업데이트
     } catch (error) {
+      setIsLoading(false);
       setNotifContent("에러가 발생해 삭제에 실패 했습니다!");
       setIsNotifOpen(true);
-      setIsLoading(false);
     }
   };
 

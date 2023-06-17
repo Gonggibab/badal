@@ -37,7 +37,7 @@ export default function Notification({
       role="alert"
     >
       <div className="flex items-center w-full max-w-sm px-6 py-4 bg-white rounded-lg shadow-lg">
-        <div className="text-sm font-semibold text-orange-600">{content}</div>
+        <div className="text-sm font-semibold text-gray-900">{content}</div>
         {btnTitle !== "" && (
           <div className="flex items-center ml-auto space-x-2">
             <button

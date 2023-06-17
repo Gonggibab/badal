@@ -1,5 +1,6 @@
 import "styles/globals.css";
 import type { AppProps } from "next/app";
+import { RecoilRoot } from "recoil";
 import { SessionProvider } from "next-auth/react";
 import { Noto_Sans_KR } from "next/font/google";
 
@@ -15,12 +16,14 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   return (
-    <SessionProvider session={session}>
-      <Layout>
-        <main className={notoSansKR.className}>
-          <Component {...pageProps} />
-        </main>
-      </Layout>
-    </SessionProvider>
+    <RecoilRoot>
+      <SessionProvider session={session}>
+        <Layout>
+          <main className={notoSansKR.className}>
+            <Component {...pageProps} />
+          </main>
+        </Layout>
+      </SessionProvider>
+    </RecoilRoot>
   );
 }

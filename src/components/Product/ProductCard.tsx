@@ -23,7 +23,7 @@ export default function ProductCard({
     <Link href={`/product/${id}`} className="group">
       <div
         className="relative aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg 
-          bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 animate-pulse"
+          bg-gray-200 animate-pulse xl:aspect-h-8 xl:aspect-w-7"
       >
         <div className="flex items-center justify-center w-full h-full animate-pulse">
           <ImageIcon className="w-12 h-12 text-gray-100" />

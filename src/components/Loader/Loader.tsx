@@ -1,14 +1,17 @@
 type LoaderProps = {
   isLoading: boolean;
+  bgTransparent?: boolean;
 };
 
-export default function Loader({ isLoading }: LoaderProps) {
+export default function Loader({
+  isLoading,
+  bgTransparent = false,
+}: LoaderProps) {
   return (
     <div
-      className={`${
-        isLoading ? "visible opacity-80" : "invisible opacity-0"
-      } fixed top-0 w-full h-full flex justify-center items-center 
-       bg-gray-200 transition-all`}
+      className={`${isLoading ? "visible opacity-80" : "invisible opacity-0"} ${
+        bgTransparent ? "bg-transparent" : "bg-gray-200 "
+      } fixed top-0 w-full h-full flex justify-center items-center transition-all`}
     >
       <span
         className="inline-block w-10 h-10 rounded-full border-t-4 border-t-orange-500

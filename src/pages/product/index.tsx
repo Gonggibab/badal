@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import ProductCard from "components/Product/ProductCard";
+import Loader from "components/Loader/Loader";
 import { ProductType } from "common/types/product";
 
 export default function Product() {
@@ -45,6 +46,8 @@ export default function Product() {
               ))}
           </div>
         </div>
+
+        <Loader isLoading={!productData} bgTransparent={true} />
       </section>
     </article>
   );
