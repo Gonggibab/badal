@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
@@ -113,7 +113,6 @@ export default function ProductDetail() {
     // 제품 데이터를 불러온다
     const getProductData = async () => {
       const { data } = await axios.get(`/api/product/${router.query.id}`);
-      console.log(data);
       setProductData(data.data);
     };
 

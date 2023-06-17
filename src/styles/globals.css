@@ -13,6 +13,8 @@
   margin: 0;
   padding: 0;
   border: 0 solid transparent;
+  -ms-overflow-style: none; /* 인터넷 익스플로러 스크롤바 없애기*/
+  scrollbar-width: none; /* 파이어폭스 스크롤바 없애기*/
 }
 
 /* prevent iOS font size change */
@@ -68,4 +70,9 @@ a {
   color: inherit;
   text-decoration: inherit;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* 크롬, 사파리, 오페라, 엣지  스크롤바 없애기 */
+::-webkit-scrollbar {
+  display: none;
 }

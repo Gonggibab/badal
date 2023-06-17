@@ -3,16 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
   provider = "mongodb"
   url      = env("MONGODB_URI")
-}
-
-enum Role {
-  USER
-  ADMIN
 }
 
 model User {
@@ -26,10 +22,10 @@ model User {
 
 model Product {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  images        String[]
-  detailImage   String
-  title         String
+  title         String    @unique
   price         Int
+  images        Image[]
+  detailImage   DetailImage?
   options       Option[]
   cartItem      CartItem[]
   review        Review[]
@@ -82,8 +78,39 @@ model Review {
   productId     String    @db.ObjectId
   rating        Int
   content       String
-  images        String[]
+  images        Image[]
   createdAt     DateTime  @default(now())
 
   @@unique([productId, userId])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Image {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  asset_id        String
+  public_id       String    @unique
+  signature       String
+  url             String
+  secure_url      String
+  createdAt       DateTime  @default(now())
+  product         Product?  @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  productId       String?   @db.ObjectId  
+  review          Review?   @relation(fields: [reviewId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  reviewId        String?   @db.ObjectId
+}
+
+model DetailImage {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  asset_id        String
+  public_id       String    @unique
+  signature       String
+  url             String
+  secure_url      String
+  createdAt       DateTime  @default(now())
+  product         Product   @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  productId       String    @unique @db.ObjectId  
 }

@@ -12,17 +12,15 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { method } = req;
+  const { title } = req.query;
 
   switch (method) {
     case "GET":
-      // Cart 정보 가져오기
+      console.log(title);
+      // Product 같은 이름 찾아서 반환
       try {
-        const { id } = req.query;
-        const data = await prisma.cart.findUnique({
-          where: { userId: id as string },
-          include: {
-            items: true,
-          },
+        const data = await prisma.product.findUnique({
+          where: { title: title as string },
         });
 
         res.status(200).json({ success: true, data: data });

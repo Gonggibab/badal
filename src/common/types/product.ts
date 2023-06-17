@@ -1,8 +1,13 @@
+import { ImageType } from "./image";
+
 export type ProductType = {
   id: string;
   title: string;
   price: number;
-  images: string[];
+  images: ImageType[];
+  detailImage: ImageType;
+  options: OptionType[];
+  review: ReviewType[];
 };
 
 export type ProductDetailType = {

@@ -13,6 +13,8 @@ module.exports = {
     },
     animation: {
       fadein: "fadein 1s ease-in-out",
+      rotate: "rotate 1s linear infinite",
+      pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },
     keyframes: {
       fadein: {
@@ -25,7 +27,26 @@ module.exports = {
           opacity: 1,
         },
       },
+      rotate: {
+        from: {
+          transform: "rotate(0deg)",
+        },
+        to: {
+          transform: "rotate(360deg)",
+        },
+      },
+      pulse: {
+        "0%, 100%": {
+          backgroundColor: "rgba(229, 231, 235, 1)",
+        },
+        "50%": {
+          backgroundColor: "rgba(229, 231, 235, 0.2)",
+        },
+      },
     },
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [
+    require("@tailwindcss/aspect-ratio"),
+    require("@tailwindcss/forms"),
+  ],
 };

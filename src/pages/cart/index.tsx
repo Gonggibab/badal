@@ -3,39 +3,23 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import axios from "axios";
 
+import Notification from "components/Notification";
 import CartItem from "components/Cart/CartItem";
 import { CartItemType } from "common/types/cart";
-
-const tdata = {
-  id: "1",
-  itmes: [
-    {
-      id: "1",
-      productId: "1",
-      title: "레시틴 콩크림 / 80ml / 노랑",
-      image:
-        "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
-      price: 38000,
-      quantity: 1,
-    },
-    {
-      id: "2",
-      productId: "2",
-      title: "레시틴 콩크림 / 120ml / 파랑",
-      image:
-        "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-      price: 43000,
-      quantity: 2,
-    },
-  ],
-};
+import EmptyCartIcon from "assets/icon/emptyCart.svg";
 
 export default function Cart() {
   const { data } = useSession();
-  const [cartItems, setCartItems] = useState<CartItemType[]>(tdata.itmes);
+  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
+  const [notifInfo, _] = useState({
+    content: "장바구니에서 물품을 삭제하였습니다.",
+    btnTitle: "",
+    callback: () => {},
+  });
+  const [cartItems, setCartItems] = useState<CartItemType[] | null>(null);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     let price = 0;
-    tdata.itmes.forEach((item) => (price += item.price * item.quantity));
+    cartItems?.forEach((item) => (price += item.price * item.quantity));
     return price;
   });
 
@@ -45,7 +29,7 @@ export default function Cart() {
 
     const getCartData = async () => {
       const cart = await axios.get(`/api/cart/${data?.user?.id}`);
-      console.log(cart.data.data);
+      setCartItems(cart.data.data.items);
     };
 
     getCartData();
@@ -53,14 +37,15 @@ export default function Cart() {
 
   useEffect(() => {
     let price = 0;
-    cartItems.forEach((item) => (price += item.price * item.quantity));
+    cartItems?.forEach((item) => (price += item.price * item.quantity));
     setTotalPrice(price);
   }, [cartItems]);
 
-  const renderItem = cartItems.map((item) => {
+  const renderItem = cartItems?.map((item) => {
     return (
       <CartItem
         key={item.id}
+        itemId={item.id}
         productId={item.productId}
         title={item.title}
         image={item.image}
@@ -68,56 +53,87 @@ export default function Cart() {
         quantity={item.quantity}
         cartItems={cartItems}
         setCartItems={setCartItems}
+        setIsNotifOpen={setIsNotifOpen}
       />
     );
   });
 
   return (
     <article className="flex flex-col items-center justify-between">
-      <section
-        className="mx-auto max-w-3xl px-4 py-16 pt-10 w-full text-center
-          sm:px-6 sm:py-24 sm:pt-20 lg:px-8"
-      >
-        <h2 className="mb-2 text-3xl font-bold text-gray-900">카트 목록</h2>
-        <div className="mt-8 ">
-          <ul
-            role="list"
-            className="mt-8 divide-y divide-gray-200 border-y border-gray-200"
-          >
-            {renderItem}
-          </ul>
-        </div>
-
-        <div className="mt-10 mb-6 flex justify-between items-center font-medium text-gray-900">
-          <p>총 금액</p>
-          <p className="text-sm">
-            <strong className="text-base">
-              {totalPrice.toLocaleString("ko-KR")}
-            </strong>{" "}
-            원
+      {!cartItems || cartItems.length === 0 ? (
+        <section className="pb-10 h-[calc(90vh-80px)] flex flex-col justify-center items-center">
+          <EmptyCartIcon className="w-28 h-28" />
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900">
+            장바구니가 비어 있습니다.
+          </h1>
+          <p className="mt-4 text-base leading-7 text-gray-600">
+            사고 싶은 제품을 골라 담아보세요.
           </p>
-        </div>
-
-        <div className="mt-6">
-          <Link
-            href="/order"
-            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            주문하기
-          </Link>
-        </div>
-        <div className="mt-6 flex justify-center text-center text-xs text-gray-500">
-          <p>
-            또는
+          <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link
               href="/product"
-              className="ml-1 text-sm font-medium text-indigo-600 hover:text-indigo-500"
+              className="rounded-md bg-orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm
+          hover:bg-orange-400 focus-visible:outline focus-visible:outline-2  
+          focus-visible:outline-offset-2 focus-visible:outline-orange-500"
             >
-              계속 쇼핑하기
+              제품 보러가기
             </Link>
-          </p>
-        </div>
-      </section>
+          </div>
+        </section>
+      ) : (
+        <section
+          className="mx-auto max-w-3xl px-4 py-16 pt-10 w-full text-center
+              sm:px-6 sm:py-24 sm:pt-20 lg:px-8"
+        >
+          <h2 className="mb-2 text-3xl font-bold text-gray-900">카트 목록</h2>
+          <div className="mt-8">
+            <ul
+              role="list"
+              className="mt-8 divide-y divide-gray-200 border-y border-gray-200"
+            >
+              {renderItem}
+            </ul>
+          </div>
+
+          <div className="mt-10 mb-6 flex justify-between items-center font-medium text-gray-900">
+            <p>총 금액</p>
+            <p className="text-sm">
+              <strong className="text-base">
+                {totalPrice.toLocaleString("ko-KR")}
+              </strong>{" "}
+              원
+            </p>
+          </div>
+          <div className="mt-6">
+            <Link
+              href="/order"
+              className="flex items-center justify-center rounded-md border border-transparent 
+            bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600"
+            >
+              주문하기
+            </Link>
+          </div>
+          <div className="mt-6 flex justify-center text-center text-xs text-gray-500">
+            <p>
+              또는
+              <Link
+                href="/product"
+                className="ml-1 text-sm font-medium text-orange-500 hover:text-orange-400"
+              >
+                계속 쇼핑하기
+              </Link>
+            </p>
+          </div>
+        </section>
+      )}
+
+      <Notification
+        isOpen={isNotifOpen}
+        setIsOpen={setIsNotifOpen}
+        content={notifInfo.content}
+        btnTitle={notifInfo.btnTitle}
+        callback={notifInfo.callback}
+      />
     </article>
   );
 }

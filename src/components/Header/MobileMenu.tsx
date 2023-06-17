@@ -67,6 +67,15 @@ export default function MobileMenu({
             <div className="py-6">
               {session ? (
                 <div className="space-y-2">
+                  {session.user?.role === "ADMIN" && (
+                    <Link
+                      href="/admin"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      어드민 페이지
+                    </Link>
+                  )}
                   <Link
                     href="/my"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
