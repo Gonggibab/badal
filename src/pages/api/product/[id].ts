@@ -21,6 +21,12 @@ export default async function handler(
       try {
         const data = await prisma.product.findUnique({
           where: { id: id as string },
+          include: {
+            images: true,
+            detailImage: true,
+            options: { include: { optionItems: true } },
+            reviews: true,
+          },
         });
 
         res.status(200).json({ success: true, data: data });

@@ -108,7 +108,8 @@ export default function Cart() {
             <Link
               href="/order"
               className="flex items-center justify-center rounded-md border border-transparent 
-            bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600"
+              bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600
+                hover:translate-y-[1px] transition-all"
             >
               주문하기
             </Link>

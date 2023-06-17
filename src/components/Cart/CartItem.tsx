@@ -1,18 +1,21 @@
 import { Dispatch, MouseEvent, SetStateAction, useRef, useMemo } from "react";
+import { useRecoilState } from "recoil";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 
-import debounce from "common/utils/debounce";
+import NoImage from "components/NoImage";
 import PlusIcon from "assets/icon/plus.svg";
 import MinusIcon from "assets/icon/minus.svg";
+import cartSizeAtom from "common/recoil/atom";
+import debounce from "common/utils/debounce";
 import { CartItemType } from "common/types/cart";
 
 type CartItemProps = {
   itemId: string;
   productId: string;
   title: string;
-  image: string;
+  image?: string;
   price: number;
   quantity: number;
   cartItems: CartItemType[];
@@ -32,6 +35,7 @@ export default function CartItem({
   setIsNotifOpen,
 }: CartItemProps) {
   const qtyRef = useRef<HTMLElement>(null);
+  const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
 
   // 제품 수량 변경 버튼에 의한 과도한 요청에 대비해 디바운싱 함
   const debouncedRequest = useMemo(
@@ -81,9 +85,12 @@ export default function CartItem({
   };
 
   const onDeleteClicked = async () => {
-    await axios.delete(`/api/cart/item/${itemId}`);
-    setCartItems(cartItems.filter((item) => item.id !== itemId));
-    setIsNotifOpen(true);
+    try {
+      await axios.delete(`/api/cart/item/${itemId}`);
+      setCartSize(cartSize - 1);
+      setCartItems(cartItems.filter((item) => item.id !== itemId));
+      setIsNotifOpen(true);
+    } catch (error) {}
   };
 
   return (
@@ -92,14 +99,18 @@ export default function CartItem({
         className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md 
           border border-gray-200 sm:h-32 sm:w-32"
       >
-        <Image
-          className="h-full w-full object-cover object-center"
-          src={image}
-          alt="상품 이미지"
-          fill
-          sizes="100vw 100vh"
-          priority
-        />
+        {image ? (
+          <Image
+            className="h-full w-full object-cover object-center"
+            src={image}
+            alt="상품 이미지"
+            fill
+            sizes="100vw 100vh"
+            priority
+          />
+        ) : (
+          <NoImage />
+        )}
       </div>
 
       <div className="ml-4 flex flex-1 flex-col">

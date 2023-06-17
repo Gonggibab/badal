@@ -8,7 +8,7 @@ type OptionProps = {
   title: string;
   optionItmes: OptionItemType[];
   selectedOptions: SelectedOptionType[];
-  setSelectedOptions: Dispatch<SetStateAction<SelectedOptionType[]>>;
+  setSelectedOptions: Dispatch<SetStateAction<SelectedOptionType[] | null>>;
 };
 
 export default function Option({
@@ -21,8 +21,9 @@ export default function Option({
   const onOptionClicked = (option: OptionItemType) => {
     if (option.stock < 1) return;
 
-    setSelectedOptions((prevOpts) =>
-      prevOpts.map((opt) => {
+    setSelectedOptions((prevOpts) => {
+      if (!prevOpts) return null;
+      return prevOpts.map((opt) => {
         if (opt.optionId === id) {
           return {
             ...opt,
@@ -32,8 +33,8 @@ export default function Option({
           };
         }
         return opt;
-      })
-    );
+      });
+    });
   };
 
   const renderOptions = optionItmes.map((optItem) => {

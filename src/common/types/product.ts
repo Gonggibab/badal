@@ -5,9 +5,9 @@ export type ProductType = {
   title: string;
   price: number;
   images: ImageType[];
-  detailImage: ImageType;
+  detailImage?: ImageType;
   options: OptionType[];
-  review: ReviewType[];
+  reviews: ReviewType[];
 };
 
 export type ProductDetailType = {
