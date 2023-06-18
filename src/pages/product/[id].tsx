@@ -7,13 +7,13 @@ import Image from "next/image";
 import axios from "axios";
 
 import { OptionType, ProductType } from "common/types/product";
+import { cartSizeAtom } from "common/recoil/atom";
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
 import Review from "components/Product/Review";
 import Modal from "components/Modal";
 import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
-import cartSizeAtom from "common/recoil/atom";
 
 import PlusIcon from "assets/icon/plus.svg";
 import MinusIcon from "assets/icon/minus.svg";
@@ -86,7 +86,7 @@ export default function ProductDetail() {
       setIsModalOpen(true);
     } else {
       try {
-        await axios.post("/api/cart/item", {
+        await axios.post("/api/user/cart/item", {
           userId: data.user?.id,
           productId: router.query.id,
           title:
