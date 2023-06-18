@@ -3,9 +3,10 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import axios from "axios";
 
+import { CartItemType } from "common/types/user";
 import Notification from "components/Notification";
 import CartItem from "components/Cart/CartItem";
-import { CartItemType } from "common/types/cart";
+import Loader from "components/Loader/Loader";
 import EmptyCartIcon from "assets/icon/emptyCart.svg";
 
 export default function Cart() {
@@ -23,12 +24,12 @@ export default function Cart() {
     return price;
   });
 
+  // 카트 데이터를 불러온다
   useEffect(() => {
-    // 제품 데이터를 불러온다
     if (!data?.user) return;
 
     const getCartData = async () => {
-      const cart = await axios.get(`/api/cart/${data?.user?.id}`);
+      const cart = await axios.get(`/api/user/cart/${data?.user?.id}`);
       setCartItems(cart.data.data.items);
     };
 
@@ -60,7 +61,7 @@ export default function Cart() {
 
   return (
     <article className="flex flex-col items-center justify-between">
-      {!cartItems || cartItems.length === 0 ? (
+      {cartItems && cartItems.length === 0 ? (
         <section className="pb-10 h-[calc(90vh-80px)] flex flex-col justify-center items-center">
           <EmptyCartIcon className="w-28 h-28" />
           <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900">
@@ -73,8 +74,8 @@ export default function Cart() {
             <Link
               href="/product"
               className="rounded-md bg-orange-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm
-          hover:bg-orange-400 focus-visible:outline focus-visible:outline-2  
-          focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+                hover:bg-orange-400 focus-visible:outline focus-visible:outline-2  
+                focus-visible:outline-offset-2 focus-visible:outline-orange-500"
             >
               제품 보러가기
             </Link>
@@ -135,6 +136,8 @@ export default function Cart() {
         btnTitle={notifInfo.btnTitle}
         callback={notifInfo.callback}
       />
+
+      <Loader isLoading={!cartItems} />
     </article>
   );
 }

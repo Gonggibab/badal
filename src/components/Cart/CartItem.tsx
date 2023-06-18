@@ -4,12 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 
+import { cartSizeAtom } from "common/recoil/atom";
+import { CartItemType } from "common/types/user";
 import NoImage from "components/NoImage";
 import PlusIcon from "assets/icon/plus.svg";
 import MinusIcon from "assets/icon/minus.svg";
-import cartSizeAtom from "common/recoil/atom";
 import debounce from "common/utils/debounce";
-import { CartItemType } from "common/types/cart";
 
 type CartItemProps = {
   itemId: string;
@@ -42,7 +42,7 @@ export default function CartItem({
     () =>
       debounce(async () => {
         const qty = Number(qtyRef.current?.innerText);
-        await axios.put(`/api/cart/item/${itemId}`, {
+        await axios.put(`/api/user/cart/item/${itemId}`, {
           quantity: qty,
         });
       }, 1000),
@@ -86,7 +86,7 @@ export default function CartItem({
 
   const onDeleteClicked = async () => {
     try {
-      await axios.delete(`/api/cart/item/${itemId}`);
+      await axios.delete(`/api/user/cart/item/${itemId}`);
       setCartSize(cartSize - 1);
       setCartItems(cartItems.filter((item) => item.id !== itemId));
       setIsNotifOpen(true);
@@ -117,7 +117,9 @@ export default function CartItem({
         <div>
           <div className="flex justify-between text-base font-medium text-gray-900">
             <h3>
-              <Link href={`/product/${productId}`}>{title.split("/")[0]}</Link>
+              <Link href={`/product/${productId}`} className="hover:underline">
+                {title.split("/")[0]}
+              </Link>
             </h3>
             <p className="ml-4">
               {(price * quantity).toLocaleString("ko-KR")} 원

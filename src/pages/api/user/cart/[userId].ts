@@ -12,14 +12,14 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { method } = req;
+  const { userId } = req.query;
 
   switch (method) {
     case "GET":
       // Cart 정보 가져오기
       try {
-        const { id } = req.query;
         const data = await prisma.cart.findUnique({
-          where: { userId: id as string },
+          where: { userId: userId as string },
           include: {
             items: true,
           },
@@ -27,7 +27,7 @@ export default async function handler(
 
         res.status(200).json({ success: true, data: data });
       } catch (error) {
-        console.log("제품 정보를 불러오는 도중 에러가 발생했습니다. " + error);
+        console.log("카트 정보를 불러오는 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 

@@ -2,7 +2,9 @@ import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import { useRecoilValue } from "recoil";
 
+import { cartSizeAtom } from "common/recoil/atom";
 import Logo from "assets/logo.svg";
 import CloseIcon from "assets/icon/close.svg";
 
@@ -17,6 +19,8 @@ export default function MobileMenu({
   setIsMenuOpen,
   session,
 }: MobileMenuProps) {
+  const cartSize = useRecoilValue(cartSizeAtom);
+
   return (
     <div className="lg:hidden" role="dialog" aria-modal="true">
       <div
@@ -94,7 +98,7 @@ export default function MobileMenu({
                       className="ml-2 w-5 h-5 text-xs flex justify-center items-center
                         font-semibold text-white bg-indigo-700 rounded-full"
                     >
-                      0
+                      {cartSize}
                     </span>
                   </Link>
                   <button

@@ -4,8 +4,8 @@ import { useRecoilState } from "recoil";
 import axios from "axios";
 import Link from "next/link";
 
+import { cartSizeAtom } from "common/recoil/atom";
 import MobileMenu from "./MobileMenu";
-import cartSizeAtom from "common/recoil/atom";
 import Logo from "assets/logo.svg";
 import UserIcon from "assets/icon/user.svg";
 import CartIcon from "assets/icon/cart.svg";
@@ -17,12 +17,12 @@ export default function Header() {
   const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
+  // 제품 데이터를 불러온다
   useEffect(() => {
-    // 제품 데이터를 불러온다
     if (!data?.user) return;
 
     const getCartData = async () => {
-      const cart = await axios.get(`/api/cart/${data?.user?.id}`);
+      const cart = await axios.get(`/api/user/cart/${data?.user?.id}`);
       setCartSize(cart.data.data.items.length);
     };
 
