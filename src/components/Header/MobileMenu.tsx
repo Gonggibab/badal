@@ -79,7 +79,7 @@ export default function MobileMenu({
                     장바구니
                     <span
                       className="ml-2 w-5 h-5 text-xs flex justify-center items-center
-                        font-semibold text-white bg-indigo-700 rounded-full"
+                        font-semibold text-white bg-orange-500 rounded-full"
                     >
                       {cartSize}
                     </span>
