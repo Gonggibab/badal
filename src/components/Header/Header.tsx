@@ -42,22 +42,16 @@ export default function Header() {
 
         <div className="hidden lg:flex lg:gap-x-16">
           <Link
-            href="/brand"
-            className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-600"
-          >
-            브랜드
-          </Link>
-          <Link
             href="/product"
             className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-600"
           >
             제품
           </Link>
           <Link
-            href="/customer"
+            href="/brand"
             className="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-600"
           >
-            고객
+            브랜드
           </Link>
         </div>
 

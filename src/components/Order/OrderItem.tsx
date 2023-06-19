@@ -4,17 +4,19 @@ import NoImage from "components/NoImage";
 import Link from "next/link";
 
 type OrderItemProps = {
+  productId: string;
   title: string;
+  image?: string | null;
   price: number;
   quantity: number;
-  image?: string;
 };
 
 export default function OrderItem({
+  productId,
   title,
+  image,
   price,
   quantity,
-  image,
 }: OrderItemProps) {
   return (
     <li className="flex justify-between gap-x-6 py-5">
@@ -36,7 +38,9 @@ export default function OrderItem({
 
         <div className="min-w-0 flex-auto">
           <p className="text-sm font-semibold leading-6 text-gray-900">
-            {title.split("/")[0]}
+            <Link href={`/product/${productId}`} className="hover:underline">
+              {title.split("/")[0]}
+            </Link>
           </p>
           <p className="mt-4 truncate text-xs leading-5 text-gray-500">
             {title.split("/").splice(1).join(" / ")}

@@ -3,21 +3,19 @@ import Image from "next/image";
 import NoImage from "components/NoImage";
 import Link from "next/link";
 
-type CartItemProps = {
-  productId: string;
+type PurchaseItemProps = {
   title: string;
-  image?: string;
   price: number;
   quantity: number;
+  image?: string;
 };
 
-export default function CartItem({
-  productId,
+export default function PurchaseItem({
   title,
-  image,
   price,
   quantity,
-}: CartItemProps) {
+  image,
+}: PurchaseItemProps) {
   return (
     <li className="flex justify-between gap-x-6 py-5">
       <div className="flex gap-x-4">
@@ -38,9 +36,7 @@ export default function CartItem({
 
         <div className="min-w-0 flex-auto">
           <p className="text-sm font-semibold leading-6 text-gray-900">
-            <Link href={`/product/${productId}`} className="hover:underline">
-              {title.split("/")[0]}
-            </Link>
+            {title.split("/")[0]}
           </p>
           <p className="mt-4 truncate text-xs leading-5 text-gray-500">
             {title.split("/").splice(1).join(" / ")}

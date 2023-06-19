@@ -1,11 +1,11 @@
-import { CartItemType } from "common/types/user";
-import CartItem from "./CartItem";
+import { OrderItemsAtomType } from "common/recoil/atom";
+import OrderItem from "./OrderItem";
 
-type CartInfoProps = {
-  cartItems: CartItemType[] | null;
+type OrderInfoProps = {
+  orderItems: OrderItemsAtomType[] | null;
 };
 
-export default function CartInfo({ cartItems }: CartInfoProps) {
+export default function OrderInfo({ orderItems }: OrderInfoProps) {
   return (
     <div className="p-4">
       <div className="w-full">
@@ -15,10 +15,10 @@ export default function CartInfo({ cartItems }: CartInfoProps) {
       </div>
 
       <ul role="list" className="w-full divide-y divide-gray-100">
-        {cartItems?.map((item) => {
+        {orderItems?.map((item, idx) => {
           return (
-            <CartItem
-              key={item.id}
+            <OrderItem
+              key={idx}
               productId={item.productId}
               title={item.title}
               image={item.image}
@@ -36,7 +36,7 @@ export default function CartInfo({ cartItems }: CartInfoProps) {
         <p>총 금액</p>
         <p className="text-sm">
           <strong className="text-base">
-            {cartItems
+            {orderItems
               ?.reduce((acc, item) => acc + item.price, 0)
               .toLocaleString("ko-KR")}
           </strong>{" "}
