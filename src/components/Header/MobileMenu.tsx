@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import Link from "next/link";
 import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
 import { useRecoilValue } from "recoil";
 
 import { cartSizeAtom } from "common/recoil/atom";
@@ -47,13 +46,6 @@ export default function MobileMenu({
           <div className="-my-6 divide-y divide-gray-500/10">
             <div className="space-y-2 py-6">
               <Link
-                href="/brand"
-                className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                브랜드
-              </Link>
-              <Link
                 href="/product"
                 className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
@@ -61,25 +53,16 @@ export default function MobileMenu({
                 제품
               </Link>
               <Link
-                href="/customer"
+                href="/brand"
                 className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 onClick={() => setIsMenuOpen(false)}
               >
-                고객
+                브랜드
               </Link>
             </div>
             <div className="py-6">
               {session ? (
                 <div className="space-y-2">
-                  {session.user?.role === "ADMIN" && (
-                    <Link
-                      href="/admin"
-                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      어드민 페이지
-                    </Link>
-                  )}
                   <Link
                     href="/my"
                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
@@ -101,13 +84,15 @@ export default function MobileMenu({
                       {cartSize}
                     </span>
                   </Link>
-                  <button
-                    className="-mx-3 block rounded-lg px-3 py-2 w-full text-left
-                    text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                    onClick={() => signOut()}
-                  >
-                    로그아웃
-                  </button>
+                  {session.user?.role === "ADMIN" && (
+                    <Link
+                      href="/admin"
+                      className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      어드민 페이지
+                    </Link>
+                  )}
                 </div>
               ) : (
                 <Link
