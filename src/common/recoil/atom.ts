@@ -9,6 +9,12 @@ const { persistAtom } = recoilPersist({
   storage: sessionStorage,
 });
 
+// 헤더 Atom
+export const isHeaderTranspAtom = atom<boolean>({
+  key: "isHeaderTransp",
+  default: true,
+});
+
 // 사용자 Atoms
 export const cartSizeAtom = atom<number>({
   key: "cartSize",

@@ -332,7 +332,7 @@ export default function ProductDetail() {
                 </div>
 
                 {!isReviewShown ? (
-                  <div className="relative w-full">
+                  <div className="relative w-full min-h-0">
                     {productData.detailImage ? (
                       <Image
                         className="w-full h-auto"
@@ -341,7 +341,7 @@ export default function ProductDetail() {
                         quality={100}
                         width="0"
                         height="0"
-                        sizes="100vw 100vh"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
                       <div className="mt-10 w-full flex flex-col justify-center items-center">

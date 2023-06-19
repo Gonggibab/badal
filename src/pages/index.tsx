@@ -1,8 +1,38 @@
+import { useEffect, useRef } from "react";
+import { useSetRecoilState } from "recoil";
 import Image from "next/image";
 import Head from "next/head";
+
+import { isHeaderTranspAtom } from "common/recoil/atom";
 import image from "assets/test_photo.webp";
 
 export default function Home() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const setIsHeaderTransp = useSetRecoilState(isHeaderTranspAtom);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const position = window.scrollY;
+    const sectionHeight = sectionRef.current?.clientHeight;
+
+    if (position < sectionHeight - 80) setIsHeaderTransp(true);
+    else setIsHeaderTransp(false);
+
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+
+      const position = window.scrollY;
+      const sectionHeight = sectionRef.current?.clientHeight;
+
+      if (position < sectionHeight - 80) setIsHeaderTransp(true);
+      else setIsHeaderTransp(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [setIsHeaderTransp]);
+
   return (
     <>
       <Head>
@@ -13,7 +43,31 @@ export default function Home() {
         />
       </Head>
       <article className="flex flex-col items-center justify-between">
-        <section className="relative w-screen h-screen">
+        <section
+          ref={sectionRef}
+          className="relative w-screen h-screen -translate-y-[80px] 
+            flex flex-col justify-center items-center"
+        >
+          <video
+            src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/n3lijwib30sxa2wcyyle.webm"
+            className="-z-10 absolute w-full h-full object-cover object-center"
+            preload="auto"
+            autoPlay={true}
+            loop={true}
+            muted={true}
+          />
+
+          <div className="p-6 pb-48 text-white lg:px-20">
+            <h1
+              className="mt-4 text-5xl font-bold tracking-tight animate-fadein 
+                  leading-snug text-center break-keep sm:text-7xl lg:text-8xl"
+            >
+              건강한 피부를 위한 과학입니다
+            </h1>
+          </div>
+        </section>
+
+        <section className="relative w-screen h-screen bg-slate-300 -translate-y-[80px]">
           <Image
             src={image}
             alt="배경 이미지"
@@ -25,8 +79,6 @@ export default function Home() {
             }}
           />
         </section>
-
-        <section className="w-screen h-screen bg-slate-300">test</section>
       </article>
     </>
   );
