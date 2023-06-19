@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { customAlphabet } from "nanoid";
 import {
   loadPaymentWidget,
@@ -9,10 +9,10 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import axios from "axios";
 
-import { CartItemType, ShippingInfoType } from "common/types/user";
-import { orderAdrsIdAtom } from "common/recoil/atom";
+import { ShippingInfoType } from "common/types/user";
+import { orderAdrsIdAtom, orderItemsAtom } from "common/recoil/atom";
 import ShippingInfo from "components/Order/ShippingInfo";
-import CartInfo from "components/Order/CartInfo";
+import OrderInfo from "components/Order/OrderInfo";
 import PostSearchModal from "components/Order/PostSearchModal";
 import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
@@ -36,8 +36,8 @@ export default function Order() {
   > | null>(null);
 
   const setOrderAdrsId = useSetRecoilState(orderAdrsIdAtom);
+  const orderItems = useRecoilValue(orderItemsAtom);
   const [adrsList, setAdrsList] = useState<ShippingInfoType[]>([]);
-  const [cartItems, setCartItems] = useState<CartItemType[] | null>(null);
   const [orderTitle, setOrderTitle] = useState<string>("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedAdrs, setSelectedAdrs] = useState<ShippingInfoType>({
@@ -67,7 +67,7 @@ export default function Order() {
     btnTitle: "",
     callback: () => {},
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 결제 정보
   const selector = "#payment-widget";
@@ -85,6 +85,21 @@ export default function Order() {
 
   useEffect(() => {
     if (!data?.user) return;
+    setIsLoading(true);
+
+    // 주문 데이터가 없으면 제품 화면으로 리다이렉트
+    if (orderItems.length < 1) {
+      router.push("/product");
+      return;
+    }
+
+    // 주문 정보 업데이트
+    setTotalPrice(orderItems.reduce((acc, item) => acc + item.price, 0));
+    setOrderTitle(
+      `${orderItems[0].title} ${
+        orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""
+      }`
+    );
 
     // 주소 정보 불러오기
     const getUserAddress = async () => {
@@ -105,28 +120,7 @@ export default function Order() {
       }
     };
 
-    const getCartData = async () => {
-      const cart = await axios.get(`/api/user/cart/${data?.user?.id}`);
-      const cartData: CartItemType[] = cart.data.data.items;
-
-      // 카트 데이터가 없으면 제품 화면으로 리다이렉트
-      if (cartData.length < 1) {
-        router.push("/product");
-        return;
-      }
-
-      setCartItems(cartData);
-      setTotalPrice(cartData.reduce((acc, item) => acc + item.price, 0));
-      setOrderTitle(
-        `${cartData[0].title} ${
-          cartData.length - 1 > 0 ? `외 ${cartData.length - 1}개` : ""
-        }`
-      );
-    };
-
-    setIsLoading(true);
     getUserAddress();
-    getCartData();
 
     const customerKey = data.user.id!;
 
@@ -144,7 +138,7 @@ export default function Order() {
     })();
 
     setIsLoading(false);
-  }, [clientKey, data, router, totalPrice]);
+  }, [clientKey, data, orderItems, router, totalPrice]);
 
   const proceedPayment = async () => {
     if (!data?.user) return;
@@ -227,7 +221,7 @@ export default function Order() {
         />
 
         <div className="col-span-1 pt-4 flex flex-col gap-2 lg:pt-0">
-          <CartInfo cartItems={cartItems} />
+          <OrderInfo orderItems={orderItems} />
 
           <div className="w-full">
             <div id="payment-widget" />
@@ -237,9 +231,9 @@ export default function Order() {
           <div className="px-6">
             <button
               type="button"
-              className="col-span-full py-3 w-full flex justify-center items-center
+              className="col-span-full py-4 w-full flex justify-center items-center
               font-medium text-white bg-orange-500 rounded-md shadow
-              hover:shadow-lg hover:translate-y-[1px] transition-all"
+              hover:shadow-lg hover:translate-y-[1px] hover:bg-orange-400 transition-all"
               onClick={onPayClicked}
             >
               결제하기

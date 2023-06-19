@@ -1,13 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import axios from "axios";
 
-import { orderAdrsIdAtom } from "common/recoil/atom";
-import { OrderConfirmType } from "common/types/order";
-import { CartItemType, OrderItemType } from "common/types/user";
+import {
+  cartSizeAtom,
+  orderAdrsIdAtom,
+  orderItemsAtom,
+} from "common/recoil/atom";
+import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
 
 export default function Success() {
@@ -15,7 +18,8 @@ export default function Success() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderAdrsId = useRecoilValue(orderAdrsIdAtom);
-  const [orderItems, setOrderItems] = useState<OrderItemType[] | null>(null);
+  const setCartSize = useSetRecoilState(cartSizeAtom);
+  const [orderItems, setOrderItems] = useRecoilState(orderItemsAtom);
 
   const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
   const orderId = searchParams.get("orderId");
@@ -27,9 +31,9 @@ export default function Success() {
   useEffect(() => {
     if (
       !data?.user ||
-      !authKey ||
-      !paymentKey ||
       !orderId ||
+      !paymentKey ||
+      !amount ||
       !authKey ||
       orderAdrsId === ""
     )
@@ -49,36 +53,34 @@ export default function Success() {
         );
         const confirmData: OrderConfirmType = confirm.data;
 
-        const cart = await axios.get(`/api/user/cart/${data?.user?.id}`);
-        const cartitems: CartItemType[] = cart.data.data.items;
-
         const order = await axios.post("/api/order", {
           orderId: confirmData.orderId,
           paymentKey: confirmData.paymentKey,
           userId: data.user?.id!,
           addressId: orderAdrsId,
-          items: cartitems,
+          items: orderItems,
         });
-        const orderItems: OrderItemType[] = order.data.data.orderItems;
-        setOrderItems(orderItems);
 
         // 주문 완료된 카트 아이템들 삭제
         await Promise.all(
-          Array.from(cartitems).map((item) =>
-            axios.delete(`/api/user/cart/item/${item.id}`)
+          Array.from(orderItems).map(
+            (item) => item.id && axios.delete(`/api/user/cart/item/${item.id}`)
           )
         );
+        setCartSize(0);
+        setOrderItems([]);
+
         router.push(`/order/confirmation/${order.data.data.id}`);
       } catch (error) {
         console.log(
           "결제 승인 및 주문 저장과정에서 에러가 발생했습니다. " + error
         );
-        // 결제 취소 로직 예정
       }
     };
 
     getOrderConfirmData();
-  }, [data, amount, authKey, orderId, paymentKey, orderAdrsId, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [amount, authKey, data, orderAdrsId, orderId, paymentKey]);
 
   return <Loader isLoading={true} />;
 }

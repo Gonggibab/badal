@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useSetRecoilState } from "recoil";
 import Link from "next/link";
 import axios from "axios";
 
+import { orderItemsAtom } from "common/recoil/atom";
 import { CartItemType } from "common/types/user";
 import Notification from "components/Notification";
 import CartItem from "components/Cart/CartItem";
@@ -11,6 +13,7 @@ import EmptyCartIcon from "assets/icon/emptyCart.svg";
 
 export default function Cart() {
   const { data } = useSession();
+  const setOrderItems = useSetRecoilState(orderItemsAtom);
   const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
   const [notifInfo, _] = useState({
     content: "장바구니에서 물품을 삭제하였습니다.",
@@ -111,6 +114,7 @@ export default function Cart() {
               className="flex items-center justify-center rounded-md border border-transparent 
               bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600
                 hover:translate-y-[1px] transition-all"
+              onClick={() => setOrderItems(cartItems!)}
             >
               주문하기
             </Link>

@@ -29,3 +29,14 @@ export type OrderItemType = {
   quantity: number;
   image?: string;
 };
+
+export type AddressType = {
+  id: string;
+  idDefault: boolean;
+  postcode: string;
+  address: string;
+  detailAddress: string;
+  name: string;
+  contact: string;
+  memo: string;
+};

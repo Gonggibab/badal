@@ -21,3 +21,18 @@ export const orderAdrsIdAtom = atom<string>({
   default: "",
   effects_UNSTABLE: [persistAtom],
 });
+
+export type OrderItemsAtomType = {
+  id?: string;
+  productId: string;
+  image?: string | null;
+  title: string;
+  price: number;
+  quantity: number;
+};
+
+export const orderItemsAtom = atom<OrderItemsAtomType[]>({
+  key: "orderItems",
+  default: [],
+  effects_UNSTABLE: [persistAtom],
+});

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 
 import { OptionType, ProductType } from "common/types/product";
-import { cartSizeAtom } from "common/recoil/atom";
+import { cartSizeAtom, orderItemsAtom } from "common/recoil/atom";
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
 import Review from "components/Product/Review";
@@ -30,6 +30,7 @@ export type SelectedOptionType = {
 export default function ProductDetail() {
   const { data } = useSession();
   const router = useRouter();
+  const setOrderItems = useSetRecoilState(orderItemsAtom);
   const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [price, setPrice] = useState<number>(0);
@@ -134,6 +135,32 @@ export default function ProductDetail() {
 
         setIsNotifOpen(true);
       }
+    }
+  };
+
+  const onOrderClicked = () => {
+    if (!productData || !selectedOptions) return;
+
+    if (!data) {
+      // 로그인을 안했으면 로그인 의사를 물어본다.
+      setIsModalOpen(true);
+    } else {
+      setOrderItems([
+        {
+          productId: router.query.id as string,
+          title:
+            productData.title +
+            " / " +
+            selectedOptions.map((opt) => opt.title).join(" / "),
+          image:
+            productData.images.length > 0
+              ? productData.images[0].secure_url
+              : null,
+          price: price,
+          quantity: qty,
+        },
+      ]);
+      router.push("/order");
     }
   };
 
@@ -269,6 +296,7 @@ export default function ProductDetail() {
                         py-3 text-sm font-semibold text-white bg-orange-500 shadow 
                         hover:translate-y-[1px] hover:shadow-lg hover:bg-orange-400 transition-all 
                         focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                        onClick={onOrderClicked}
                       >
                         바로 주문하기
                       </button>
@@ -365,7 +393,7 @@ export default function ProductDetail() {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         title="로그인이 필요합니다!"
-        content="로그인이 필요한 컨텐츠 입니다. 로그인 하시겠습니까?"
+        content="로그인이 필요한 서비스 입니다. 로그인 하시겠습니까?"
         btnTitle="로그인"
         callback={() => {
           router.push("/login");
