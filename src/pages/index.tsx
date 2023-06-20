@@ -49,11 +49,11 @@ export default function Home() {
             flex flex-col justify-center items-center"
         >
           <video
-            className="-z-10 absolute w-full h-full object-cover object-center"
-            preload="auto"
-            autoPlay={true}
-            loop={true}
-            muted={true}
+            className="-z-10 absolute w-full h-full object-cover object-center bg-transparent"
+            preload="none"
+            autoPlay
+            loop
+            muted
             playsInline
           >
             <source
