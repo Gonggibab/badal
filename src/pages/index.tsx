@@ -42,15 +42,15 @@ export default function Home() {
           content="피부 걱정 없이 살아가는 모두를 위한 솔루션."
         />
       </Head>
-      <article className="flex flex-col items-center justify-between -translate-y-[80px]">
+      <article className="flex flex-col items-center justify-between">
         <section
           ref={sectionRef}
-          className="relative w-screen h-screen 
-            flex flex-col justify-center items-center"
+          className="relative w-screen h-screen flex flex-col
+            justify-center items-center -translate-y-[80px]"
         >
           <video
             className="-z-10 absolute w-full h-full object-cover object-center bg-transparent"
-            preload="none"
+            preload="true"
             autoPlay
             loop
             muted
