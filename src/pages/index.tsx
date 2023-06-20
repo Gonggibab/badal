@@ -42,10 +42,10 @@ export default function Home() {
           content="피부 걱정 없이 살아가는 모두를 위한 솔루션."
         />
       </Head>
-      <article className="flex flex-col items-center justify-between">
+      <article className="flex flex-col items-center justify-between -translate-y-[80px]">
         <section
           ref={sectionRef}
-          className="relative w-screen h-screen -translate-y-[80px] 
+          className="relative w-screen h-screen 
             flex flex-col justify-center items-center"
         >
           <video
@@ -57,8 +57,12 @@ export default function Home() {
             playsInline
           >
             <source
-              src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/n3lijwib30sxa2wcyyle.webm"
+              src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/FOCEL/n3lijwib30sxa2wcyyle.webm"
               type="video/webm"
+            />
+            <source
+              src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687228794/FOCEL/lewttepqg8ofmiyt67fp.mp4"
+              type="video/mp4"
             />
           </video>
 
