@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useSetRecoilState } from "recoil";
-import Image from "next/image";
 import Head from "next/head";
+import Image from "next/image";
 
 import { isHeaderTranspAtom } from "common/recoil/atom";
 import image from "assets/test_photo.webp";
@@ -49,18 +49,23 @@ export default function Home() {
             flex flex-col justify-center items-center"
         >
           <video
-            src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/n3lijwib30sxa2wcyyle.webm"
             className="-z-10 absolute w-full h-full object-cover object-center"
             preload="auto"
             autoPlay={true}
             loop={true}
             muted={true}
-          />
+            playsInline
+          >
+            <source
+              src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/n3lijwib30sxa2wcyyle.webm"
+              type="video/webm"
+            />
+          </video>
 
-          <div className="p-6 pb-48 text-white lg:px-20">
+          <div className="p-6 pb-48 flex flex-col justify-center items-center text-white lg:px-20">
             <h1
               className="mt-4 text-5xl font-bold tracking-tight animate-fadein 
-                  leading-snug text-center break-keep sm:text-7xl lg:text-8xl"
+                  leading-snug break-keep sm:text-7xl lg:text-8xl"
             >
               건강한 피부를 위한 과학입니다
             </h1>
