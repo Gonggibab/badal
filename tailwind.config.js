@@ -12,7 +12,7 @@ module.exports = {
       },
     },
     animation: {
-      fadein: "fadein 1s ease-in-out",
+      fadein: "fadein 1.4s ease-in-out",
       rotate: "rotate 1s linear infinite",
       pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },

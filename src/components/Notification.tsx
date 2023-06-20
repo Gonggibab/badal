@@ -36,7 +36,7 @@ export default function Notification({
       id="notification-undo"
       role="alert"
     >
-      <div className="flex items-center w-full max-w-sm px-6 py-4 bg-white rounded-lg shadow-lg">
+      <div className="flex items-center w-full max-w-lg px-6 py-4 bg-white rounded-lg shadow-lg">
         <div className="text-sm font-semibold text-gray-900">{content}</div>
         {btnTitle !== "" && (
           <div className="flex items-center ml-auto space-x-2">
