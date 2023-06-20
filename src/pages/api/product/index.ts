@@ -10,10 +10,6 @@ type Data = {
   error?: unknown;
 };
 
-export const config = {
-  runtime: "edge", // this is a pre-requisite
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
