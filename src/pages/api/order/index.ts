@@ -12,9 +12,30 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  const { method } = req;
+  const {
+    query: { userId },
+    method,
+  } = req;
 
   switch (method) {
+    case "GET":
+      try {
+        const data = await prisma.order.findMany({
+          where: { userId: userId as string },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+
+        res.status(200).json({ success: true, data: data });
+      } catch (error) {
+        console.log(
+          "회원 주문 정보를 불러오는 중 에러가 발생했습니다. " + error
+        );
+        res.status(500).json({ success: false, error: error });
+      }
+      break;
+
     case "POST":
       try {
         const items: CartItemType[] = req.body.items;
@@ -23,6 +44,8 @@ export default async function handler(
           data: {
             orderId: req.body.orderId,
             paymentKey: req.body.paymentKey,
+            title: req.body.title,
+            price: req.body.price,
             userId: req.body.userId,
             addressId: req.body.addressId,
             orderItems: {

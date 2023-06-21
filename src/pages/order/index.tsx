@@ -10,11 +10,14 @@ import {
 import axios from "axios";
 
 import { ShippingInfoType } from "common/types/user";
-import { orderAdrsIdAtom, orderItemsAtom } from "common/recoil/atom";
+import {
+  notificationAtom,
+  orderAdrsIdAtom,
+  orderItemsAtom,
+} from "common/recoil/atom";
 import ShippingInfo from "components/Order/ShippingInfo";
 import OrderInfo from "components/Order/OrderInfo";
 import PostSearchModal from "components/Order/PostSearchModal";
-import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
 
 export type NewAddressType = {
@@ -37,6 +40,7 @@ export default function Order() {
 
   const setOrderAdrsId = useSetRecoilState(orderAdrsIdAtom);
   const orderItems = useRecoilValue(orderItemsAtom);
+  const setNotification = useSetRecoilState(notificationAtom);
   const [adrsList, setAdrsList] = useState<ShippingInfoType[]>([]);
   const [orderTitle, setOrderTitle] = useState<string>("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -61,12 +65,6 @@ export default function Order() {
   const [isNewDefault, setIsNewDefault] = useState<boolean>(false);
   const [isNewAdrs, setIsNewAdrs] = useState<boolean>(true);
   const [isPostSearchOpen, setIsPostSearchOpen] = useState<boolean>(false);
-  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
-  const [notifInfo, setNotifInfo] = useState({
-    content: "",
-    btnTitle: "",
-    callback: () => {},
-  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // 결제 정보
@@ -166,12 +164,10 @@ export default function Order() {
         newAdrs.postcode === "" ||
         newAdrs.address === ""
       ) {
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "필수 값을 모두 입력해 주세요!",
-          btnTitle: "",
-          callback: () => {},
         });
-        setIsNotifOpen(true);
         return;
       }
       try {
@@ -189,12 +185,10 @@ export default function Order() {
         setOrderAdrsId(shippingInfo.id);
         proceedPayment();
       } catch (error) {
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "주소 저장중 오류가 발생했습니다. 다시 시도해 주세요!",
-          btnTitle: "",
-          callback: () => {},
         });
-        setIsNotifOpen(true);
       }
     } else {
       setOrderAdrsId(selectedAdrs.id);
@@ -246,14 +240,6 @@ export default function Order() {
         isOpen={isPostSearchOpen}
         setIsOpen={setIsPostSearchOpen}
         setNewAdrs={setNewAdrs}
-      />
-
-      <Notification
-        isOpen={isNotifOpen}
-        setIsOpen={setIsNotifOpen}
-        content={notifInfo.content}
-        btnTitle={notifInfo.btnTitle}
-        callback={notifInfo.callback}
       />
 
       <Loader isLoading={isLoading} />

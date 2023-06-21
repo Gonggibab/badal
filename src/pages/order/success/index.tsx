@@ -56,6 +56,11 @@ export default function Success() {
         const order = await axios.post("/api/order", {
           orderId: confirmData.orderId,
           paymentKey: confirmData.paymentKey,
+          title: `${orderItems[0].title} ${
+            orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""
+          }`,
+          price: orderItems.reduce((acc, item) => acc + item.price, 0),
+          image: orderItems[0].image,
           userId: data.user?.id!,
           addressId: orderAdrsId,
           items: orderItems,

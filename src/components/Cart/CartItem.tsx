@@ -1,10 +1,10 @@
 import { Dispatch, MouseEvent, SetStateAction, useRef, useMemo } from "react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 
-import { cartSizeAtom } from "common/recoil/atom";
+import { cartSizeAtom, notificationAtom } from "common/recoil/atom";
 import { CartItemType } from "common/types/user";
 import NoImage from "components/NoImage";
 import PlusIcon from "assets/icon/plus.svg";
@@ -20,7 +20,6 @@ type CartItemProps = {
   quantity: number;
   cartItems: CartItemType[];
   setCartItems: Dispatch<SetStateAction<CartItemType[] | null>>;
-  setIsNotifOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 export default function CartItem({
@@ -32,10 +31,10 @@ export default function CartItem({
   quantity,
   cartItems,
   setCartItems,
-  setIsNotifOpen,
 }: CartItemProps) {
   const qtyRef = useRef<HTMLElement>(null);
   const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
+  const setNotification = useSetRecoilState(notificationAtom);
 
   // 제품 수량 변경 버튼에 의한 과도한 요청에 대비해 디바운싱 함
   const debouncedRequest = useMemo(
@@ -89,8 +88,16 @@ export default function CartItem({
       await axios.delete(`/api/user/cart/item/${itemId}`);
       setCartSize(cartSize - 1);
       setCartItems(cartItems.filter((item) => item.id !== itemId));
-      setIsNotifOpen(true);
-    } catch (error) {}
+      setNotification({
+        isOpen: true,
+        content: "물품을 성공적으로 삭제했습니다.",
+      });
+    } catch (error) {
+      setNotification({
+        isOpen: true,
+        content: "에러가 발생했습니다. 다시 시도해 주세요.",
+      });
+    }
   };
 
   return (

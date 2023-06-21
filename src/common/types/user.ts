@@ -1,3 +1,17 @@
+import { OrderType } from "./order";
+import { ReviewType } from "./product";
+
+export type UserType = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  cart?: CartType;
+  reviews?: ReviewType[];
+  orders?: OrderType[];
+  address?: AddressType[];
+};
+
 export type CartType = {
   id: string;
   items: CartItemType[];
@@ -21,13 +35,6 @@ export type ShippingInfoType = {
   address: string;
   detailAddress: string;
   memo: string;
-};
-
-export type OrderItemType = {
-  title: string;
-  price: number;
-  quantity: number;
-  image?: string;
 };
 
 export type AddressType = {

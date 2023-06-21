@@ -7,12 +7,15 @@ import Image from "next/image";
 import axios from "axios";
 
 import { OptionType, ProductType } from "common/types/product";
-import { cartSizeAtom, orderItemsAtom } from "common/recoil/atom";
+import {
+  cartSizeAtom,
+  notificationAtom,
+  orderItemsAtom,
+} from "common/recoil/atom";
 import ImageGallery from "components/Product/ImageGallery";
 import Option from "components/Product/Option";
 import Review from "components/Product/Review";
 import Modal from "components/Modal";
-import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
 
 import PlusIcon from "assets/icon/plus.svg";
@@ -31,20 +34,13 @@ export default function ProductDetail() {
   const { data } = useSession();
   const router = useRouter();
   const setOrderItems = useSetRecoilState(orderItemsAtom);
+  const setNotification = useSetRecoilState(notificationAtom);
   const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [price, setPrice] = useState<number>(0);
   const [qty, setQty] = useState<number>(1);
   const [isReviewShown, setIsReviewShown] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
-  const [notifInfo, setNotifInfo] = useState({
-    content: "장바구니에 추가되었습니다.",
-    btnTitle: "장바구니 보기",
-    callback: () => {
-      router.push("/cart");
-    },
-  });
   const [selectedOptions, setSelectedOptions] = useState<
     SelectedOptionType[] | null
   >(null);
@@ -103,19 +99,20 @@ export default function ProductDetail() {
         });
 
         setCartSize(cartSize + 1);
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "장바구니에 추가되었습니다.",
           btnTitle: "장바구니 보기",
           callback: () => {
             router.push("/cart");
           },
         });
-        setIsNotifOpen(true);
       } catch (error) {
         if (axios.isAxiosError<{ message: string }>(error)) {
           console.log("장바구니에 동일한 물품을 넣을 수 없습니다. " + error);
 
-          setNotifInfo({
+          setNotification({
+            isOpen: true,
             content: "장바구니에 이미 동일한 물품이 있습니다.",
             btnTitle: "장바구니 보기",
             callback: () => {
@@ -125,15 +122,12 @@ export default function ProductDetail() {
         } else {
           console.log("서버와의 통신중에 오류가 발생했습니다. " + error);
 
-          setNotifInfo({
+          setNotification({
+            isOpen: true,
             content:
               "서버와의 통신중에 오류가 발생했습니다. 다시 시도해주세요.",
-            btnTitle: "",
-            callback: () => {},
           });
         }
-
-        setIsNotifOpen(true);
       }
     }
   };
@@ -398,14 +392,6 @@ export default function ProductDetail() {
         callback={() => {
           router.push("/login");
         }}
-      />
-
-      <Notification
-        isOpen={isNotifOpen}
-        setIsOpen={setIsNotifOpen}
-        content={notifInfo.content}
-        btnTitle={notifInfo.btnTitle}
-        callback={notifInfo.callback}
       />
 
       <Loader isLoading={!productData && !selectedOptions} />

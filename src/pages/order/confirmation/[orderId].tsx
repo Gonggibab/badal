@@ -110,10 +110,7 @@ export default function Confirmation() {
             <div className="py-4 w-full flex justify-between items-center text-sm border-t border-gray-300">
               <p>총 금액</p>
               <p className="font-semibold">
-                {order.orderItems
-                  ?.reduce((acc, item) => acc + item.price, 0)
-                  .toLocaleString("ko-KR")}{" "}
-                원
+                {order.price.toLocaleString("ko-KR")} 원
               </p>
             </div>
 
