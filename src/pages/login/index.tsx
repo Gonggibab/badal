@@ -21,10 +21,11 @@ export default function Login() {
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
           <div>
             <button
-              className="px-3 py-2.5 relative flex w-full justify-center items-center rounded-sm bg-[#1ec800] 
-            text-sm font-normal leading-6 tracking-wider text-white shadow-sm hover:shadow-lg hover:translate-y-[1px]
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-            focus-visible:outline-orange-600 transition-all"
+              className="px-3 py-2.5 relative flex w-full justify-center items-center  
+                rounded-sm bg-[#1ec800] text-sm font-normal leading-6 tracking-wider 
+                text-white shadow-sm hover:shadow-lg hover:translate-y-[1px]
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
+              focus-visible:outline-orange-600 transition-all"
               onClick={() => {
                 setIsLoading(true);
                 signIn("naver");
@@ -42,10 +43,10 @@ export default function Login() {
           </div>
           <div className="mt-4">
             <button
-              className="px-3 py-2.5 relative flex w-full justify-center items-center rounded-sm bg-[#fee500] 
-            text-sm font-normal leading-6 tracking-wider text-black shadow-sm hover:shadow-lg hover:translate-y-[1px]  
-            focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 
-            focus-visible:outline-orange-600"
+              className="px-3 py-2.5 relative flex w-full justify-center items-center rounded-sm 
+              bg-[#fee500] text-sm font-normal leading-6 tracking-wider text-black shadow-sm 
+              hover:shadow-lg hover:translate-y-[1px] focus-visible:outline focus-visible:outline-2 
+              focus-visible:outline-offset-2 focus-visible:outline-orange-600 transition-all"
               onClick={() => {
                 setIsLoading(true);
                 signIn("kakao");

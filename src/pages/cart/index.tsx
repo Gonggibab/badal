@@ -6,7 +6,6 @@ import axios from "axios";
 
 import { orderItemsAtom } from "common/recoil/atom";
 import { CartItemType } from "common/types/user";
-import Notification from "components/Notification";
 import CartItem from "components/Cart/CartItem";
 import Loader from "components/Loader/Loader";
 import EmptyCartIcon from "assets/icon/emptyCart.svg";
@@ -14,12 +13,6 @@ import EmptyCartIcon from "assets/icon/emptyCart.svg";
 export default function Cart() {
   const { data } = useSession();
   const setOrderItems = useSetRecoilState(orderItemsAtom);
-  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
-  const [notifInfo, _] = useState({
-    content: "장바구니에서 물품을 삭제하였습니다.",
-    btnTitle: "",
-    callback: () => {},
-  });
   const [cartItems, setCartItems] = useState<CartItemType[] | null>(null);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     let price = 0;
@@ -57,7 +50,6 @@ export default function Cart() {
         quantity={item.quantity}
         cartItems={cartItems}
         setCartItems={setCartItems}
-        setIsNotifOpen={setIsNotifOpen}
       />
     );
   });
@@ -132,14 +124,6 @@ export default function Cart() {
           </div>
         </section>
       )}
-
-      <Notification
-        isOpen={isNotifOpen}
-        setIsOpen={setIsNotifOpen}
-        content={notifInfo.content}
-        btnTitle={notifInfo.btnTitle}
-        callback={notifInfo.callback}
-      />
 
       <Loader isLoading={!cartItems} />
     </article>

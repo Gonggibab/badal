@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { Noto_Sans_KR } from "next/font/google";
 
 import Layout from "./layout";
+import Notification from "components/Notification";
 
 const notoSansKR = Noto_Sans_KR({
   subsets: ["latin"],
@@ -22,6 +23,8 @@ export default function App({
           <main className={notoSansKR.className}>
             <Component {...pageProps} />
           </main>
+
+          <Notification />
         </Layout>
       </SessionProvider>
     </RecoilRoot>

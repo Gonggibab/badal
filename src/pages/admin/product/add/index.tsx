@@ -1,13 +1,14 @@
 import { ChangeEvent, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
+import { notificationAtom } from "common/recoil/atom";
+import { ImageType } from "common/types/image";
 import OptionInput from "components/Admin/Product/ProductOptions/OptionInput";
 import UploadImage from "components/Admin/Product/ProductImages/UploadImage";
-import Notification from "components/Notification";
 import Loader from "components/Loader/Loader";
 
-import { ImageType } from "common/types/image";
 import debounce from "common/utils/debounce";
 import isEmpty from "common/utils/isEmpty";
 import cloudinary from "common/utils/cloudinary";
@@ -31,6 +32,7 @@ export type OptionItemType = {
 export default function ProductAdd() {
   const router = useRouter();
   const isFormValid = useRef<string>("");
+  const setNotification = useSetRecoilState(notificationAtom);
   const [isErr, setIsErr] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<string>("");
@@ -43,12 +45,6 @@ export default function ProductAdd() {
   const [detailImage, setDetailImage] = useState<ImageFileType | null>(null);
   const [images, setImages] = useState<ImageFileType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
-  const [notifInfo, setNotifInfo] = useState({
-    content: "",
-    btnTitle: "",
-    callback: () => {},
-  });
 
   const checkIsFormValid = () => {
     // 모든 값을 입력했는지 확인
@@ -80,13 +76,13 @@ export default function ProductAdd() {
   const handleSubmit = async () => {
     // 유효성 검사
     checkIsFormValid();
+
     if (isFormValid.current !== "") {
-      setNotifInfo({
+      setNotification({
+        isOpen: true,
         content: isFormValid.current,
-        btnTitle: "",
-        callback: () => {},
       });
-      setIsNotifOpen(true);
+
       return;
     }
 
@@ -150,22 +146,20 @@ export default function ProductAdd() {
         }
         if (deletePromises.length > 0) await Promise.all(deletePromises);
 
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "제품 등록중에 에러가 발생했습니다. 다시 시도해주세요.",
-          btnTitle: "",
-          callback: () => {},
         });
-        setIsNotifOpen(true);
+
         console.log("제품 등록중에 에러가 발생했습니다. " + error);
         setIsLoading(false);
       }
     } catch (error) {
-      setNotifInfo({
+      setNotification({
+        isOpen: true,
         content: "제품 등록중에 에러가 발생했습니다. 다시 시도해주세요.",
-        btnTitle: "",
-        callback: () => {},
       });
-      setIsNotifOpen(true);
+
       setIsLoading(false);
       console.log("Cloudinary와 통신에 에러가 발생했습니다. " + error);
     }
@@ -292,8 +286,6 @@ export default function ProductAdd() {
               setImages={setImages}
               detailImage={detailImage}
               setDetailImage={setDetailImage}
-              setIsNotifOpen={setIsNotifOpen}
-              setNotifInfo={setNotifInfo}
             />
           </section>
 
@@ -319,14 +311,6 @@ export default function ProductAdd() {
           </div>
         </form>
       </div>
-
-      <Notification
-        isOpen={isNotifOpen}
-        setIsOpen={setIsNotifOpen}
-        content={notifInfo.content}
-        btnTitle={notifInfo.btnTitle}
-        callback={notifInfo.callback}
-      />
 
       <Loader isLoading={isLoading} />
     </article>

@@ -1,12 +1,13 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
+import { useSetRecoilState } from "recoil";
 
+import { notificationAtom } from "common/recoil/atom";
+import { ProductType } from "common/types/product";
 import Item from "components/Admin/Product/Item";
 import Modal from "components/Modal";
-import Notification from "components/Notification";
 import Spinner from "components/Loader/Spinner";
-import { ProductType } from "common/types/product";
 
 import SearchIcon from "assets/icon/search.svg";
 import DeleteIcon from "assets/icon/delete.svg";
@@ -16,11 +17,10 @@ import EmptyBoxIcon from "assets/icon/emptyCart.svg";
 
 export default function ProductAdmin() {
   const allCheckRef = useRef<HTMLInputElement>(null);
+  const setNotification = useSetRecoilState(notificationAtom);
   const [productData, setProductData] = useState<ProductType[] | null>(null);
   const [selectedData, setSelectedData] = useState<Set<string>>(new Set());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
-  const [notifContent, setNotifContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getProductData = async () => {
@@ -44,8 +44,10 @@ export default function ProductAdmin() {
 
   const onDeleteClicked = () => {
     if (selectedData.size < 1) {
-      setNotifContent("삭제할 제품을 선택해 주세요!");
-      setIsNotifOpen(true);
+      setNotification({
+        isOpen: true,
+        content: "삭제할 제품을 선택해 주세요!",
+      });
       return;
     }
     setIsModalOpen(true);
@@ -64,14 +66,16 @@ export default function ProductAdmin() {
 
       selectedData.clear(); // 선택 데이터 삭제
       getProductData(); // 제품 리스트 업데이트
-      setNotifContent(
-        `성공적으로 ${selectedData.size}개의 제품을 삭제했습니다.`
-      );
-      setIsNotifOpen(true);
+      setNotification({
+        isOpen: true,
+        content: `성공적으로 ${selectedData.size}개의 제품을 삭제했습니다.`,
+      });
     } catch (error) {
       setIsLoading(false);
-      setNotifContent("에러가 발생해 삭제에 실패 했습니다!");
-      setIsNotifOpen(true);
+      setNotification({
+        isOpen: true,
+        content: "에러가 발생해 삭제에 실패 했습니다!",
+      });
     }
   };
 
@@ -210,14 +214,6 @@ export default function ProductAdmin() {
           content={`정말로 제품 ${selectedData.size}개를 삭제하시겠습니까?`}
           btnTitle="확인"
           callback={deleteProducts}
-        />
-
-        <Notification
-          isOpen={isNotifOpen}
-          setIsOpen={setIsNotifOpen}
-          content={notifContent}
-          btnTitle=""
-          callback={() => {}}
         />
 
         <Spinner isLoading={isLoading} />

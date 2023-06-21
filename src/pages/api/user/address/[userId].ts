@@ -79,7 +79,7 @@ export default async function handler(
         res.status(200).json({ success: true, data: data });
       } catch (error) {
         console.log(
-          "사용자 주소를 불러오는 도중 에러가 발생했습니다. " + error
+          "사용자 주소를 저장하는 도중 에러가 발생했습니다. " + error
         );
         res.status(500).json({ success: false, error: error });
       }
@@ -87,7 +87,7 @@ export default async function handler(
       break;
 
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

@@ -1,6 +1,8 @@
 import { ChangeEvent, Dispatch, SetStateAction, useRef } from "react";
+import { useSetRecoilState } from "recoil";
 import Image from "next/image";
 
+import { notificationAtom } from "common/recoil/atom";
 import { ImageFileType } from "pages/admin/product/add";
 import ImageGallery from "./ImageGallery";
 import CameraIcon from "assets/icon/camera.svg";
@@ -15,14 +17,6 @@ type UploadImageProps = {
   setImages: Dispatch<SetStateAction<ImageFileType[]>>;
   detailImage: ImageFileType | null;
   setDetailImage: Dispatch<SetStateAction<ImageFileType | null>>;
-  setIsNotifOpen: Dispatch<SetStateAction<boolean>>;
-  setNotifInfo: Dispatch<
-    SetStateAction<{
-      content: string;
-      btnTitle: string;
-      callback: () => void;
-    }>
-  >;
 };
 
 export default function UploadImage({
@@ -30,11 +24,10 @@ export default function UploadImage({
   setImages,
   detailImage,
   setDetailImage,
-  setIsNotifOpen,
-  setNotifInfo,
 }: UploadImageProps) {
   const productImgRef = useRef<HTMLInputElement>(null);
   const detailImgRef = useRef<HTMLInputElement>(null);
+  const setNotification = useSetRecoilState(notificationAtom);
 
   const onFilesChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
@@ -46,22 +39,18 @@ export default function UploadImage({
       if (!file) return;
 
       if (file.size > MAX_IMAGE_SIZE) {
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "사진의 크기가 10MB 를 넘습니다!",
-          btnTitle: "",
-          callback: () => {},
         });
-        setIsNotifOpen(true);
         continue;
       }
 
       if (images.length + imgList.length >= MAX_IMAGE_NUM) {
-        setNotifInfo({
+        setNotification({
+          isOpen: true,
           content: "8장 이상 사진을 업로드 할 수 없습니다!",
-          btnTitle: "",
-          callback: () => {},
         });
-        setIsNotifOpen(true);
         break;
       }
 
@@ -78,12 +67,10 @@ export default function UploadImage({
     const file = files[0];
 
     if (file.size > MAX_DETAILIMAGE_SIZE) {
-      setNotifInfo({
+      setNotification({
+        isOpen: true,
         content: "상세 정보 사진의 크기가 20MB 를 넘습니다!",
-        btnTitle: "",
-        callback: () => {},
       });
-      setIsNotifOpen(true);
       return;
     }
 

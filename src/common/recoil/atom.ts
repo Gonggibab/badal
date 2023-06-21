@@ -15,6 +15,22 @@ export const isHeaderTranspAtom = atom<boolean>({
   default: true,
 });
 
+// 모달, 알림 Atoms
+export type NotificationAtomType = {
+  isOpen: boolean;
+  content: string;
+  btnTitle?: string;
+  callback?: () => void;
+};
+
+export const notificationAtom = atom<NotificationAtomType>({
+  key: "notification",
+  default: {
+    isOpen: false,
+    content: "",
+  },
+});
+
 // 사용자 Atoms
 export const cartSizeAtom = atom<number>({
   key: "cartSize",
@@ -40,5 +56,18 @@ export type OrderItemsAtomType = {
 export const orderItemsAtom = atom<OrderItemsAtomType[]>({
   key: "orderItems",
   default: [],
+  effects_UNSTABLE: [persistAtom],
+});
+
+// 마이 페이지 Atoms
+
+export enum Section {
+  USER_INFO,
+  ORDER_INFO,
+}
+
+export const mySectionAtom = atom<Section>({
+  key: "mySection",
+  default: Section.USER_INFO,
   effects_UNSTABLE: [persistAtom],
 });

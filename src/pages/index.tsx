@@ -56,11 +56,10 @@ export default function Home() {
             muted
             playsInline
           >
-            {/* <source
-              src="https://res.cloudinary.com/dwgh7srzr/video/upload/v1687190403/FOCEL/n3lijwib30sxa2wcyyle.webm"
-              type="video/webm"
-            /> */}
-            <source src="/main_vid.mp4" type="video/mp4" />
+            <source
+              src="https://ik.imagekit.io/focel/FOCEL/focel_mainvid.mp4?updatedAt=1687262463986"
+              type="video/mp4"
+            />
           </video>
 
           <div className="p-6 pb-48 flex flex-col justify-center items-center text-white lg:px-20">

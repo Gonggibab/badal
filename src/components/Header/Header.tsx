@@ -22,10 +22,12 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!data?.user) return;
-
     // 메인 페이지가 아니라면 헤더 배경을 초기화 한다
     if (router.pathname !== "/") setIsHeaderTransp(false);
+  }, [router, setIsHeaderTransp]);
+
+  useEffect(() => {
+    if (!data?.user) return;
 
     // 제품 데이터를 불러온다
     const getCartData = async () => {
@@ -34,7 +36,7 @@ export default function Header() {
     };
 
     getCartData();
-  }, [data, router, setCartSize, setIsHeaderTransp]);
+  }, [data, setCartSize]);
 
   return (
     <header
@@ -128,7 +130,7 @@ export default function Header() {
         <div className="flex lg:hidden">
           <button
             type="button"
-            className="relative inline-flex items-center justify-center text-inherit"
+            className="p-1 relative inline-flex items-center justify-center text-inherit"
             onClick={() => setIsMenuOpen(true)}
           >
             <span className="sr-only">Open menu</span>
