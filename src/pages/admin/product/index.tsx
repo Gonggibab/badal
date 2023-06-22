@@ -64,11 +64,12 @@ export default function ProductAdmin() {
         )
       );
 
+      const size = selectedData.size;
       selectedData.clear(); // 선택 데이터 삭제
       getProductData(); // 제품 리스트 업데이트
       setNotification({
         isOpen: true,
-        content: `성공적으로 ${selectedData.size}개의 제품을 삭제했습니다.`,
+        content: `성공적으로 ${size}개의 제품을 삭제했습니다.`,
       });
     } catch (error) {
       setIsLoading(false);

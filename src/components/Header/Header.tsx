@@ -22,8 +22,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // 메인 페이지가 아니라면 헤더 배경을 초기화 한다
-    if (router.pathname !== "/") setIsHeaderTransp(false);
+    //  브랜드 페이지가 아니라면 헤더 배경을 초기화 한다
+    if (router.pathname !== "/brand") setIsHeaderTransp(false);
   }, [router, setIsHeaderTransp]);
 
   useEffect(() => {
@@ -40,9 +40,9 @@ export default function Header() {
 
   return (
     <header
-      className={`${
-        !isHeaderTransp && "bg-white"
-      } z-30 sticky top-0 transition ease-in duration-500`}
+      className={`${!isHeaderTransp && "bg-white"} ${
+        router.pathname === "/brand" ? "fixed" : "sticky"
+      } z-30 top-0 w-full transition ease-in duration-500`}
     >
       <nav
         className="mx-auto p-6 max-w-7xl h-20 flex justify-between items-center lg:px-20"

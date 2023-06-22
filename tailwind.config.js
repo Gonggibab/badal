@@ -13,6 +13,7 @@ module.exports = {
     },
     animation: {
       fadein: "fadein 1.4s ease-in-out",
+      appear: "appear 1.4s ease-in",
       rotate: "rotate 1s linear infinite",
       pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
     },
@@ -20,6 +21,16 @@ module.exports = {
       fadein: {
         from: {
           transform: "translate(0px, 10px)",
+          opacity: 0,
+        },
+        to: {
+          transform: "translate(0px, 0px)",
+          opacity: 1,
+        },
+      },
+      appear: {
+        from: {
+          transform: "translate(0px, 100%)",
           opacity: 0,
         },
         to: {
