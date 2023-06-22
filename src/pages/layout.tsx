@@ -12,7 +12,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {isAdmin ? <AdminHeader /> : <Header />}
       {children}
-      <Footer />
+      {!isAdmin && <Footer />}
     </>
   );
 }

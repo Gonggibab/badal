@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import image from "assets/test.jpg";
+import image from "assets/images/main_product.jpg";
 import ArrowIcon from "assets/icon/arrow_w_stick.svg";
 
 export default function FirstSection() {

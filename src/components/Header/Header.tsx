@@ -52,7 +52,7 @@ export default function Header() {
           <span className="sr-only">FO:CEL</span>
           <Logo
             className={`${
-              isHeaderTransp ? "text-white" : "text-gray-900"
+              isHeaderTransp ? "text-gray-900" : "text-gray-900"
             } w-auto h-full`}
           />
         </Link>
@@ -62,7 +62,7 @@ export default function Header() {
             href="/product"
             className={`${
               isHeaderTransp
-                ? "text-white hover:text-gray-200"
+                ? "text-gray-900 hover:text-gray-600"
                 : "text-gray-900 hover:text-gray-600"
             } text-sm font-semibold leading-6 `}
           >
@@ -72,7 +72,7 @@ export default function Header() {
             href="/brand"
             className={`${
               isHeaderTransp
-                ? "text-white hover:text-gray-200"
+                ? "text-gray-900 hover:text-gray-600"
                 : "text-gray-900 hover:text-gray-600"
             } text-sm font-semibold leading-6 `}
           >
@@ -90,7 +90,7 @@ export default function Header() {
                 <span className="sr-only">My Page</span>
                 <UserIcon
                   className={`${
-                    isHeaderTransp ? "text-white" : "text-gray-900"
+                    isHeaderTransp ? "text-gray-900" : "text-gray-900"
                   } w-7 h-7`}
                 />
               </Link>
@@ -101,7 +101,7 @@ export default function Header() {
                 <span className="sr-only">Shopping Cart</span>
                 <CartIcon
                   className={`${
-                    isHeaderTransp ? "text-white" : "text-gray-900"
+                    isHeaderTransp ? "text-gray-900" : "text-gray-900"
                   } w-7 h-7`}
                 />
                 <span
@@ -120,7 +120,7 @@ export default function Header() {
               <span className="sr-only">Login</span>
               <LoginIcon
                 className={`${
-                  isHeaderTransp ? "text-white" : "text-gray-900"
+                  isHeaderTransp ? "text-gray-900" : "text-gray-900"
                 } w-5 h-5`}
               />
             </Link>
@@ -136,7 +136,7 @@ export default function Header() {
             <span className="sr-only">Open menu</span>
             <MenuIcon
               className={`${
-                isHeaderTransp ? "text-white" : "text-gray-900"
+                isHeaderTransp ? "text-gray-900" : "text-gray-900"
               } w-5 h-5`}
             />
           </button>
