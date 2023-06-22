@@ -2,14 +2,17 @@ import "styles/globals.css";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { SessionProvider } from "next-auth/react";
-import { Noto_Sans_KR } from "next/font/google";
+import { Roboto_Condensed } from "next/font/google";
 
 import Layout from "./layout";
 import Notification from "components/Notification";
 
-const notoSansKR = Noto_Sans_KR({
+const roboto_condensed = Roboto_Condensed({
+  weight: ["300", "400", "700"],
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  weight: ["100", "300", "400", "500", "700", "900"],
+  display: "fallback",
+  fallback: ["system-ui"],
 });
 
 export default function App({
@@ -20,9 +23,12 @@ export default function App({
     <RecoilRoot>
       <SessionProvider session={session}>
         <Layout>
-          <main className={notoSansKR.className}>
-            <Component {...pageProps} />
-          </main>
+          <style jsx global>{`
+            html {
+              font-family: ${roboto_condensed.style.fontFamily};
+            }
+          `}</style>
+          <Component {...pageProps} />
 
           <Notification />
         </Layout>
