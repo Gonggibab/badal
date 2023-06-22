@@ -55,7 +55,7 @@ export default function Cart() {
   });
 
   return (
-    <article className="flex flex-col items-center justify-between">
+    <main className="flex flex-col items-center justify-between">
       {cartItems && cartItems.length === 0 ? (
         <section className="pb-10 h-[calc(90vh-80px)] flex flex-col justify-center items-center">
           <EmptyCartIcon className="w-28 h-28" />
@@ -126,6 +126,6 @@ export default function Cart() {
       )}
 
       <Loader isLoading={!cartItems} />
-    </article>
+    </main>
   );
 }

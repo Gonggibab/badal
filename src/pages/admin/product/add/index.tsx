@@ -186,7 +186,7 @@ export default function ProductAdd() {
   };
 
   return (
-    <article className="p-4 md:ml-64 flex justify-center">
+    <main className="p-4 md:ml-64 flex justify-center">
       <div
         className="p-4 flex flex-col w-full h-[calc(100vh-120px)] overflow-x-scroll
           shadow-md sm:rounded-lg md:h-[calc(100vh-40px)]"
@@ -313,6 +313,6 @@ export default function ProductAdd() {
       </div>
 
       <Loader isLoading={isLoading} />
-    </article>
+    </main>
   );
 }

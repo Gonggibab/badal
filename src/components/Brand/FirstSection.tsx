@@ -11,7 +11,6 @@ export default function FirstSection() {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
   });
-
   const scale = useTransform(scrollYProgress, [0, 1], [1, 20]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
 
@@ -40,7 +39,7 @@ export default function FirstSection() {
 
   return (
     <section ref={sectionRef} className="w-screen h-[300vh] flex flex-col">
-      <div className="sticky top-0 w-screen h-screen">
+      <div className="sticky top-0 w-full h-screen overflow-hidden">
         <motion.video
           className="-z-10 w-full h-full object-cover object-center bg-transparent"
           preload="true"
@@ -51,7 +50,7 @@ export default function FirstSection() {
           style={{ opacity: opacity }}
         >
           <source
-            src="https://ik.imagekit.io/focel/FOCEL/focel_mainvid.mp4?updatedAt=1687262463986"
+            src="https://ik.imagekit.io/focel/FOCEL/cell_recover.mp4?updatedAt=1687431172449"
             type="video/mp4"
           />
         </motion.video>
@@ -60,8 +59,8 @@ export default function FirstSection() {
             w-[90%] flex flex-col justify-center items-center text-white lg:px-20"
         >
           <motion.h1
-            className="mt-4 text-5xl font-bold tracking-tight 
-            leading-snug break-keep sm:text-7xl lg:text-8xl"
+            className="mt-4 text-5xl font-bold tracking-tight
+              leading-snug break-keep sm:text-7xl lg:text-8xl"
             style={{ scale: scale }}
           >
             건강한 피부를 위한 과학입니다

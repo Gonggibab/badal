@@ -6,7 +6,7 @@ export default function Fail() {
 
   // 고객에게 실패 사유 알려주고 다른 페이지로 이동
   return (
-    <article className="px-4 py-6 flex flex-col items-center justify-start sm:px-6 sm:py-16 lg:px-8">
+    <main className="px-4 py-6 flex flex-col items-center justify-start sm:px-6 sm:py-16 lg:px-8">
       <div className="w-full max-w-4xl">
         <p className="ml-1 text-xl font-semibold text-orange-500 tracking-tight">
           오류가 발생하여
@@ -31,6 +31,6 @@ export default function Fail() {
           주문 페이지로
         </Link>
       </div>
-    </article>
+    </main>
   );
 }

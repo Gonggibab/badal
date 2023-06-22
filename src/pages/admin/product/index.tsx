@@ -95,7 +95,7 @@ export default function ProductAdmin() {
   }, [productData, selectedData]);
 
   return (
-    <article className="p-4 md:ml-64">
+    <main className="p-4 md:ml-64">
       <div
         className="p-2 flex flex-col items-center w-full h-[calc(100vh-120px)] overflow-x-scroll
           shadow-md sm:rounded-lg md:h-[calc(100vh-40px)]"
@@ -219,6 +219,6 @@ export default function ProductAdmin() {
 
         <Spinner isLoading={isLoading} />
       </div>
-    </article>
+    </main>
   );
 }

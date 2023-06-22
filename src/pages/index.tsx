@@ -13,10 +13,10 @@ export default function Home() {
           content="피부 걱정 없이 살아가는 모두를 위한 솔루션."
         />
       </Head>
-      <article className="w-screen flex flex-col">
+      <main className="w-screen flex flex-col">
         <FirstSection />
         <SecondSection />
-      </article>
+      </main>
     </>
   );
 }

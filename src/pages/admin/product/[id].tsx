@@ -1,3 +1,3 @@
 export default function ProductEdit() {
-  return <div></div>;
+  return <main></main>;
 }

@@ -197,7 +197,7 @@ export default function Order() {
   };
 
   return (
-    <article className="px-4 py-6 flex flex-col items-center justify-between sm:px-6 sm:py-16 lg:px-8">
+    <main className="px-4 py-6 flex flex-col items-center justify-between sm:px-6 sm:py-16 lg:px-8">
       <section
         className="grid max-w-2xl grid-cols-1 items-start
           gap-x-8 lg:max-w-7xl lg:grid-cols-2"
@@ -243,6 +243,6 @@ export default function Order() {
       />
 
       <Loader isLoading={isLoading} />
-    </article>
+    </main>
   );
 }

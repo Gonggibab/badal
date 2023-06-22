@@ -2,7 +2,7 @@
 
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com"],
+    domains: ["res.cloudinary.com", "ik.imagekit.io"],
     remotePatterns: [
       {
         protocol: "https",
