@@ -19,7 +19,7 @@ export default function Product() {
   }, []);
 
   return (
-    <article className="w-screen h-full flex flex-col items-center justify-between">
+    <main className="w-screen h-full flex flex-col items-center justify-between">
       <section className="bg-white w-full h-full">
         <div
           className="mx-auto max-w-2xl px-4 py-16 pt-10 
@@ -49,6 +49,6 @@ export default function Product() {
 
         <Loader isLoading={!productData} bgTransparent={true} />
       </section>
-    </article>
+    </main>
   );
 }

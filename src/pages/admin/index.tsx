@@ -1,6 +1,6 @@
 export default function Admin() {
   return (
-    <article className="p-4 md:ml-64">
+    <main className="p-4 md:ml-64">
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex items-center justify-center h-64 rounded bg-gray-200">
           <p className="text-lg text-gray-400">매출액</p>
@@ -15,6 +15,6 @@ export default function Admin() {
           <p className="text-lg text-gray-400">제품 별 판매량</p>
         </div>
       </div>
-    </article>
+    </main>
   );
 }

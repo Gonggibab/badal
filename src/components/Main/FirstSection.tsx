@@ -26,7 +26,7 @@ export default function FirstSection() {
           <Link
             href={"/product"}
             className="mt-10 p-1 w-fit flex items-center text-sm rounded-md transition-all 
-          backdrop-blur-[2px] bg-[#eae5e5]/[0.2] hover:translate-x-1"
+          backdrop-blur-[1px] bg-[#eae5e5]/[0.1] hover:translate-x-1"
           >
             구매하러 가기 <ArrowIcon className="ml-1 w-4 h-4" />
           </Link>

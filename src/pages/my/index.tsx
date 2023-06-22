@@ -39,7 +39,7 @@ export default function My() {
   }, [data]);
 
   return (
-    <article className="p-4 flex flex-col items-center justify-between sm:p-8">
+    <main className="p-4 flex flex-col items-center justify-between sm:p-8">
       {user && (
         <>
           <div className="w-full max-w-4xl flex justify-between items-center">
@@ -107,6 +107,6 @@ export default function My() {
       )}
 
       <Loader isLoading={!user || isLoadAdress} />
-    </article>
+    </main>
   );
 }

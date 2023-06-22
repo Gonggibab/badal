@@ -49,7 +49,7 @@ export default function Confirmation() {
   }, [authKey, router.query]);
 
   return (
-    <article className="px-4 py-6 flex flex-col items-center justify-start sm:px-6 sm:py-16 lg:px-8">
+    <main className="px-4 py-6 flex flex-col items-center justify-start sm:px-6 sm:py-16 lg:px-8">
       {order && payment && (
         <section className="w-full max-w-2xl">
           <p className="ml-1 text-xl font-semibold text-orange-500 tracking-tight">
@@ -127,6 +127,6 @@ export default function Confirmation() {
       )}
 
       <Loader isLoading={!order || !payment} />
-    </article>
+    </main>
   );
 }
