@@ -15,14 +15,14 @@ export default function SecondSection() {
 
   const textVariants: Variants = {
     offscreen: {
-      y: 100,
+      y: 300,
     },
     onscreen: {
-      y: 0,
+      y: 50,
       transition: {
         type: "spring",
         bounce: 0.4,
-        duration: 1,
+        duration: 0.8,
       },
     },
   };
@@ -30,27 +30,30 @@ export default function SecondSection() {
   return (
     <section
       ref={ref}
-      className="relative p-8 w-screen h-[300vh] flex flex-col"
+      className="relative p-4 w-screen h-[300vh] flex flex-col sm:p-8"
     >
-      <div className="m-10 w-full flex flex-col text-8xl font-bold">
+      <div className="w-full flex flex-col text-5xl font-bold sm:text-6xl md:text-7xl lg:text-8xl">
         <motion.div
           initial="offscreen"
           whileInView="onscreen"
-          className="pt-2 overflow-hidden"
+          viewport={{ once: true, amount: 0.8 }}
+          className="pt-2"
         >
           <motion.h2 variants={textVariants}>최소한의 재료</motion.h2>
         </motion.div>
         <motion.div
           initial="offscreen"
           whileInView="onscreen"
-          className="pt-2 overflow-hidden"
+          viewport={{ once: true, amount: 0.8 }}
+          className="pt-2"
         >
           <motion.h2 variants={textVariants}>최대한의 효과</motion.h2>
         </motion.div>
         <motion.div
           initial="offscreen"
           whileInView="onscreen"
-          className="pt-2 overflow-hidden"
+          viewport={{ once: true, amount: 0.8 }}
+          className="pt-2"
         >
           <motion.h2 variants={textVariants}>피부가 증명합니다</motion.h2>
         </motion.div>
