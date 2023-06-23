@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useSetRecoilState } from "recoil";
 import Link from "next/link";
@@ -11,6 +12,7 @@ import Loader from "components/Loader/Loader";
 import EmptyCartIcon from "assets/icon/emptyCart.svg";
 
 export default function Cart() {
+  const router = useRouter();
   const { data } = useSession();
   const setOrderItems = useSetRecoilState(orderItemsAtom);
   const [cartItems, setCartItems] = useState<CartItemType[] | null>(null);
@@ -37,22 +39,6 @@ export default function Cart() {
     cartItems?.forEach((item) => (price += item.price * item.quantity));
     setTotalPrice(price);
   }, [cartItems]);
-
-  const renderItem = cartItems?.map((item) => {
-    return (
-      <CartItem
-        key={item.id}
-        itemId={item.id}
-        productId={item.productId}
-        title={item.title}
-        image={item.image}
-        price={item.price}
-        quantity={item.quantity}
-        cartItems={cartItems}
-        setCartItems={setCartItems}
-      />
-    );
-  });
 
   return (
     <main className="flex flex-col items-center justify-between">
@@ -87,7 +73,17 @@ export default function Cart() {
               role="list"
               className="mt-8 divide-y divide-gray-200 border-y border-gray-200"
             >
-              {renderItem}
+              {cartItems &&
+                cartItems.map((item) => {
+                  return (
+                    <CartItem
+                      key={item.id}
+                      item={item}
+                      cartItems={cartItems}
+                      setCartItems={setCartItems}
+                    />
+                  );
+                })}
             </ul>
           </div>
 
@@ -101,15 +97,18 @@ export default function Cart() {
             </p>
           </div>
           <div className="mt-6">
-            <Link
-              href="/order"
-              className="flex items-center justify-center rounded-md border border-transparent 
+            <button
+              type="button"
+              className="w-full flex items-center justify-center rounded-md border border-transparent 
               bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600
                 hover:translate-y-[1px] transition-all"
-              onClick={() => setOrderItems(cartItems!)}
+              onClick={() => {
+                setOrderItems(cartItems!);
+                router.push("/order");
+              }}
             >
               주문하기
-            </Link>
+            </button>
           </div>
           <div className="mt-6 flex justify-center text-center text-xs text-gray-500">
             <p>

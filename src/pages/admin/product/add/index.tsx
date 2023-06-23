@@ -5,7 +5,6 @@ import axios from "axios";
 
 import { notificationAtom } from "common/recoil/atom";
 import { ImageType } from "common/types/image";
-import OptionInput from "components/Admin/Product/ProductOptions/OptionInput";
 import UploadImage from "components/Admin/Product/ProductImages/UploadImage";
 import Loader from "components/Loader/Loader";
 
@@ -18,17 +17,6 @@ export type ImageFileType = {
   preview: string;
 };
 
-export type OptionType = {
-  title: string;
-  optionItems: OptionItemType[];
-};
-
-export type OptionItemType = {
-  title: string;
-  value?: number;
-  stock?: number;
-};
-
 export default function ProductAdd() {
   const router = useRouter();
   const isFormValid = useRef<string>("");
@@ -36,12 +24,7 @@ export default function ProductAdd() {
   const [isErr, setIsErr] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [options, setOptions] = useState<OptionType[]>([
-    {
-      title: "",
-      optionItems: [{ title: "", value: 0, stock: 0 }],
-    },
-  ]);
+  const [stock, setStock] = useState<string>("");
   const [detailImage, setDetailImage] = useState<ImageFileType | null>(null);
   const [images, setImages] = useState<ImageFileType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,22 +36,10 @@ export default function ProductAdd() {
         "동일한 이름의 제품이 있습니다. 다른 이름을 입력해주세요.";
       return;
     }
-    if (isEmpty(title) || isEmpty(price)) {
+    if (isEmpty(title) || isEmpty(price) || isEmpty(stock)) {
       isFormValid.current = "빈 칸없이 알맞은 정보를 입력해주세요.";
       return;
     }
-    options.forEach((opt) => {
-      if (isEmpty(opt.title)) {
-        isFormValid.current = "빈 칸없이 알맞은 정보를 입력해주세요.";
-        return;
-      }
-      opt.optionItems.forEach((item) => {
-        if (isEmpty(item.title) || isEmpty(item.value) || isEmpty(item.stock)) {
-          isFormValid.current = "빈 칸없이 알맞은 정보를 입력해주세요.";
-          return;
-        }
-      });
-    });
 
     isFormValid.current = "";
   };
@@ -122,7 +93,7 @@ export default function ProductAdd() {
         await axios.post("/api/product", {
           title: title,
           price: Number(price.replace(/[^0-9]/g, "")),
-          options: options,
+          stock: Number(stock.replace(/[^0-9]/g, "")),
           images: cloudImage,
           detailImage: cloudDetailImage,
         });
@@ -201,7 +172,7 @@ export default function ProductAdd() {
             </p>
 
             <section className="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-4 lg:grid-cols-6">
-              <div className="col-span-2">
+              <div className="col-span-2 md:col-span-full">
                 <label
                   htmlFor="product_title"
                   className="block text-sm font-medium leading-6 text-gray-900"
@@ -273,12 +244,51 @@ export default function ProductAdd() {
                   </div>
                 </div>
               </div>
+              <div className="col-span-2">
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  재고
+                </label>
+                <div className="mt-2">
+                  <div
+                    className="w-full flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 
+                        focus-within:ring-2 focus-within:ring-inset focus-within:ring-orange-500"
+                  >
+                    <input
+                      type="text"
+                      name="stock"
+                      id="stock"
+                      autoComplete="stock"
+                      className="block w-full border-0 bg-transparent py-2.5 pl-3 text-xs text-gray-900 
+                          placeholder:text-gray-400 focus:ring-0 sm:py-1.5 sm:text-sm sm:leading-6"
+                      placeholder="1,000"
+                      maxLength={10}
+                      value={stock}
+                      onInput={(e) => {
+                        // 숫자만 입력 받는다
+                        const curVal = e.currentTarget.value;
+                        e.currentTarget.value = curVal.replace(/[^0-9]/g, "");
+                      }}
+                      onChange={(e) => {
+                        // 3 자리수 마다 콤마를 집어넣는다
+                        const curVal = e.currentTarget.value;
+                        e.currentTarget.value = curVal.replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ","
+                        );
+                        setStock(e.currentTarget.value);
+                      }}
+                    />
+                    <span className="flex select-none items-center px-4 text-xs text-gray-500 sm:text-sm">
+                      개
+                    </span>
+                  </div>
+                </div>
+              </div>
             </section>
           </div>
-
-          <section className="mt-4 border-b border-gray-900/10 pb-12">
-            <OptionInput options={options} setOptions={setOptions} />
-          </section>
 
           <section className="mt-4 border-b border-gray-900/10 pb-12">
             <UploadImage

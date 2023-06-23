@@ -24,7 +24,6 @@ export default async function handler(
           include: {
             images: true,
             detailImage: true,
-            options: { include: { optionItems: true } },
             reviews: true,
           },
         });

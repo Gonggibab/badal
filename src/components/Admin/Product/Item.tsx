@@ -7,53 +7,37 @@ import {
 } from "react";
 import Link from "next/link";
 
-import { OptionType } from "common/types/product";
+import { ProductType } from "common/types/product";
 
 type ItemProps = {
-  id: string;
-  title: string;
-  price: number;
-  options: OptionType[];
+  item: ProductType;
   selectedData: Set<string>;
   setSelectedData: Dispatch<SetStateAction<Set<string>>>;
 };
 
 export default function Item({
-  id,
-  title,
-  price,
-  options,
+  item,
   selectedData,
   setSelectedData,
 }: ItemProps) {
   const checkRef = useRef<HTMLInputElement>(null);
-
-  const sumTotalStock = () => {
-    let sum = 0;
-    options.map((opt) => {
-      opt.optionItems.forEach((item) => {
-        sum += item.stock;
-      });
-    });
-
-    return sum;
-  };
+  console.log(item);
 
   useEffect(() => {
     if (!checkRef.current) return;
 
     // 해당 제품에 체크가 되어 있는지 체크하고 반영
-    if (selectedData.has(id)) checkRef.current.checked = true;
+    if (selectedData.has(item.id)) checkRef.current.checked = true;
     else checkRef.current.checked = false;
-  }, [id, selectedData]);
+  }, [item.id, selectedData]);
 
   const onCheckChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.currentTarget.checked) {
-      const n = new Set(selectedData).add(id);
+      const n = new Set(selectedData).add(item.id);
       setSelectedData(n);
     } else {
       const n = new Set(selectedData);
-      n.delete(id);
+      n.delete(item.id);
       setSelectedData(n);
     }
   };
@@ -79,12 +63,16 @@ export default function Item({
         scope="row"
         className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap"
       >
-        <Link href={`/admin/product/${id}`} className="hover:underline">
-          {title}
+        <Link href={`/admin/product/${item.id}`} className="hover:underline">
+          {item.title}
         </Link>
       </th>
-      <td className="px-4 py-3 whitespace-nowrap">{price}</td>
-      <td className="px-4 py-3 whitespace-nowrap">{sumTotalStock()}</td>
+      <td className="px-4 py-3 whitespace-nowrap">
+        {item.price.toLocaleString()}
+      </td>
+      <td className="px-4 py-3 whitespace-nowrap">
+        {item.stock.toLocaleString()}
+      </td>
     </tr>
   );
 }

@@ -15,23 +15,15 @@ export default function OrderInfo({ orderItems }: OrderInfoProps) {
       </div>
 
       <ul role="list" className="w-full divide-y divide-gray-100">
-        {orderItems?.map((item, idx) => {
-          return (
-            <OrderItem
-              key={idx}
-              productId={item.productId}
-              title={item.title}
-              image={item.image}
-              price={item.price}
-              quantity={item.quantity}
-            />
-          );
-        })}
+        {orderItems &&
+          orderItems.map((item, idx) => {
+            return <OrderItem key={idx} item={item} />;
+          })}
       </ul>
 
       <div
         className="mb-6 pt-2 flex justify-between items-center font-medium text-gray-900
-    border-t border-gray-300"
+          border-t border-gray-300"
       >
         <p>총 금액</p>
         <p className="text-sm">

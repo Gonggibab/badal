@@ -184,10 +184,7 @@ export default function ProductAdmin() {
                 return (
                   <Item
                     key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    price={item.price}
-                    options={item.options}
+                    item={item}
                     selectedData={selectedData}
                     setSelectedData={setSelectedData}
                   />
