@@ -1,7 +1,6 @@
 import prisma from "common/lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { OptionType } from "pages/admin/product/add";
 import { ImageType } from "common/types/image";
 
 type Data = {
@@ -35,7 +34,6 @@ export default async function handler(
       break;
 
     case "POST":
-      const options: OptionType[] = req.body.options;
       const images: ImageType[] = req.body.images;
       const detailImage: ImageType = req.body.detailImage;
 
@@ -45,6 +43,7 @@ export default async function handler(
           data: {
             title: req.body.title,
             price: req.body.price,
+            stock: req.body.stock,
             images: {
               create: images.map((image) => ({
                 asset_id: image.asset_id,

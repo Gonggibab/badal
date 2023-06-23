@@ -293,6 +293,7 @@ export default function ProductDetail() {
                         className="w-full h-auto"
                         src={productData.detailImage.secure_url}
                         alt="제품 상세 정보 이미지"
+                        unoptimized
                         quality={100}
                         width="0"
                         height="0"

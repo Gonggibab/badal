@@ -4,6 +4,7 @@ export type ProductType = {
   id: string;
   title: string;
   price: number;
+  stock: number;
   images: ImageType[];
   detailImage?: ImageType;
   reviews: ReviewType[];
