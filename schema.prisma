@@ -33,26 +33,8 @@ model Product {
   price         Int
   images        Image[]
   detailImage   DetailImage?
-  options       Option[]
   cartItems     CartItem[]
   reviews       Review[]
-}
-
-model Option {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  product       Product     @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  productId     String      @db.ObjectId
-  optionItems   OptionItem[]
-}
-
-model OptionItem {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  title         String
-  value         Int
-  stock         Int
-  option        Option    @relation(fields: [optionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  optionId      String    @db.ObjectId
 }
 
 model Review {

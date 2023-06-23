@@ -12,23 +12,13 @@ import MinusIcon from "assets/icon/minus.svg";
 import debounce from "common/utils/debounce";
 
 type CartItemProps = {
-  itemId: string;
-  productId: string;
-  title: string;
-  image?: string;
-  price: number;
-  quantity: number;
+  item: CartItemType;
   cartItems: CartItemType[];
   setCartItems: Dispatch<SetStateAction<CartItemType[] | null>>;
 };
 
 export default function CartItem({
-  itemId,
-  productId,
-  title,
-  image,
-  price,
-  quantity,
+  item,
   cartItems,
   setCartItems,
 }: CartItemProps) {
@@ -41,25 +31,25 @@ export default function CartItem({
     () =>
       debounce(async () => {
         const qty = Number(qtyRef.current?.innerText);
-        await axios.put(`/api/user/cart/item/${itemId}`, {
+        await axios.put(`/api/user/cart/item/${item.id}`, {
           quantity: qty,
         });
       }, 1000),
-    [itemId]
+    [item]
   );
 
   const onMinusClicked = (e: MouseEvent) => {
     e.preventDefault();
-    if (quantity < 2) return;
+    if (item.quantity < 2) return;
     setCartItems(
-      cartItems.map((item) => {
-        if (item.id === itemId) {
+      cartItems.map((Item) => {
+        if (Item.title === item.title) {
           return {
-            ...item,
-            quantity: quantity - 1,
+            ...Item,
+            quantity: item.quantity - 1,
           };
         }
-        return item;
+        return Item;
       })
     );
 
@@ -69,14 +59,14 @@ export default function CartItem({
   const onPlusClicked = (e: MouseEvent) => {
     e.preventDefault();
     setCartItems(
-      cartItems.map((item) => {
-        if (item.id === itemId) {
+      cartItems.map((Item) => {
+        if (Item.title === item.title) {
           return {
-            ...item,
-            quantity: quantity + 1,
+            ...Item,
+            quantity: item.quantity + 1,
           };
         }
-        return item;
+        return Item;
       })
     );
 
@@ -85,9 +75,9 @@ export default function CartItem({
 
   const onDeleteClicked = async () => {
     try {
-      await axios.delete(`/api/user/cart/item/${itemId}`);
+      await axios.delete(`/api/user/cart/item/${item.id}`);
       setCartSize(cartSize - 1);
-      setCartItems(cartItems.filter((item) => item.id !== itemId));
+      setCartItems(cartItems.filter((Item) => Item.title !== item.title));
       setNotification({
         isOpen: true,
         content: "물품을 성공적으로 삭제했습니다.",
@@ -106,10 +96,10 @@ export default function CartItem({
         className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md 
           border border-gray-200 sm:h-32 sm:w-32"
       >
-        {image ? (
+        {item.image ? (
           <Image
             className="h-full w-full object-cover object-center"
-            src={image}
+            src={item.image}
             alt="상품 이미지"
             fill
             sizes="100vw 100vh"
@@ -123,18 +113,18 @@ export default function CartItem({
       <div className="ml-4 flex flex-1 flex-col">
         <div>
           <div className="flex justify-between text-base font-medium text-gray-900">
-            <h3>
-              <Link href={`/product/${productId}`} className="hover:underline">
-                {title.split("/")[0]}
+            <h3 className="text-lg font-semibold">
+              <Link
+                href={`/product/${item.productId}`}
+                className="hover:underline"
+              >
+                {item.title}
               </Link>
             </h3>
             <p className="ml-4">
-              {(price * quantity).toLocaleString("ko-KR")} 원
+              {(item.price * item.quantity).toLocaleString("ko-KR")} 원
             </p>
           </div>
-          <p className="mt-1 text-sm text-gray-500 text-left">
-            {title.split("/").splice(1).join(" / ")}
-          </p>
         </div>
         <div className="flex flex-1 items-end justify-between text-sm">
           <div className="shrink-0 flex items-center text-lg font-semibold border border-gray-200">
@@ -145,7 +135,7 @@ export default function CartItem({
               <MinusIcon className="w-6 h-6" />
             </button>
             <span ref={qtyRef} className="px-4 text-sm font-semibold">
-              {quantity}
+              {item.quantity}
             </span>
             <button
               className="p-1 border-l border-gray-200"
@@ -158,7 +148,7 @@ export default function CartItem({
           <div className="flex">
             <button
               type="button"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-orange-500 hover:text-orange-400"
               onClick={onDeleteClicked}
             >
               삭제

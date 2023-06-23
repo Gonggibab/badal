@@ -22,11 +22,6 @@ export default async function handler(
       try {
         const data = await prisma.product.findMany({
           include: {
-            options: {
-              include: {
-                optionItems: true,
-              },
-            },
             images: true,
           },
         });
@@ -50,18 +45,6 @@ export default async function handler(
           data: {
             title: req.body.title,
             price: req.body.price,
-            options: {
-              create: options.map((option) => ({
-                title: option.title,
-                optionItems: {
-                  create: option.optionItems.map((item) => ({
-                    title: item.title,
-                    value: item.value || 0,
-                    stock: item.stock || 0,
-                  })),
-                },
-              })),
-            },
             images: {
               create: images.map((image) => ({
                 asset_id: image.asset_id,

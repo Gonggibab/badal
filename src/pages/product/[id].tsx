@@ -6,14 +6,13 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 
-import { OptionType, ProductType } from "common/types/product";
+import { ProductType } from "common/types/product";
 import {
   cartSizeAtom,
   notificationAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
 import ImageGallery from "components/Product/ImageGallery";
-import Option from "components/Product/Option";
 import Review from "components/Product/Review";
 import Modal from "components/Modal";
 import Loader from "components/Loader/Loader";
@@ -41,9 +40,6 @@ export default function ProductDetail() {
   const [qty, setQty] = useState<number>(1);
   const [isReviewShown, setIsReviewShown] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedOptions, setSelectedOptions] = useState<
-    SelectedOptionType[] | null
-  >(null);
 
   useEffect(() => {
     // 제품 데이터를 불러온다
@@ -51,32 +47,19 @@ export default function ProductDetail() {
       const { data } = await axios.get(`/api/product/${router.query.id}`);
       const productData: ProductType = data.data;
       setProductData(productData);
-      setSelectedOptions(
-        productData.options.map((option: OptionType) => {
-          return {
-            optionId: option.id,
-            optionItemId: option.optionItems[0].id,
-            title: option.optionItems[0].title,
-            value: option.optionItems[0].value,
-          };
-        })
-      );
     };
 
     if (router.isReady) getProductData();
   }, [router.isReady, router.query.id]);
 
-  // 옵션 및 수량선택 마다 가격 업데이트
+  // 수량선택시 가격 업데이트
   useEffect(() => {
-    if (!productData || !selectedOptions) return;
-
-    let tmpPrice = productData.price;
-    selectedOptions.forEach((opt) => (tmpPrice += opt.value));
-    setPrice(tmpPrice * qty);
-  }, [selectedOptions, qty, productData]);
+    if (!productData) return;
+    setPrice(productData.price * qty);
+  }, [qty, productData]);
 
   const onAddCartClicked = async () => {
-    if (!productData || !selectedOptions) return;
+    if (!productData) return;
 
     if (!data) {
       // 로그인을 안했으면 로그인 의사를 물어본다.
@@ -86,10 +69,7 @@ export default function ProductDetail() {
         await axios.post("/api/user/cart/item", {
           userId: data.user?.id,
           productId: router.query.id,
-          title:
-            productData.title +
-            " / " +
-            selectedOptions.map((opt) => opt.title).join(" / "),
+          title: productData.title,
           image:
             productData.images.length > 0
               ? productData.images[0].secure_url
@@ -133,7 +113,7 @@ export default function ProductDetail() {
   };
 
   const onOrderClicked = () => {
-    if (!productData || !selectedOptions) return;
+    if (!productData) return;
 
     if (!data) {
       // 로그인을 안했으면 로그인 의사를 물어본다.
@@ -142,10 +122,7 @@ export default function ProductDetail() {
       setOrderItems([
         {
           productId: router.query.id as string,
-          title:
-            productData.title +
-            " / " +
-            selectedOptions.map((opt) => opt.title).join(" / "),
+          title: productData.title,
           image:
             productData.images.length > 0
               ? productData.images[0].secure_url
@@ -161,7 +138,7 @@ export default function ProductDetail() {
   return (
     <main className="w-screen h-full flex flex-col items-center justify-between">
       <section className="bg-white w-full">
-        {productData && selectedOptions && (
+        {productData && (
           <div className="pt-6">
             <nav aria-label="Breadcrumb">
               <ol
@@ -218,26 +195,10 @@ export default function ProductDetail() {
                   </h1>
 
                   <form className="mt-6">
-                    {productData.options.map((option) => {
-                      return (
-                        <Option
-                          key={option.id}
-                          id={option.id}
-                          title={option.title}
-                          optionItmes={option.optionItems}
-                          selectedOptions={selectedOptions}
-                          setSelectedOptions={setSelectedOptions}
-                        />
-                      );
-                    })}
-
                     <div className="mt-6 pt-4 flex flex-col text-gray-900 border-t border-gray-200">
                       <span className="mb-4 font-semibold">수량</span>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm">
-                          {productData.title}
-                          {selectedOptions.map((opt) => ` / ${opt.title}`)}
-                        </span>
+                        <span className="text-sm">{productData.title}</span>
 
                         <div className="ml-4 shrink-0 flex items-center text-lg font-semibold border border-gray-200">
                           <button
@@ -394,7 +355,7 @@ export default function ProductDetail() {
         }}
       />
 
-      <Loader isLoading={!productData && !selectedOptions} />
+      <Loader isLoading={!productData} />
     </main>
   );
 }

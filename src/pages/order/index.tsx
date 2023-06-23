@@ -14,6 +14,7 @@ import {
   notificationAtom,
   orderAdrsIdAtom,
   orderItemsAtom,
+  useSsrComplectedState,
 } from "common/recoil/atom";
 import ShippingInfo from "components/Order/ShippingInfo";
 import OrderInfo from "components/Order/OrderInfo";
@@ -80,6 +81,10 @@ export default function Order() {
 
   const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5);
   const orderId = yymmdd + nanoid();
+
+  // Recoil Persist Hydration 에러로 인해 SSR 체크 완료 후 orderItems 데이터 불러옴
+  const setSsrCompleted = useSsrComplectedState();
+  useEffect(setSsrCompleted, [setSsrCompleted]);
 
   useEffect(() => {
     if (!data?.user) return;

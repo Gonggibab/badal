@@ -8,6 +8,7 @@ import { PaymentDataType } from "common/types/tosspayments";
 import OrderItem from "components/Order/PurchaseItem";
 import Loader from "components/Loader/Loader";
 import isoTimeToKRdate from "common/utils/isoTimeToKRdate";
+import PurchaseItem from "components/Order/PurchaseItem";
 
 export default function Confirmation() {
   const router = useRouter();
@@ -95,15 +96,7 @@ export default function Confirmation() {
           <div className="w-full flex- flex-col">
             <ul role="list" className="w-full divide-y divide-gray-100">
               {order.orderItems?.map((item, idx) => {
-                return (
-                  <OrderItem
-                    key={idx}
-                    title={item.title}
-                    image={item.image}
-                    price={item.price}
-                    quantity={item.quantity}
-                  />
-                );
+                return <PurchaseItem key={idx} item={item} />;
               })}
             </ul>
 

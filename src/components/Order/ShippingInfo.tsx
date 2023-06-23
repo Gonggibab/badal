@@ -58,7 +58,7 @@ export default function ShippingInfo({
                 id="default-address"
                 name="address"
                 type="radio"
-                className="h-4 w-4 border-gray-300 text-orange-500 focus:ring-orange-500"
+                className="h-4 w-4 border-gray-300 text-orange-500 focus:ring-orange-500 cursor-pointer"
                 checked={!isNewAdrs}
                 onChange={() => setIsNewAdrs(false)}
               />
@@ -76,7 +76,7 @@ export default function ShippingInfo({
               id="new-address"
               name="address"
               type="radio"
-              className="h-4 w-4 border-gray-300 text-orange-500 focus:ring-orange-500"
+              className="h-4 w-4 border-gray-300 text-orange-500 focus:ring-orange-500 cursor-pointer"
               checked={isNewAdrs}
               onChange={() => setIsNewAdrs(true)}
             />

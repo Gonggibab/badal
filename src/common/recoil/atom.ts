@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { AtomEffect, atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
 const sessionStorage =
@@ -8,6 +8,22 @@ const { persistAtom } = recoilPersist({
   key: "persistShippingInfo",
   storage: sessionStorage,
 });
+
+// NextJS Hydration 에러 해결 코드.
+// 출처: https://stackoverflow.com/questions/68110629/nextjs-react-recoil-persist-values-in-local-storage-initial-page-load-in-wrong
+const ssrCompletedState = atom({
+  key: "SsrCompleted",
+  default: false,
+});
+
+export const useSsrComplectedState = () => {
+  const setSsrCompleted = useSetRecoilState(ssrCompletedState);
+  return () => setSsrCompleted(true);
+};
+
+export const persistAtomEffect = <T>(param: Parameters<AtomEffect<T>>[0]) => {
+  param.getPromise(ssrCompletedState).then(() => persistAtom(param));
+};
 
 // 헤더 Atom
 export const isHeaderTranspAtom = atom<boolean>({
@@ -41,7 +57,7 @@ export const cartSizeAtom = atom<number>({
 export const orderAdrsIdAtom = atom<string>({
   key: "orderAdrsId",
   default: "",
-  effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtomEffect],
 });
 
 export type OrderItemsAtomType = {
@@ -56,11 +72,10 @@ export type OrderItemsAtomType = {
 export const orderItemsAtom = atom<OrderItemsAtomType[]>({
   key: "orderItems",
   default: [],
-  effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtomEffect],
 });
 
 // 마이 페이지 Atoms
-
 export enum Section {
   USER_INFO,
   ORDER_INFO,
@@ -69,5 +84,5 @@ export enum Section {
 export const mySectionAtom = atom<Section>({
   key: "mySection",
   default: Section.USER_INFO,
-  effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtomEffect],
 });
