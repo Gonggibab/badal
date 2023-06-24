@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import ProductCard from "components/Product/ProductCard";
+import ProductCard from "components/ProductCard";
 import Loader from "components/Loader/Loader";
 import { ProductType } from "common/types/product";
 

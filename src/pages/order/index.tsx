@@ -42,7 +42,6 @@ export default function Order() {
   const setNotification = useSetRecoilState(notificationAtom);
   const [adrsList, setAdrsList] = useState<ShippingInfoType[]>([]);
   const [orderTitle, setOrderTitle] = useState<string>("");
-  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedAdrs, setSelectedAdrs] = useState<ShippingInfoType>({
     id: "",
     idDefault: true,
@@ -92,7 +91,6 @@ export default function Order() {
     if (!orderItems || orderItems.length < 1) return;
 
     // 주문 정보 업데이트
-    setTotalPrice(orderItems.reduce((acc, item) => acc + item.price, 0));
     setOrderTitle(
       `${orderItems[0].title} ${
         orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""

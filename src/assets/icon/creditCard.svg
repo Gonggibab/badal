@@ -1,0 +1,14 @@
+<svg
+  viewBox="0 0 21 21"
+  fill="currentColor"
+>
+  <g fill="none" fillRule="evenodd">
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M4.5 5.5h12a2 2 0 012 2v7a2 2 0 01-2 2h-12a2 2 0 01-2-2v-7a2 2 0 012-2z"
+    />
+    <path fill="currentColor" d="M2 9h17v2H2z" />
+  </g>
+</svg>

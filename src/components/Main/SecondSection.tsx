@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { ProductType } from "common/types/product";
-import ProductCard from "components/Product/ProductCard";
+import ProductCard from "components/ProductCard";
 
 export default function SecondSection() {
   const [productData, setProductData] = useState<ProductType[] | null>(null);

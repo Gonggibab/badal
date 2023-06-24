@@ -12,6 +12,8 @@ import {
 } from "common/recoil/atom";
 import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
+import sendMessage from "common/utils/sendMessage";
+import { OrderType } from "common/types/order";
 
 export default function Success() {
   const { data } = useSession();
@@ -32,7 +34,7 @@ export default function Success() {
     if (!orderId || !paymentKey || !amount || !authKey || orderAdrsId === "")
       return;
 
-    const getOrderConfirmData = async () => {
+    const confirmOrder = async () => {
       try {
         const confirm = await axios.post(
           "https://api.tosspayments.com/v1/payments/confirm",
@@ -46,7 +48,7 @@ export default function Success() {
         );
         const confirmData: OrderConfirmType = confirm.data;
 
-        const order = await axios.post("/api/order", {
+        const orderRes = await axios.post("/api/order", {
           orderId: confirmData.orderId,
           paymentKey: confirmData.paymentKey,
           title: `${orderItems[0].title} ${
@@ -58,6 +60,15 @@ export default function Success() {
           addressId: orderAdrsId,
           items: orderItems,
         });
+        const order: OrderType = orderRes.data.data;
+
+        // 주문 완료 문자 발송
+        sendMessage(
+          order.address.contact,
+          order.title,
+          String(order.price),
+          order.orderId
+        );
 
         // 주문 완료된 카트 아이템들 삭제
         await Promise.all(
@@ -68,7 +79,7 @@ export default function Success() {
         setCartItems([]);
         setOrderItems([]);
 
-        router.push(`/order/confirmation/${order.data.data.id}`);
+        router.push(`/order/confirmation/${order.id}`);
       } catch (error) {
         console.log(
           "결제 승인 및 주문 저장과정에서 에러가 발생했습니다. " + error
@@ -76,7 +87,7 @@ export default function Success() {
       }
     };
 
-    getOrderConfirmData();
+    confirmOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, authKey, data, orderAdrsId, orderId, paymentKey]);
 

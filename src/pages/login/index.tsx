@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 
 import Loader from "components/Loader/Loader";
 import Logo from "assets/logo.svg";
@@ -62,6 +63,17 @@ export default function Login() {
               </svg>
               카카오 로그인
             </button>
+          </div>
+          <div className="mt-10 w-full flex justify-center">
+            <p className="text-center text-sm text-gray-500">
+              회원이 아니신가요?
+              <Link
+                href={"/not-user"}
+                className="ml-2 font-semibold leading-6 text-orange-500 hover:text-orange-400"
+              >
+                비회원 주문조회
+              </Link>
+            </p>
           </div>
         </div>
       </main>
