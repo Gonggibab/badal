@@ -1,4 +1,4 @@
-import { AddressType } from "./user";
+import { AddressType, UserType } from "./user";
 
 export type OrderItemType = {
   title: string;
@@ -26,5 +26,6 @@ export type OrderType = {
   image: string;
   address: AddressType;
   orderItems: OrderItemType[];
+  user: UserType | null;
   createdAt: string;
 };

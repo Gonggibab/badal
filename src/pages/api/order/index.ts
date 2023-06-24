@@ -20,12 +20,22 @@ export default async function handler(
   switch (method) {
     case "GET":
       try {
-        const data = await prisma.order.findMany({
-          where: { userId: userId as string },
-          orderBy: {
-            createdAt: "desc",
-          },
-        });
+        let data;
+        if (userId) {
+          data = await prisma.order.findMany({
+            where: { userId: userId as string },
+            orderBy: {
+              createdAt: "desc",
+            },
+          });
+        } else {
+          data = await prisma.order.findMany({
+            include: {
+              user: true,
+              address: true,
+            },
+          });
+        }
 
         res.status(200).json({ success: true, data: data });
       } catch (error) {
