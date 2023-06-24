@@ -10,10 +10,10 @@ import {
   orderAdrsIdAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
+import { OrderType } from "common/types/order";
 import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
 import sendMessage from "common/utils/sendMessage";
-import { OrderType } from "common/types/order";
 
 export default function Success() {
   const { data } = useSession();
@@ -56,7 +56,7 @@ export default function Success() {
           }`,
           price: orderItems.reduce((acc, item) => acc + item.price, 0),
           image: orderItems[0].image,
-          userId: data ? data.user?.id! : null,
+          userId: data?.user?.id,
           addressId: orderAdrsId,
           items: orderItems,
         });

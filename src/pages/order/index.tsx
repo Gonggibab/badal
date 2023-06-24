@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { nanoid, customAlphabet } from "nanoid";
@@ -31,6 +32,7 @@ export type NewAddressType = {
 
 export default function Order() {
   const { data } = useSession();
+  const router = useRouter();
 
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<
@@ -88,6 +90,11 @@ export default function Order() {
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
   useEffect(() => {
+    if (data === undefined) {
+      router.push("/product");
+      return;
+    }
+
     if (!orderItems || orderItems.length < 1) return;
 
     // 주문 정보 업데이트
