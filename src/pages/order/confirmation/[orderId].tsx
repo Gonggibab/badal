@@ -5,10 +5,9 @@ import axios from "axios";
 
 import { OrderType } from "common/types/order";
 import { PaymentDataType } from "common/types/tosspayments";
-import OrderItem from "components/Order/PurchaseItem";
+import PurchaseItem from "components/Order/PurchaseItem";
 import Loader from "components/Loader/Loader";
 import isoTimeToKRdate from "common/utils/isoTimeToKRdate";
-import PurchaseItem from "components/Order/PurchaseItem";
 
 export default function Confirmation() {
   const router = useRouter();

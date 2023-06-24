@@ -4,6 +4,7 @@ import { ShippingInfoType } from "common/types/user";
 import { NewAddressType } from "pages/order";
 
 type ShippingInfoProps = {
+  isNotUser: boolean;
   adrsList: ShippingInfoType[];
   selectedAdrs: ShippingInfoType;
   newAdrs: NewAddressType;
@@ -16,6 +17,7 @@ type ShippingInfoProps = {
 };
 
 export default function ShippingInfo({
+  isNotUser,
   adrsList,
   selectedAdrs,
   newAdrs,
@@ -257,7 +259,7 @@ export default function ShippingInfo({
           </div>
 
           <div className="col-span-full h-6 flex items-center">
-            {isNewAdrs && (
+            {!isNotUser && isNewAdrs && (
               <>
                 <input
                   id="offers"

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Link from "next/link";
 import axios from "axios";
 
-import { orderItemsAtom } from "common/recoil/atom";
-import { CartItemType } from "common/types/user";
+import {
+  cartItemsAtom,
+  orderItemsAtom,
+  useSsrComplectedState,
+} from "common/recoil/atom";
 import CartItem from "components/Cart/CartItem";
 import Loader from "components/Loader/Loader";
 import EmptyCartIcon from "assets/icon/emptyCart.svg";
@@ -15,14 +18,18 @@ export default function Cart() {
   const router = useRouter();
   const { data } = useSession();
   const setOrderItems = useSetRecoilState(orderItemsAtom);
-  const [cartItems, setCartItems] = useState<CartItemType[] | null>(null);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
     let price = 0;
     cartItems?.forEach((item) => (price += item.price * item.quantity));
     return price;
   });
 
-  // 카트 데이터를 불러온다
+  // Recoil Persist Hydration 에러로 인해 SSR 체크
+  const setSsrCompleted = useSsrComplectedState();
+  useEffect(setSsrCompleted, [setSsrCompleted]);
+
+  // 회원인 경우 카트 데이터를 불러온다
   useEffect(() => {
     if (!data?.user) return;
 
@@ -32,12 +39,13 @@ export default function Cart() {
     };
 
     getCartData();
-  }, [data]);
+  }, [data, setCartItems]);
 
   useEffect(() => {
-    let price = 0;
-    cartItems?.forEach((item) => (price += item.price * item.quantity));
-    setTotalPrice(price);
+    if (!cartItems) return;
+    setTotalPrice(
+      cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
+    );
   }, [cartItems]);
 
   return (
@@ -75,14 +83,7 @@ export default function Cart() {
             >
               {cartItems &&
                 cartItems.map((item) => {
-                  return (
-                    <CartItem
-                      key={item.id}
-                      item={item}
-                      cartItems={cartItems}
-                      setCartItems={setCartItems}
-                    />
-                  );
+                  return <CartItem key={item.title} item={item} />;
                 })}
             </ul>
           </div>
@@ -103,7 +104,7 @@ export default function Cart() {
               bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600
                 hover:translate-y-[1px] transition-all"
               onClick={() => {
-                setOrderItems(cartItems!);
+                setOrderItems(cartItems);
                 router.push("/order");
               }}
             >

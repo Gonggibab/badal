@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import Link from "next/link";
 import axios from "axios";
 
-import { Section, mySectionAtom } from "common/recoil/atom";
+import { Section, cartItemsAtom, mySectionAtom } from "common/recoil/atom";
 import { UserType } from "common/types/user";
 import UserSection from "components/My/UserSection/UserSection";
 import OrderSection from "components/My/OrderSection/OrderSection";
@@ -15,6 +15,7 @@ import Loader from "components/Loader/Loader";
 
 export default function My() {
   const { data } = useSession();
+  const setCartItems = useSetRecoilState(cartItemsAtom);
   const [section, setSection] = useRecoilState(mySectionAtom);
   const [curSection, setCurSection] = useState(Section.USER_INFO);
   const [user, setUser] = useState<UserType | null>(null);
@@ -61,12 +62,15 @@ export default function My() {
                 <span className="hidden sm:inline-block">관리자 페이지</span>
               </Link>
               <button
-                onClick={() => signOut()}
+                onClick={() => {
+                  setCartItems([]);
+                  signOut();
+                }}
                 className="px-2.5 py-1.5 flex items-center text-xs font-semibold rounded-md 
                   shadow hover:shadow-lg hover:translate-y-[1px] transition-all 
                   sm:px-3.5 sm:py-2.5 focus:ring-2 focus:ring-inset focus:ring-orange-500"
               >
-                <LogoutIcon className="w-4 h-4 sm:mr-2" />
+                <LogoutIcon className="w-5 h-5 sm:mr-2" />
                 <span className="hidden sm:inline-block">로그아웃</span>
               </button>
             </div>

@@ -1,10 +1,11 @@
-import { Dispatch, MouseEvent, SetStateAction, useRef, useMemo } from "react";
+import { MouseEvent, useRef, useMemo } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 
-import { cartSizeAtom, notificationAtom } from "common/recoil/atom";
+import { cartItemsAtom, notificationAtom } from "common/recoil/atom";
 import { CartItemType } from "common/types/user";
 import NoImage from "components/NoImage";
 import PlusIcon from "assets/icon/plus.svg";
@@ -13,17 +14,12 @@ import debounce from "common/utils/debounce";
 
 type CartItemProps = {
   item: CartItemType;
-  cartItems: CartItemType[];
-  setCartItems: Dispatch<SetStateAction<CartItemType[] | null>>;
 };
 
-export default function CartItem({
-  item,
-  cartItems,
-  setCartItems,
-}: CartItemProps) {
+export default function CartItem({ item }: CartItemProps) {
+  const { data } = useSession();
   const qtyRef = useRef<HTMLElement>(null);
-  const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const setNotification = useSetRecoilState(notificationAtom);
 
   // 제품 수량 변경 버튼에 의한 과도한 요청에 대비해 디바운싱 함
@@ -53,7 +49,7 @@ export default function CartItem({
       })
     );
 
-    debouncedRequest();
+    if (item.id) debouncedRequest();
   };
 
   const onPlusClicked = (e: MouseEvent) => {
@@ -70,24 +66,27 @@ export default function CartItem({
       })
     );
 
-    debouncedRequest();
+    if (item.id) debouncedRequest();
   };
 
   const onDeleteClicked = async () => {
-    try {
-      await axios.delete(`/api/user/cart/item/${item.id}`);
-      setCartSize(cartSize - 1);
-      setCartItems(cartItems.filter((Item) => Item.title !== item.title));
-      setNotification({
-        isOpen: true,
-        content: "물품을 성공적으로 삭제했습니다.",
-      });
-    } catch (error) {
-      setNotification({
-        isOpen: true,
-        content: "에러가 발생했습니다. 다시 시도해 주세요.",
-      });
+    setCartItems(cartItems.filter((Item) => Item.title !== item.title));
+
+    if (data) {
+      try {
+        await axios.delete(`/api/user/cart/item/${item.id}`);
+      } catch (error) {
+        setNotification({
+          isOpen: true,
+          content: "에러가 발생했습니다. 다시 시도해 주세요.",
+        });
+      }
     }
+
+    setNotification({
+      isOpen: true,
+      content: "물품을 성공적으로 삭제했습니다.",
+    });
   };
 
   return (

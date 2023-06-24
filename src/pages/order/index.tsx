@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { customAlphabet } from "nanoid";
+import { nanoid, customAlphabet } from "nanoid";
 import {
   loadPaymentWidget,
   PaymentWidgetInstance,
@@ -31,8 +31,8 @@ export type NewAddressType = {
 };
 
 export default function Order() {
-  const router = useRouter();
   const { data } = useSession();
+  const router = useRouter();
 
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<
@@ -44,7 +44,6 @@ export default function Order() {
   const setNotification = useSetRecoilState(notificationAtom);
   const [adrsList, setAdrsList] = useState<ShippingInfoType[]>([]);
   const [orderTitle, setOrderTitle] = useState<string>("");
-  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedAdrs, setSelectedAdrs] = useState<ShippingInfoType>({
     id: "",
     idDefault: true,
@@ -66,7 +65,7 @@ export default function Order() {
   const [isNewDefault, setIsNewDefault] = useState<boolean>(false);
   const [isNewAdrs, setIsNewAdrs] = useState<boolean>(true);
   const [isPostSearchOpen, setIsPostSearchOpen] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // 결제 정보
   const selector = "#payment-widget";
@@ -79,34 +78,55 @@ export default function Order() {
   const day = today.getDate().toString().padStart(2, "0");
   const yymmdd = year + month + day;
 
-  const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", 5);
-  const orderId = yymmdd + nanoid();
+  const customNanoid = customAlphabet(
+    "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    5
+  );
+  const orderId = yymmdd + customNanoid();
+  const customerKey = data ? data.user?.id! : nanoid();
 
-  // Recoil Persist Hydration 에러로 인해 SSR 체크 완료 후 orderItems 데이터 불러옴
+  // Recoil Persist Hydration 에러로 인해 SSR 체크
   const setSsrCompleted = useSsrComplectedState();
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
   useEffect(() => {
-    if (!data?.user) return;
-    setIsLoading(true);
-
-    // 주문 데이터가 없으면 제품 화면으로 리다이렉트
-    if (orderItems.length < 1) {
+    if (data === undefined) {
       router.push("/product");
       return;
     }
 
+    if (!orderItems || orderItems.length < 1) return;
+
     // 주문 정보 업데이트
-    setTotalPrice(orderItems.reduce((acc, item) => acc + item.price, 0));
     setOrderTitle(
       `${orderItems[0].title} ${
         orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""
       }`
     );
 
-    // 주소 정보 불러오기
+    // 결제창 로드
+    (async () => {
+      const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
+
+      const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
+        selector,
+        orderItems.reduce((acc, item) => acc + item.price, 0)
+      );
+      paymentWidget.renderAgreement("#agreement");
+
+      paymentWidgetRef.current = paymentWidget;
+      paymentMethodsWidgetRef.current = paymentMethodsWidget;
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderItems]);
+
+  useEffect(() => {
+    if (!data?.user) return;
+    setIsLoading(true);
+
+    // 유저일 경우 주소 정보 불러오기
     const getUserAddress = async () => {
-      const address = await axios.get(`api/user/address/${data?.user?.id}`);
+      const address = await axios.get(`api/address/${data?.user?.id}`);
       const adrsData: ShippingInfoType[] = address.data.data;
 
       if (adrsData.length > 0) {
@@ -125,33 +145,17 @@ export default function Order() {
 
     getUserAddress();
 
-    const customerKey = data.user.id!;
-
-    (async () => {
-      const paymentWidget = await loadPaymentWidget(clientKey, customerKey);
-
-      const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
-        selector,
-        totalPrice
-      );
-      paymentWidget.renderAgreement("#agreement");
-
-      paymentWidgetRef.current = paymentWidget;
-      paymentMethodsWidgetRef.current = paymentMethodsWidget;
-    })();
-
     setIsLoading(false);
-  }, [clientKey, data, orderItems, router, totalPrice]);
+  }, [data]);
 
   const proceedPayment = async () => {
-    if (!data?.user) return;
     const paymentWidget = paymentWidgetRef.current;
 
     try {
       await paymentWidget?.requestPayment({
         orderId: orderId,
         orderName: orderTitle,
-        customerName: data.user.name!,
+        customerName: data ? data.user?.name! : newAdrs.name,
         successUrl: `${window.location.origin}/order/success`,
         failUrl: `${window.location.origin}/order/fail`,
       });
@@ -175,8 +179,10 @@ export default function Order() {
         });
         return;
       }
+
       try {
-        const address = await axios.post(`api/user/address/${data?.user?.id}`, {
+        const address = await axios.post(`api/address`, {
+          userId: data?.user?.id,
           name: newAdrs.name,
           contact: newAdrs.contact,
           postcode: newAdrs.postcode,
@@ -208,6 +214,7 @@ export default function Order() {
           gap-x-8 lg:max-w-7xl lg:grid-cols-2"
       >
         <ShippingInfo
+          isNotUser={!data}
           adrsList={adrsList}
           selectedAdrs={selectedAdrs}
           newAdrs={newAdrs}

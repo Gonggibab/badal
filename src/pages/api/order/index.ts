@@ -46,6 +46,7 @@ export default async function handler(
             paymentKey: req.body.paymentKey,
             title: req.body.title,
             price: req.body.price,
+            image: req.body.image,
             userId: req.body.userId,
             addressId: req.body.addressId,
             orderItems: {
@@ -58,6 +59,7 @@ export default async function handler(
             },
           },
           include: {
+            address: true,
             orderItems: true,
           },
         });
