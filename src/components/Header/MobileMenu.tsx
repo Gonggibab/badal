@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Session } from "next-auth";
 import { useRecoilValue } from "recoil";
 
-import { cartSizeAtom } from "common/recoil/atom";
+import { cartItemsAtom } from "common/recoil/atom";
 import Logo from "assets/logo.svg";
 import CloseIcon from "assets/icon/close.svg";
 
@@ -18,7 +18,7 @@ export default function MobileMenu({
   setIsMenuOpen,
   session,
 }: MobileMenuProps) {
-  const cartSize = useRecoilValue(cartSizeAtom);
+  const cartItems = useRecoilValue(cartItemsAtom);
 
   return (
     <div className="lg:hidden" role="dialog" aria-modal="true">
@@ -81,7 +81,7 @@ export default function MobileMenu({
                       className="ml-2 w-5 h-5 text-xs flex justify-center items-center
                         font-semibold text-white bg-orange-500 rounded-full"
                     >
-                      {cartSize}
+                      {cartItems.length}
                     </span>
                   </Link>
                   {session.user?.role === "ADMIN" && (
@@ -95,13 +95,29 @@ export default function MobileMenu({
                   )}
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  로그인
-                </Link>
+                <>
+                  <Link
+                    href="/login"
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    로그인
+                  </Link>
+                  <Link
+                    href="/cart"
+                    className="-mx-3 flex items-center rounded-lg px-3 py-2 
+                  text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    장바구니
+                    <span
+                      className="ml-2 w-5 h-5 text-xs flex justify-center items-center
+                    font-semibold text-white bg-orange-500 rounded-full"
+                    >
+                      {cartItems.length}
+                    </span>
+                  </Link>
+                </>
               )}
             </div>
           </div>

@@ -9,8 +9,10 @@ export default function Loader({
 }: LoaderProps) {
   return (
     <div
-      className={`${isLoading ? "visible opacity-80" : "invisible opacity-0"} ${
-        bgTransparent ? "bg-transparent" : "bg-gray-200 "
+      className={`${
+        isLoading ? "visible opacity-100" : "invisible opacity-0"
+      } ${
+        bgTransparent ? "bg-transparent" : "bg-gray-white "
       } fixed top-0 w-full h-full flex justify-center items-center transition-all`}
     >
       <span

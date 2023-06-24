@@ -8,13 +8,12 @@ import axios from "axios";
 
 import { ProductType } from "common/types/product";
 import {
-  cartSizeAtom,
+  cartItemsAtom,
   notificationAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
 import ImageGallery from "components/Product/ImageGallery";
 import Review from "components/Product/Review";
-import Modal from "components/Modal";
 import Loader from "components/Loader/Loader";
 
 import PlusIcon from "assets/icon/plus.svg";
@@ -34,12 +33,11 @@ export default function ProductDetail() {
   const router = useRouter();
   const setOrderItems = useSetRecoilState(orderItemsAtom);
   const setNotification = useSetRecoilState(notificationAtom);
-  const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [productData, setProductData] = useState<ProductType | null>(null);
   const [price, setPrice] = useState<number>(0);
   const [qty, setQty] = useState<number>(1);
   const [isReviewShown, setIsReviewShown] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // 제품 데이터를 불러온다
@@ -61,10 +59,41 @@ export default function ProductDetail() {
   const onAddCartClicked = async () => {
     if (!productData) return;
 
-    if (!data) {
-      // 로그인을 안했으면 로그인 의사를 물어본다.
-      setIsModalOpen(true);
-    } else {
+    // 카트에 동일한 물품이 있는지 확인
+    const existItem = cartItems.filter((item) => {
+      item.title === productData.title;
+    });
+
+    if (existItem.length > 0) {
+      setNotification({
+        isOpen: true,
+        content: "장바구니에 이미 동일한 물품이 있습니다.",
+        btnTitle: "장바구니 보기",
+        callback: () => {
+          router.push("/cart");
+        },
+      });
+      return;
+    }
+
+    // 카트 아이템 업데이트
+    setCartItems(
+      cartItems.concat([
+        {
+          productId: router.query.id as string,
+          title: productData.title,
+          image:
+            productData.images.length > 0
+              ? productData.images[0].secure_url
+              : undefined,
+          price: price,
+          quantity: qty,
+        },
+      ])
+    );
+
+    // 회원인 경우에는 데이터 베이스도 업데이트
+    if (data) {
       try {
         await axios.post("/api/user/cart/item", {
           userId: data.user?.id,
@@ -77,62 +106,42 @@ export default function ProductDetail() {
           price: price,
           quantity: qty,
         });
+      } catch (error) {
+        console.log("서버와의 통신중에 오류가 발생했습니다. " + error);
 
-        setCartSize(cartSize + 1);
         setNotification({
           isOpen: true,
-          content: "장바구니에 추가되었습니다.",
-          btnTitle: "장바구니 보기",
-          callback: () => {
-            router.push("/cart");
-          },
+          content: "서버와의 통신중에 오류가 발생했습니다. 다시 시도해주세요.",
         });
-      } catch (error) {
-        if (axios.isAxiosError<{ message: string }>(error)) {
-          console.log("장바구니에 동일한 물품을 넣을 수 없습니다. " + error);
-
-          setNotification({
-            isOpen: true,
-            content: "장바구니에 이미 동일한 물품이 있습니다.",
-            btnTitle: "장바구니 보기",
-            callback: () => {
-              router.push("/cart");
-            },
-          });
-        } else {
-          console.log("서버와의 통신중에 오류가 발생했습니다. " + error);
-
-          setNotification({
-            isOpen: true,
-            content:
-              "서버와의 통신중에 오류가 발생했습니다. 다시 시도해주세요.",
-          });
-        }
       }
     }
+
+    setNotification({
+      isOpen: true,
+      content: "장바구니에 추가되었습니다.",
+      btnTitle: "장바구니 보기",
+      callback: () => {
+        router.push("/cart");
+      },
+    });
   };
 
   const onOrderClicked = () => {
     if (!productData) return;
 
-    if (!data) {
-      // 로그인을 안했으면 로그인 의사를 물어본다.
-      setIsModalOpen(true);
-    } else {
-      setOrderItems([
-        {
-          productId: router.query.id as string,
-          title: productData.title,
-          image:
-            productData.images.length > 0
-              ? productData.images[0].secure_url
-              : null,
-          price: price,
-          quantity: qty,
-        },
-      ]);
-      router.push("/order");
-    }
+    setOrderItems([
+      {
+        productId: router.query.id as string,
+        title: productData.title,
+        image:
+          productData.images.length > 0
+            ? productData.images[0].secure_url
+            : null,
+        price: price,
+        quantity: qty,
+      },
+    ]);
+    router.push("/order");
   };
 
   return (
@@ -344,17 +353,6 @@ export default function ProductDetail() {
           </div>
         )}
       </section>
-
-      <Modal
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-        title="로그인이 필요합니다!"
-        content="로그인이 필요한 서비스 입니다. 로그인 하시겠습니까?"
-        btnTitle="로그인"
-        callback={() => {
-          router.push("/login");
-        }}
-      />
 
       <Loader isLoading={!productData} />
     </main>

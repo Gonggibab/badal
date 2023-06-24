@@ -25,7 +25,6 @@ export default function OrderCard({ order }: OrderCardProps) {
           className="relative flex-shrink-0 w-32 h-32 bg-gray-200 rounded-md 
             overflow-hidden animate-pulse"
         >
-          $
           {order.image ? (
             <Image
               className="w-full h-full object-cover object-center"
@@ -33,6 +32,7 @@ export default function OrderCard({ order }: OrderCardProps) {
               alt="주문 제품 이미지"
               fill
               sizes="100vw 100vh"
+              priority
             />
           ) : (
             <NoImage />

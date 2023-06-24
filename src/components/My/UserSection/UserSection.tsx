@@ -23,7 +23,7 @@ export default function UserSection({
     // 주소 데이터 불러오기
     setIsLoadAdress(true);
     const getAddressData = async () => {
-      const addressRes = await axios.get(`/api/user/address/${user.id}`);
+      const addressRes = await axios.get(`/api/address/${user.id}`);
       const addresses: AddressType[] = addressRes.data.data;
       setAdresses(addresses);
     };

@@ -5,7 +5,7 @@ import { useRecoilState } from "recoil";
 import axios from "axios";
 import Link from "next/link";
 
-import { cartSizeAtom, isHeaderTranspAtom } from "common/recoil/atom";
+import { cartItemsAtom, isHeaderTranspAtom } from "common/recoil/atom";
 import MobileMenu from "./MobileMenu";
 import Logo from "assets/logo.svg";
 import UserIcon from "assets/icon/user.svg";
@@ -18,25 +18,25 @@ export default function Header() {
   const router = useRouter();
   const [isHeaderTransp, setIsHeaderTransp] =
     useRecoilState(isHeaderTranspAtom);
-  const [cartSize, setCartSize] = useRecoilState(cartSizeAtom);
+  const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
+  //  브랜드 페이지가 아니라면 헤더 배경을 초기화 한다
   useEffect(() => {
-    //  브랜드 페이지가 아니라면 헤더 배경을 초기화 한다
     if (router.pathname !== "/brand") setIsHeaderTransp(false);
   }, [router, setIsHeaderTransp]);
 
+  // 사용자일 경우 카트 데이터를 불러온다
   useEffect(() => {
     if (!data?.user) return;
 
-    // 제품 데이터를 불러온다
     const getCartData = async () => {
       const cart = await axios.get(`/api/user/cart/${data?.user?.id}`);
-      setCartSize(cart.data.data.items.length);
+      setCartItems(cart.data.data.items);
     };
 
     getCartData();
-  }, [data, setCartSize]);
+  }, [data, setCartItems]);
 
   return (
     <header
@@ -80,7 +80,7 @@ export default function Header() {
           </Link>
         </div>
 
-        <div className="hidden lg:flex">
+        <div className="hidden lg:flex lg:items-center">
           {data ? (
             <>
               <Link
@@ -94,23 +94,6 @@ export default function Header() {
                   } w-7 h-7`}
                 />
               </Link>
-              <Link
-                href="/cart"
-                className="relative ml-4 inline-flex items-center justify-center text-inherit"
-              >
-                <span className="sr-only">Shopping Cart</span>
-                <CartIcon
-                  className={`${
-                    isHeaderTransp ? "text-gray-900" : "text-gray-900"
-                  } w-7 h-7`}
-                />
-                <span
-                  className="absolute -top-3 right-[5px] w-4 h-4 text-xs font-semibold
-                  text-white text-center bg-orange-500 rounded-full"
-                >
-                  {cartSize}
-                </span>
-              </Link>
             </>
           ) : (
             <Link
@@ -121,10 +104,27 @@ export default function Header() {
               <LoginIcon
                 className={`${
                   isHeaderTransp ? "text-gray-900" : "text-gray-900"
-                } w-5 h-5`}
+                } w-7 h-7`}
               />
             </Link>
           )}
+          <Link
+            href="/cart"
+            className="relative ml-4 inline-flex items-center justify-center text-inherit"
+          >
+            <span className="sr-only">Shopping Cart</span>
+            <CartIcon
+              className={`${
+                isHeaderTransp ? "text-gray-900" : "text-gray-900"
+              } w-7 h-7`}
+            />
+            <span
+              className="absolute -top-3 right-[5px] w-4 h-4 text-xs font-semibold
+                  text-white text-center bg-orange-500 rounded-full"
+            >
+              {cartItems.length}
+            </span>
+          </Link>
         </div>
 
         <div className="flex lg:hidden">

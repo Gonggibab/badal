@@ -1,3 +1,4 @@
+import { CartItemType } from "common/types/user";
 import { AtomEffect, atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
@@ -48,9 +49,10 @@ export const notificationAtom = atom<NotificationAtomType>({
 });
 
 // 사용자 Atoms
-export const cartSizeAtom = atom<number>({
-  key: "cartSize",
-  default: 0,
+export const cartItemsAtom = atom<CartItemType[]>({
+  key: "cartItems",
+  default: [],
+  effects_UNSTABLE: [persistAtomEffect],
 });
 
 // 주문 Atoms

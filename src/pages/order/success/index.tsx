@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import axios from "axios";
 
 import {
-  cartSizeAtom,
+  cartItemsAtom,
   orderAdrsIdAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
@@ -18,7 +18,7 @@ export default function Success() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderAdrsId = useRecoilValue(orderAdrsIdAtom);
-  const setCartSize = useSetRecoilState(cartSizeAtom);
+  const setCartItems = useSetRecoilState(cartItemsAtom);
   const [orderItems, setOrderItems] = useRecoilState(orderItemsAtom);
 
   const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
@@ -29,14 +29,7 @@ export default function Success() {
 
   // 서버로 결제 승인 요청 보내기
   useEffect(() => {
-    if (
-      !data?.user ||
-      !orderId ||
-      !paymentKey ||
-      !amount ||
-      !authKey ||
-      orderAdrsId === ""
-    )
+    if (!orderId || !paymentKey || !amount || !authKey || orderAdrsId === "")
       return;
 
     const getOrderConfirmData = async () => {
@@ -61,7 +54,7 @@ export default function Success() {
           }`,
           price: orderItems.reduce((acc, item) => acc + item.price, 0),
           image: orderItems[0].image,
-          userId: data.user?.id!,
+          userId: data ? data.user?.id! : null,
           addressId: orderAdrsId,
           items: orderItems,
         });
@@ -72,7 +65,7 @@ export default function Success() {
             (item) => item.id && axios.delete(`/api/user/cart/item/${item.id}`)
           )
         );
-        setCartSize(0);
+        setCartItems([]);
         setOrderItems([]);
 
         router.push(`/order/confirmation/${order.data.data.id}`);
