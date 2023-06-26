@@ -1,4 +1,5 @@
 import prisma from "common/lib/prisma";
+import { ImageType } from "common/types/image";
 import cloudinary from "common/utils/cloudinary";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -31,6 +32,59 @@ export default async function handler(
         res.status(200).json({ success: true, data: data });
       } catch (error) {
         console.log("제품 정보를 불러오는 도중 에러가 발생했습니다. " + error);
+        res.status(500).json({ success: false, error: error });
+      }
+
+      break;
+
+    case "PUT":
+      const images: ImageType[] = req.body.images;
+      const detailImage: ImageType = req.body.detailImage;
+
+      try {
+        // 해당 Product 업데이트하기
+        const product = await prisma.product.update({
+          where: { id: id as string },
+          data: {
+            title: req.body.title,
+            price: req.body.price,
+            stock: req.body.stock,
+          },
+        });
+
+        if (images && images.length > 0) {
+          await prisma.image.createMany({
+            data: images.map((image) => {
+              return {
+                productId: product.id,
+                asset_id: image.asset_id,
+                public_id: image.public_id,
+                signature: image.signature,
+                url: image.url,
+                secure_url: image.secure_url,
+                createdAt: new Date(image.createdAt),
+              };
+            }),
+          });
+        }
+
+        if (detailImage) {
+          await prisma.detailImage.create({
+            data: {
+              productId: product.id,
+              asset_id: detailImage.asset_id,
+              public_id: detailImage.public_id,
+              signature: detailImage.signature,
+              url: detailImage.url,
+              secure_url: detailImage.secure_url,
+              createdAt: new Date(detailImage.createdAt),
+            },
+          });
+        }
+
+        res.status(200).json({ success: true, data: product });
+      } catch (error) {
+        console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 
@@ -72,7 +126,7 @@ export default async function handler(
       break;
 
     default:
-      res.setHeader("Allow", ["GET", "DELETE"]);
+      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

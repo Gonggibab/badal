@@ -1,21 +1,25 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import { OrderType } from "common/types/order";
+import OrderFilter from "components/Admin/Order/OrderFilter";
+import OrderItem from "components/Admin/Order/OrderItem";
+import Spinner from "components/Loader/Spinner";
 import SearchIcon from "assets/icon/search.svg";
 import RefreshIcon from "assets/icon/refresh.svg";
-import PlusIcon from "assets/icon/plus.svg";
 import EmptyBoxIcon from "assets/icon/emptyCart.svg";
-import Modal from "components/Modal";
-import Spinner from "components/Loader/Spinner";
-import OrderItem from "components/Admin/Order/OrderItem";
+
+export type OrderFilterType = {
+  status: string[];
+  period: string[];
+};
 
 export default function OrderAdmin() {
-  const allCheckRef = useRef<HTMLInputElement>(null);
   const [order, setOrder] = useState<OrderType[] | null>(null);
-  const [selectedData, setSelectedData] = useState<Set<string>>(new Set());
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [filter, setFilter] = useState<OrderFilterType>({
+    status: [],
+    period: [],
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const getOrderData = async () => {
@@ -34,8 +38,8 @@ export default function OrderAdmin() {
   return (
     <main className="p-4 lg:ml-64">
       <div
-        className="p-2 flex flex-col items-center w-full h-[calc(100vh-120px)] overflow-x-scroll
-          shadow-md sm:rounded-lg lg:h-[calc(100vh-40px)]"
+        className="p-2 flex flex-col items-center w-full h-[calc(100vh-100px)] overflow-x-scroll
+          shadow-md sm:rounded-lg lg:h-[calc(100vh-20px)]"
       >
         <div className="pb-4 w-full flex flex-col justify-between items-center text-sm sm:flex-row">
           <div className="mb-4 w-full flex items-center sm:m-0">
@@ -65,25 +69,22 @@ export default function OrderAdmin() {
                 hover:shadow-lg hover:translate-y-[1px] transition-all"
               onClick={getOrderData}
             >
-              <RefreshIcon className="mr-2 w-4 h-4 sm:m-0 lg:mr-2" />
-              <span className="block sm:hidden lg:block">새로고침</span>
+              <RefreshIcon className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:block">새로고침</span>
             </button>
-            <Link
-              href="/admin/product/add"
-              className="ml-4 pl-1 pr-2 h-10 flex items-center rounded-md shadow
-                hover:shadow-lg hover:translate-y-[1px] transition-all"
-            >
-              <PlusIcon className="mr-2 w-6 h-6" />
-              <span className="-ml-1.5">추가하기</span>
-            </Link>
           </div>
         </div>
-        <div className="w-full overflow-x-scroll">
+
+        <div className="mb-4 px-4 py-3 w-full flex items-center text-xs rounded-md shadow">
+          <OrderFilter />
+        </div>
+
+        <div className="w-full y-full overflow-x-scroll">
           <table className="w-full text-sm text-left text-gray-500 border-collapse">
             <thead className="text-xs font-semibold text-gray-700 bg-gray-50">
               <tr>
                 <th scope="col" className="px-4 py-3 whitespace-nowrap">
-                  상태
+                  주문상태
                 </th>
                 <th scope="col" className="px-4 py-3 whitespace-nowrap">
                   주문번호

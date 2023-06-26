@@ -27,7 +27,7 @@ export default function OrderItem({ item }: OrderItemProps) {
         scope="row"
         className={`${StatusColor[status]} px-4 py-3 font-semibold whitespace-nowrap`}
       >
-        <StatusSelectList status={status} setStatus={setStatus} />
+        <StatusSelectList order={item} status={status} setStatus={setStatus} />
       </th>
       <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
         <Link href={`/admin/order/${item.id}`} className="hover:underline">

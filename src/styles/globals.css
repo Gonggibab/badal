@@ -19,6 +19,7 @@
 
 /* prevent iOS font size change */
 html {
+  width: 100vw;
   -webkit-text-size-adjust: 100%;
 }
 

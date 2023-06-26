@@ -34,8 +34,28 @@ export default async function handler(
 
       break;
 
+    case "PUT":
+      // Order 정보 수정하기
+      try {
+        const data = await prisma.order.update({
+          where: {
+            id: id as string,
+          },
+          data: {
+            status: req.body.status,
+          },
+        });
+
+        res.status(200).json({ success: true, data: data });
+      } catch (error) {
+        console.log("제품 정보를 불러오는 도중 에러가 발생했습니다. " + error);
+        res.status(500).json({ success: false, error: error });
+      }
+
+      break;
+
     default:
-      res.setHeader("Allow", ["GET"]);
+      res.setHeader("Allow", ["GET", "PUT"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }
