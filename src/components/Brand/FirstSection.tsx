@@ -59,7 +59,7 @@ export default function FirstSection() {
             w-[90%] flex flex-col justify-center items-center text-white lg:px-20"
         >
           <motion.h1
-            className="mt-4 text-5xl font-bold tracking-tight
+            className="mt-4 text-5xl font-bold tracking-tight text-center
               leading-snug break-keep sm:text-7xl lg:text-8xl"
             style={{ scale: scale }}
           >
