@@ -1,15 +1,12 @@
 # FO:CEL
 FO:CEL 화장품 판매 쇼핑몰 제작 프로젝트.
 
-<br/>
+> ### 배포 주소
+[https://focel.vercel.app/](https://focel.vercel.app/)
 
-## 개발기간 및 인원
+> ### 개발기간 및 인원
 - 2023.6.10 ~ 진행중
 - 개인 프로젝트
-<br/>
-
-## 배포 주소
-- [https://focel.vercel.app/](https://focel.vercel.app/)
 <br/>
 
 ## 시작 가이드
@@ -64,12 +61,41 @@ $ yarn dev
 
 <br/>
 
-## 시스템 구조
-![focel_sys_design](https://github.com/Gonggibab/focel/assets/83758021/c0e53dba-9ba2-40a9-8c56-82b83a10d2c6)
+## 주요 기능
+체크가 되지 않은 것은 구현 중 혹은 구현 예정인 기능들 입니다.
+
+> ### 사용자 기능
+- [x] 네이버, 카카오 간편 로그인
+- [x] 상품 장바구니 추가 삭제
+- [x] 제품 주문 및 결제 (토스 페이먼츠 도입)
+- [ ] 유저 정보 수정 및 주문 관리
+
+> ### 관리자 기능
+- [x] 상품 목록 확인, 검색 그리고 상품 추가, 삭제, 편집
+- [ ] 주문 목록 확인, 검색, 필터 그리고 주문 상태 업데이트
+- [ ] 사용자 목록 확인, 검색 그리고 사용자 정지
+- [ ] 사용자 통계 및 판매량, 주문현황등 종합 관리자 대시보드 
+<br/>
+
+## 해결했던 문제들
+
 <br/>
 
 
-## 폴더 구조
+## 느낀점
+
+<br/>
+
+## 부록
+### ERD
+![Blank diagram](https://github.com/Gonggibab/focel/assets/83758021/865c2e27-255d-4ed0-a92e-14172945fc54)
+<br/>
+
+### 시스템 구조
+![focel_sys_design](https://github.com/Gonggibab/focel/assets/83758021/c0e53dba-9ba2-40a9-8c56-82b83a10d2c6)
+<br/>
+
+### 폴더 구조
 ```
     .
     ├── public                  # 정적 자산 폴더
@@ -89,14 +115,3 @@ $ yarn dev
     └── └── styles              # 글로벌 CSS 파일
 ```
 <br/>
-
-## 주요 기능
-
-<br/>
-
-## 해결했던 문제들
-
-<br/>
-
-
-## 느낀점
