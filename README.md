@@ -74,27 +74,19 @@ $ yarn dev
     .
     ├── public                  # 정적 자산 폴더
     ├── src                     
-    │   ├── assets              # 서버 통신 API 저장 폴더
-    │   ├── components          # 컴포넌트들 저장 폴더
-    │   │   └── common          # 여러 페이지에서 사용되는 컴포넌트
-    │   ├── lib                 # 컴포넌트 제외 여러 기능 파일들 저장
-    │   │   ├── hook            # 커스텀 훅 폴더
-    │   │   └── util            # 앱 전체에 사용되는 기능들 
+    │   ├── assets              
+    │   │   └── icon            # 아이콘 파일
+    │   │   └── images          # 사진 파일
+    │   ├── common              
+    │   │   ├── lib             # ORM 연결 함수
+    │   │   ├── recoil          # Recoil atom
+    │   │   ├── types           # 타입 지정
+    │   │   └── utils           # 앱 전체에 사용되는 기능들
+    │   ├── components          # 컴포넌트들
     │   ├── pages               # 페이지 라우터 파일
-    │   ├── store               # Redux 관리 폴더
-    │   └── styles              # 글로벌 CSS 파일 저장
-    ├── .env.development        # 개발 환경 변수
-    ├── .env.production         # 생산 환경 변수
-    ├── .eslintrc.json          # ESLint 환경 설정
-    ├── .gitignore              # 무시할 git 파일과 폴더들
-    ├── next.config.js          # Next.js 환경 설정
-    ├── package-lock.json       # 패키지 버전 저장
-    ├── package.json            # 프로젝트 종속성 및 스크립트들
-    ├── postcss.config.json     # PostCSS 설정
-    ├── README.md               # Readme 파일
-    ├── tailwind.config.json    # Tailwind 환경 설정
-    ├── tsconfig.json           # TypeScript 환경 설정
-    └── yarn.lock               # 패키지 버전 저장
+    │   │   └── api             # Nextjs API 라우터
+    │   │   └── admin           # 어드민 관련 페이지
+    └── └── styles              # 글로벌 CSS 파일
 ```
 <br/>
 
