@@ -19,7 +19,7 @@ export default function AdminHeader() {
   return (
     <header className="bg-white z-30 sticky top-0">
       <nav
-        className="mx-auto p-6 max-w-7xl h-20 flex justify-between items-center md:hidden lg:px-20"
+        className="mx-auto p-6 max-w-7xl h-20 flex justify-between items-center lg:hidden lg:px-20"
         aria-label="Global"
       >
         <Logo className="w-auto h-8" />
@@ -32,7 +32,7 @@ export default function AdminHeader() {
             focus:ring-2 focus:ring-orange-500"
           onClick={() => setIsOpen(true)}
         >
-          <span className="sr-only">Open sidebar</span>
+          <span className="sr-only">사이드바 열기</span>
           <MenuIcon className="w-6 h-6" />
         </button>
       </nav>
@@ -40,14 +40,14 @@ export default function AdminHeader() {
       <aside
         id="sidebar"
         className={`${
-          isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-        } fixed top-0 left-0 z-40 w-full h-screen bg-white shadow-md transition-all md:w-64`}
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } fixed top-0 left-0 z-40 w-full h-screen bg-white shadow-md transition-all lg:w-64`}
         aria-label="Sidebar"
       >
         <div className="h-full p-6 overflow-y-auto">
           <div className="w-full flex justify-between items-center">
             <Logo className="w-auto h-8" />
-            <button className="md:hidden" onClick={closeSideMenu}>
+            <button className="lg:hidden" onClick={closeSideMenu}>
               <CloseIcon className="w-8 h-8" />
             </button>
           </div>
@@ -66,13 +66,13 @@ export default function AdminHeader() {
             </li>
             <li>
               <Link
-                href="/admin/transaction"
+                href="/admin/order"
                 className="-mx-3 px-3 py-2 flex items-center rounded-lg gap-x-5
                   text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 onClick={closeSideMenu}
               >
                 <TransactionIcon className="w-6 h-6" />
-                트랜잭션
+                주문
               </Link>
             </li>
             <li>

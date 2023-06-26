@@ -5,7 +5,7 @@ import { useSetRecoilState } from "recoil";
 
 import { notificationAtom } from "common/recoil/atom";
 import { ProductType } from "common/types/product";
-import Item from "components/Admin/Product/Item";
+import ProductItem from "components/Admin/Product/ProductItem";
 import Modal from "components/Modal";
 import Spinner from "components/Loader/Spinner";
 
@@ -95,10 +95,10 @@ export default function ProductAdmin() {
   }, [productData, selectedData]);
 
   return (
-    <main className="p-4 md:ml-64">
+    <main className="p-4 lg:ml-64">
       <div
         className="p-2 flex flex-col items-center w-full h-[calc(100vh-120px)] overflow-x-scroll
-          shadow-md sm:rounded-lg md:h-[calc(100vh-40px)]"
+          shadow-md sm:rounded-lg lg:h-[calc(100vh-40px)]"
       >
         <div className="pb-4 w-full flex flex-col justify-between items-center text-sm sm:flex-row">
           <div className="mb-4 w-full flex items-center sm:m-0">
@@ -182,7 +182,7 @@ export default function ProductAdmin() {
             {productData &&
               productData.map((item) => {
                 return (
-                  <Item
+                  <ProductItem
                     key={item.id}
                     item={item}
                     selectedData={selectedData}

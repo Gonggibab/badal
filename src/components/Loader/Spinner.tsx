@@ -7,7 +7,7 @@ export default function Spinner({ isLoading }: SpinnerProps) {
     <div
       className={`${
         isLoading ? "visible opacity-100" : "invisible opacity-0"
-      } w-full h-full flex justify-center items-center transition-all`}
+      } absolute top-0 w-full h-full flex justify-center items-center transition-all`}
     >
       <span
         className="inline-block w-10 h-10 rounded-full animate-rotate

@@ -38,7 +38,7 @@ export default function MobileMenu({
             className="text-gray-900"
             onClick={() => setIsMenuOpen(false)}
           >
-            <span className="sr-only">Close menu</span>
+            <span className="sr-only">메뉴 닫기</span>
             <CloseIcon className="w-6 h-6" strokeWidth="1.5" />
           </button>
         </div>

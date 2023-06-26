@@ -87,7 +87,7 @@ export default function Header() {
                 href="/my"
                 className="relative inline-flex items-center justify-center text-inherit"
               >
-                <span className="sr-only">My Page</span>
+                <span className="sr-only">마이 페이지</span>
                 <UserIcon
                   className={`${
                     isHeaderTransp ? "text-gray-900" : "text-gray-900"
@@ -100,7 +100,7 @@ export default function Header() {
               href="/login"
               className="relative h-full inline-flex items-center justify-center text-gray-900"
             >
-              <span className="sr-only">Login</span>
+              <span className="sr-only">로그인 페이지</span>
               <LoginIcon
                 className={`${
                   isHeaderTransp ? "text-gray-900" : "text-gray-900"
@@ -112,7 +112,7 @@ export default function Header() {
             href="/cart"
             className="relative ml-4 inline-flex items-center justify-center text-inherit"
           >
-            <span className="sr-only">Shopping Cart</span>
+            <span className="sr-only">쇼핑 카트</span>
             <CartIcon
               className={`${
                 isHeaderTransp ? "text-gray-900" : "text-gray-900"
@@ -133,7 +133,7 @@ export default function Header() {
             className="p-1 relative inline-flex items-center justify-center text-inherit"
             onClick={() => setIsMenuOpen(true)}
           >
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">메뉴 열기</span>
             <MenuIcon
               className={`${
                 isHeaderTransp ? "text-gray-900" : "text-gray-900"

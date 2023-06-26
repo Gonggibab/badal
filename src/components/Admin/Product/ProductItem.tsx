@@ -9,19 +9,18 @@ import Link from "next/link";
 
 import { ProductType } from "common/types/product";
 
-type ItemProps = {
+type ProductItemProps = {
   item: ProductType;
   selectedData: Set<string>;
   setSelectedData: Dispatch<SetStateAction<Set<string>>>;
 };
 
-export default function Item({
+export default function ProductItem({
   item,
   selectedData,
   setSelectedData,
-}: ItemProps) {
+}: ProductItemProps) {
   const checkRef = useRef<HTMLInputElement>(null);
-  console.log(item);
 
   useEffect(() => {
     if (!checkRef.current) return;

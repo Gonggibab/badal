@@ -42,13 +42,3 @@ export default function ImageCard({
     </li>
   );
 }
-
-{
-  /* <Image
-    className="h-full w-full object-cover object-center"
-    src={images[index]}
-    alt="제품 이미지"
-    fill
-    sizes="100vw 100vh"
-  />  */
-}
