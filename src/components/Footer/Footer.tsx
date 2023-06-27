@@ -20,7 +20,7 @@ export default function Footer() {
           <Link href={"/delivery"} className="hover:underline">
             배송안내
           </Link>
-          <Link href={"/cancel-refund"} className="hover:underline">
+          <Link href={"/cancel-return"} className="hover:underline">
             반품/교환 안내
           </Link>
           <Link href={"/FAQ"} className="hover:underline">
@@ -37,8 +37,11 @@ export default function Footer() {
       <div className="flex flex-col gap-x-4 sm:flex-row">
         <p>상호명: 해달뫼</p>
         <p>사업자등록번호: 2037904445</p>
-        <p>제품 문의: 010-3556-2595</p>
         <p>전자 우편 주소: healcoline@naver.com</p>
+        <p>
+          제품 문의: 070-8065-1577
+          <span className="ml-2 text-xs">(운영시간: 9시 - 18시)</span>
+        </p>
       </div>
 
       <p>Copyright © 2023 해달뫼. All Rights Reserved.</p>

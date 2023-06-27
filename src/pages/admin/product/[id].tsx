@@ -10,7 +10,7 @@ import EditUploadIamge from "components/Admin/Product/ProductImages/EditUploadIa
 import Loader from "components/Loader/Loader";
 import debounce from "common/utils/debounce";
 import isEmpty from "common/utils/isEmpty";
-import cloudinary from "common/utils/cloudinary";
+import cloudinary from "common/lib/cloudinary";
 
 export type ImageFileType = {
   image: File;
@@ -201,10 +201,10 @@ export default function ProductEdit() {
         <form>
           <div className="border-b border-gray-900/10 pb-12">
             <h2 className="text-xl font-semibold leading-7 text-gray-900">
-              제품 등록하기
+              제품 수정하기
             </h2>
             <p className="mt-1 text-sm leading-6 text-gray-600">
-              등록 할 제품정보를 정확하게 입력해 주세요.
+              수정하고 싶은 제품 정보를 입력해보세요.
             </p>
 
             <section className="mt-10 grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-4 lg:grid-cols-6">

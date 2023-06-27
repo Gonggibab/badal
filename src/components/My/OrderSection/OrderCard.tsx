@@ -13,8 +13,8 @@ const Status = {
   IN_DELIVERY: "배송중",
   DONE: "배송 완료",
   CANCLED: "주문 취소",
-  REFUND_REQUESTED: "환불 요청",
-  REFUND_COMPLETE: "환불 완료",
+  RETURN_REQUESTED: "환불 요청",
+  RETURN_COMPLETE: "환불 완료",
 };
 
 export default function OrderCard({ order }: OrderCardProps) {
@@ -44,7 +44,7 @@ export default function OrderCard({ order }: OrderCardProps) {
             <span className="ml-2 text-orange-500">{order.orderId}</span>
           </p>
           <Link
-            href={`/order/${order.orderId}`}
+            href={`/order/${order.id}`}
             className="mt-4 font-semibold cursor-pointer hover:underline"
           >
             {order.title}

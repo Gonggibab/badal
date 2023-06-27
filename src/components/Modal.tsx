@@ -9,6 +9,13 @@ type ModalProps = {
   callback?: () => void;
 };
 
+export type ModalContentType = {
+  title: string;
+  content?: string;
+  btnTitle?: string;
+  callback?: () => void;
+};
+
 export default function Modal({
   isOpen,
   setIsOpen,

@@ -12,8 +12,8 @@ export default function Loader({
       className={`${
         isLoading ? "visible opacity-100" : "invisible opacity-0"
       } ${
-        bgTransparent ? "bg-transparent" : "bg-gray-white "
-      } fixed top-0 w-full h-full flex justify-center items-center transition-all`}
+        bgTransparent ? "bg-transparent" : "bg-white"
+      } fixed top-0 w-screen h-screen flex justify-center items-center transition-all`}
     >
       <span
         className="inline-block w-10 h-10 rounded-full border-t-4 border-t-orange-500

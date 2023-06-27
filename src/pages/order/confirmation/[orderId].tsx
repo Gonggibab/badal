@@ -7,6 +7,7 @@ import { OrderType } from "common/types/order";
 import { PaymentDataType } from "common/types/tosspayments";
 import PurchaseItem from "components/Order/PurchaseItem";
 import Loader from "components/Loader/Loader";
+import tossPayment from "common/lib/tossPayment";
 import isoTimeToKRdate from "common/utils/isoTimeToKRdate";
 
 export default function Confirmation() {
@@ -29,15 +30,12 @@ export default function Confirmation() {
         setOrder(order);
 
         // 결제 정보 불러오기
-        const paymentRes = await axios.get(
-          `https://api.tosspayments.com/v1/payments/${order.paymentKey}`,
-          {
-            headers: {
-              Authorization: `Basic ${authKey}`,
-            },
-          }
+        const paymentData = await tossPayment.getPaymentInfo(
+          order.paymentKey,
+          authKey
         );
-        setPayment(paymentRes.data);
+
+        setPayment(paymentData);
       } catch (error) {
         console.log(
           "주문 데이터를 불러오는 도중 에러가 발생했습니다. " + error

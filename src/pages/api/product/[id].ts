@@ -1,6 +1,6 @@
 import prisma from "common/lib/prisma";
 import { ImageType } from "common/types/image";
-import cloudinary from "common/utils/cloudinary";
+import cloudinary from "common/lib/cloudinary";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {

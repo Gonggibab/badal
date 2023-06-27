@@ -54,37 +54,37 @@ export type OrderConfirmType = {
 export type PaymentDataType = {
   mId: string;
   version: string;
-  lastTransactionKey: string;
+  type: string; //  NORMAL(일반결제), BILLING(자동결제), BRANDPAY(브랜드페이)
+  method: string; // 카드, 가상계좌, 간편결제, 휴대폰, 계좌이체, 문화상품권, 도서문화상품권, 게임문화상품권
   paymentKey: string;
   orderId: string;
   orderName: string;
   currency: string;
-  method: string;
   status: string;
   requestedAt: string;
   approvedAt: string;
+  cancels?: CancelDataType[];
   useEscrow: boolean;
   cultureExpense: boolean;
-  card: {
-    amount: number;
-    issuerCode: string;
-    acquirerCode: string;
-    number: string;
-    installmentPlanMonths: number;
-    isInterestFree: boolean;
-    approveNo: string;
-    useCardPoint: boolean;
-    cardType: string;
-    ownerType: string;
-    acquireStatus: string;
+  card?: CardPaymentType;
+  virtualAccount?: VirtualAccountPaymentType;
+  mobilePhone?: {
+    customerMobilePhone: string;
+    settlementStatus: string;
+    receiptUrl: string;
   };
+  giftCertificate?: { approveNo: string; settlementStatus: string };
+  transfer?: {
+    bankCode: string;
+    settlementStatus: string;
+  };
+  easyPay?: { provider: string; amount: number; discountAmount: number };
   receipt: {
     url: string;
   };
   checkout: {
     url: string;
   };
-  type: string;
   country: string;
   totalAmount: number;
   balanceAmount: number;
@@ -92,4 +92,44 @@ export type PaymentDataType = {
   vat: number;
   taxFreeAmount: number;
   taxExemptionAmount: number;
+  lastTransactionKey: string;
+};
+
+export type CancelDataType = {
+  cancelAmount: number;
+  cancelReason: string;
+  taxFreeAmount: number;
+  taxExemptionAmount: number;
+  refundableAmount: number;
+  easyPayDiscountAmount: number;
+  canceledAt: string;
+  transactionKey: string;
+  receiptKey: string;
+};
+
+type CardPaymentType = {
+  amount: number;
+  issuerCode: string;
+  acquirerCode?: string;
+  number: string;
+  installmentPlanMonths: number;
+  approveNo: string;
+  useCardPoint: boolean;
+  cardType: string;
+  ownerType: string;
+  acquireStatus: string;
+  isInterestFree: boolean;
+  interestPayer?: string;
+};
+
+type VirtualAccountPaymentType = {
+  accountType: string;
+  accountNumber: string;
+  bankCode: string;
+  customerName: string;
+  dueDate: string;
+  refundStatus: string;
+  expired: boolean;
+  settlementStatus: string;
+  refundReceiveAccount: object;
 };

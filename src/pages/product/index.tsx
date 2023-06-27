@@ -47,7 +47,7 @@ export default function Product() {
           </div>
         </div>
 
-        <Loader isLoading={!productData} bgTransparent={true} />
+        <Loader isLoading={!productData} />
       </section>
     </main>
   );

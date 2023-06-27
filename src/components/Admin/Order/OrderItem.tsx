@@ -14,8 +14,8 @@ const StatusColor = {
   IN_DELIVERY: "text-gray-600",
   DONE: "text-gray-600",
   CANCLED: "text-gray-600",
-  REFUND_REQUESTED: "text-gray-600",
-  REFUND_COMPLETE: "text-gray-600",
+  RETURN_REQUESTED: "text-gray-600",
+  RETURN_COMPLETE: "text-gray-600",
 };
 
 export default function OrderItem({ item }: OrderItemProps) {
