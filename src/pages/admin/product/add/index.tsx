@@ -10,7 +10,7 @@ import Loader from "components/Loader/Loader";
 
 import debounce from "common/utils/debounce";
 import isEmpty from "common/utils/isEmpty";
-import cloudinary from "common/utils/cloudinary";
+import cloudinary from "common/lib/cloudinary";
 
 export type ImageFileType = {
   image: File;

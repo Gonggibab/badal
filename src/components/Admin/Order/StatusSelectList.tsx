@@ -16,8 +16,8 @@ const Status = {
   IN_DELIVERY: "배송중",
   DONE: "배송 완료",
   CANCLED: "주문 취소",
-  REFUND_REQUESTED: "환불 요청",
-  REFUND_COMPLETE: "환불 완료",
+  RETURN_REQUESTED: "환불 요청",
+  RETURN_COMPLETE: "환불 완료",
 };
 
 export default function StatusSelectList({

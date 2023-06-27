@@ -80,8 +80,8 @@ export default function OrderSection({ userId }: OrderSectionProps) {
                     orders.filter(
                       (order) =>
                         order.status === OrderStatus.CANCLED ||
-                        order.status === OrderStatus.REFUND_REQUESTED ||
-                        order.status === OrderStatus.REFUND_COMPLETE
+                        order.status === OrderStatus.RETURN_REQUESTED ||
+                        order.status === OrderStatus.RETURN_COMPLETE
                     ).length
                   }{" "}
                   <span className="text-xs text-gray-700">개</span>

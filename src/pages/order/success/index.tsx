@@ -11,8 +11,8 @@ import {
   orderItemsAtom,
 } from "common/recoil/atom";
 import { OrderType } from "common/types/order";
-import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
+import tossPayment from "common/lib/tossPayment";
 import sendMessage from "common/utils/sendMessage";
 
 export default function Success() {
@@ -36,17 +36,12 @@ export default function Success() {
 
     const confirmOrder = async () => {
       try {
-        const confirm = await axios.post(
-          "https://api.tosspayments.com/v1/payments/confirm",
-          { paymentKey: paymentKey, amount: amount, orderId: orderId },
-          {
-            headers: {
-              Authorization: `Basic ${authKey}`,
-              "Content-Type": "application/json",
-            },
-          }
+        const confirmData = await tossPayment.approveRequest(
+          paymentKey,
+          amount,
+          orderId,
+          authKey
         );
-        const confirmData: OrderConfirmType = confirm.data;
 
         const orderRes = await axios.post("/api/order", {
           orderId: confirmData.orderId,
@@ -82,7 +77,7 @@ export default function Success() {
         router.push(`/order/confirmation/${order.id}`);
       } catch (error) {
         console.log(
-          "결제 승인 및 주문 저장과정에서 에러가 발생했습니다. " + error
+          "토스 결제 승인 및 주문 저장 과정에서 에러가 발생했습니다. " + error
         );
       }
     };
