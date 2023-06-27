@@ -29,14 +29,28 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="pt-4 flex flex-col gap-x-4 sm:flex-row">
+      <div className="pt-4 flex flex-col gap-x-4 gap-y-2 sm:flex-row">
         <p>경상남도 밀양시 단장면 바드리길 385 (우 : 50418)</p>
         <p>대표자: 정재훈</p>
       </div>
 
-      <div className="flex flex-col gap-x-4 sm:flex-row">
+      <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
         <p>상호명: 해달뫼</p>
         <p>사업자등록번호: 2037904445</p>
+        <p>
+          통신판매업번호: 2023 경남 밀양-2390호
+          <Link
+            href={"http://www.ftc.go.kr/bizCommPop.do?wrkr_no=2037904445"}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="ml-2 font-medium underline hover:text-gray-600"
+          >
+            사업자 정보 확인
+          </Link>
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-x-4 gap-y-2 sm:flex-row">
         <p>전자 우편 주소: healcoline@naver.com</p>
         <p>
           제품 문의: 070-8065-1577
