@@ -88,11 +88,11 @@ $ yarn dev
 
 ## 부록
 ### ERD
-![Blank diagram](https://github.com/Gonggibab/focel/assets/83758021/865c2e27-255d-4ed0-a92e-14172945fc54)
+![FOCEL ERD](https://github.com/Gonggibab/focel/assets/83758021/9e4ef114-f96b-4370-a5ab-29dc92a66521)
 <br/>
 
 ### 시스템 구조
-![focel_sys_design](https://github.com/Gonggibab/focel/assets/83758021/c0e53dba-9ba2-40a9-8c56-82b83a10d2c6)
+![focel_sys_design](https://github.com/Gonggibab/focel/assets/83758021/fb8b2bd7-26ed-4f9f-a421-428ed72c36a7)
 <br/>
 
 ### 폴더 구조
