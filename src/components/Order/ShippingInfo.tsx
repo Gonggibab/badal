@@ -1,15 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
 
-import { ShippingInfoType } from "common/types/user";
-import { NewAddressType } from "pages/order";
+import { AddressType, ShippingInfoType } from "common/types/user";
 import formatPhoneNumber from "common/utils/formatPhoneNumber";
 
 type ShippingInfoProps = {
   isNotUser: boolean;
   adrsList: ShippingInfoType[];
   selectedAdrs: ShippingInfoType;
-  newAdrs: NewAddressType;
-  setNewAdrs: Dispatch<SetStateAction<NewAddressType>>;
+  newAdrs: AddressType;
+  setNewAdrs: Dispatch<SetStateAction<AddressType>>;
   isNewAdrs: boolean;
   setIsNewAdrs: Dispatch<SetStateAction<boolean>>;
   isNewDefault: boolean;
