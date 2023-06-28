@@ -28,7 +28,7 @@ export type CartItemType = {
 
 export type ShippingInfoType = {
   id: string;
-  idDefault: boolean;
+  isDefault: boolean;
   name: string;
   contact: string;
   postcode: string;
@@ -38,8 +38,8 @@ export type ShippingInfoType = {
 };
 
 export type AddressType = {
-  id: string;
-  idDefault: boolean;
+  id?: string;
+  isDefault?: boolean;
   postcode: string;
   address: string;
   detailAddress: string;

@@ -1,13 +1,18 @@
+import { Dispatch, SetStateAction } from "react";
 import { AddressType } from "common/types/user";
-
 import PenIcon from "assets/icon/pen.svg";
-import DeleteIcon from "assets/icon/delete.svg";
 
 type AddressCardProps = {
   address: AddressType;
+  setAddress: Dispatch<SetStateAction<AddressType>>;
+  setIsEditModalOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-export default function AddressCard({ address }: AddressCardProps) {
+export default function AddressCard({
+  address,
+  setAddress,
+  setIsEditModalOpen,
+}: AddressCardProps) {
   return (
     <div className="p-4 w-full rounded-md shadow">
       <div className="relative w-full h-full flex flex-col text-sm">
@@ -15,18 +20,16 @@ export default function AddressCard({ address }: AddressCardProps) {
           <button
             type="button"
             className="p-1 rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]"
+            onClick={() => {
+              setAddress(address);
+              setIsEditModalOpen(true);
+            }}
           >
             <PenIcon className="w-5 h-5" />
           </button>
-          <button
-            type="button"
-            className="p-1 rounded-md shadow transition-all hover:shadow-lg hover:translate-y-[1px]"
-          >
-            <DeleteIcon className="w-5 h-5 text-red-500" />
-          </button>
         </div>
 
-        {address.idDefault && (
+        {address.isDefault && (
           <div className="text-xs font-bold text-orange-500">기본 배송지</div>
         )}
 

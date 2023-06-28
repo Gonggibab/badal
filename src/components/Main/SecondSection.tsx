@@ -20,7 +20,7 @@ export default function SecondSection() {
   return (
     <section className="p-8 relative w-full flex flex-col">
       <h3 className="mb-6 text-2xl font-medium tracking-tight text-gray-900">
-        FO:CEL 대표 상품
+        대표 상품
       </h3>
       <div
         className="w-full grid grid-cols-1 gap-x-6 gap-y-10 

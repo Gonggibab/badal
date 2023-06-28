@@ -40,7 +40,7 @@ export default function My() {
   }, [data]);
 
   return (
-    <main className="p-4 flex flex-col items-center justify-between sm:p-8">
+    <main className="p-4 min-h-[calc(100vh-80px)] flex flex-col items-center sm:p-8">
       {user && (
         <>
           <div className="w-full max-w-4xl flex justify-between items-center">

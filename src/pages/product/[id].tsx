@@ -9,6 +9,7 @@ import axios from "axios";
 import { ProductType } from "common/types/product";
 import {
   cartItemsAtom,
+  isUserOrderAtom,
   notificationAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
@@ -31,6 +32,7 @@ export type SelectedOptionType = {
 export default function ProductDetail() {
   const { data } = useSession();
   const router = useRouter();
+  const setIsUserOrder = useSetRecoilState(isUserOrderAtom);
   const setOrderItems = useSetRecoilState(orderItemsAtom);
   const setNotification = useSetRecoilState(notificationAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
@@ -61,7 +63,7 @@ export default function ProductDetail() {
 
     // 카트에 동일한 물품이 있는지 확인
     const existItem = cartItems.filter((item) => {
-      item.title === productData.title;
+      return item.title === productData.title;
     });
 
     if (existItem.length > 0) {
@@ -128,6 +130,10 @@ export default function ProductDetail() {
 
   const onOrderClicked = () => {
     if (!productData) return;
+
+    // 회원 주문인지 비회원 주문인지 상태 저장
+    if (data) setIsUserOrder(true);
+    else setIsUserOrder(false);
 
     setOrderItems([
       {

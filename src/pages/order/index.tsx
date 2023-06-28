@@ -9,26 +9,18 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import axios from "axios";
 
-import { ShippingInfoType } from "common/types/user";
+import { AddressType, ShippingInfoType } from "common/types/user";
 import {
+  isUserOrderAtom,
   notificationAtom,
-  orderAdrsIdAtom,
+  orderAdrsAtom,
   orderItemsAtom,
   useSsrComplectedState,
 } from "common/recoil/atom";
+import PostSearchModal from "components/PostSearchModal";
 import ShippingInfo from "components/Order/ShippingInfo";
 import OrderInfo from "components/Order/OrderInfo";
-import PostSearchModal from "components/Order/PostSearchModal";
 import Loader from "components/Loader/Loader";
-
-export type NewAddressType = {
-  name: string;
-  contact: string;
-  postcode: string;
-  address: string;
-  detailAddress: string;
-  memo: string;
-};
 
 export default function Order() {
   const { data } = useSession();
@@ -39,14 +31,15 @@ export default function Order() {
     PaymentWidgetInstance["renderPaymentMethods"]
   > | null>(null);
 
-  const setOrderAdrsId = useSetRecoilState(orderAdrsIdAtom);
   const orderItems = useRecoilValue(orderItemsAtom);
+  const isUserOrder = useRecoilValue(isUserOrderAtom);
+  const setOrderAdrs = useSetRecoilState(orderAdrsAtom);
   const setNotification = useSetRecoilState(notificationAtom);
   const [adrsList, setAdrsList] = useState<ShippingInfoType[]>([]);
   const [orderTitle, setOrderTitle] = useState<string>("");
   const [selectedAdrs, setSelectedAdrs] = useState<ShippingInfoType>({
     id: "",
-    idDefault: true,
+    isDefault: true,
     name: "",
     contact: "",
     postcode: "",
@@ -54,7 +47,7 @@ export default function Order() {
     detailAddress: "",
     memo: "",
   });
-  const [newAdrs, setNewAdrs] = useState<NewAddressType>({
+  const [newAdrs, setNewAdrs] = useState<AddressType>({
     name: "",
     contact: "010-",
     postcode: "",
@@ -62,7 +55,7 @@ export default function Order() {
     detailAddress: "",
     memo: "",
   });
-  const [isNewDefault, setIsNewDefault] = useState<boolean>(false);
+  const [isNewDefault, setIsNewDefault] = useState<boolean>(true);
   const [isNewAdrs, setIsNewAdrs] = useState<boolean>(true);
   const [isPostSearchOpen, setIsPostSearchOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -90,12 +83,7 @@ export default function Order() {
   useEffect(setSsrCompleted, [setSsrCompleted]);
 
   useEffect(() => {
-    if (data === undefined) {
-      router.push("/product");
-      return;
-    }
-
-    if (!orderItems || orderItems.length < 1) return;
+    if (!orderItems) return;
 
     // 주문 정보 업데이트
     setOrderTitle(
@@ -121,18 +109,18 @@ export default function Order() {
   }, [orderItems]);
 
   useEffect(() => {
-    if (!data?.user) return;
+    if (!isUserOrder || !data?.user) return;
     setIsLoading(true);
 
     // 유저일 경우 주소 정보 불러오기
     const getUserAddress = async () => {
-      const address = await axios.get(`api/address/${data?.user?.id}`);
+      const address = await axios.get(`api/address/user/${data?.user?.id}`);
       const adrsData: ShippingInfoType[] = address.data.data;
 
       if (adrsData.length > 0) {
         // 기본 배송지가 있으면 해당 주소로 설정한다.
         adrsData.map((adrs) => {
-          if (adrs.idDefault) {
+          if (adrs.isDefault) {
             setSelectedAdrs(adrs);
             setIsNewAdrs(false);
           }
@@ -146,7 +134,7 @@ export default function Order() {
     getUserAddress();
 
     setIsLoading(false);
-  }, [data]);
+  }, [data, isUserOrder]);
 
   const proceedPayment = async () => {
     const paymentWidget = paymentWidgetRef.current;
@@ -193,7 +181,7 @@ export default function Order() {
         });
 
         const shippingInfo: ShippingInfoType = address.data.data;
-        setOrderAdrsId(shippingInfo.id);
+        setOrderAdrs(shippingInfo);
         proceedPayment();
       } catch (error) {
         setNotification({
@@ -202,7 +190,7 @@ export default function Order() {
         });
       }
     } else {
-      setOrderAdrsId(selectedAdrs.id);
+      setOrderAdrs(selectedAdrs);
       proceedPayment();
     }
   };
@@ -251,7 +239,7 @@ export default function Order() {
       <PostSearchModal
         isOpen={isPostSearchOpen}
         setIsOpen={setIsPostSearchOpen}
-        setNewAdrs={setNewAdrs}
+        setAdrs={setNewAdrs}
       />
 
       <Loader isLoading={isLoading} />

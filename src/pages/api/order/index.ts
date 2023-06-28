@@ -1,5 +1,5 @@
 import prisma from "common/lib/prisma";
-import { CartItemType } from "common/types/user";
+import { AddressType, CartItemType } from "common/types/user";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -32,7 +32,6 @@ export default async function handler(
           data = await prisma.order.findMany({
             include: {
               user: true,
-              address: true,
             },
           });
         }
@@ -48,6 +47,7 @@ export default async function handler(
 
     case "POST":
       try {
+        const address: AddressType = req.body.address;
         const items: CartItemType[] = req.body.items;
 
         const data = await prisma.order.create({
@@ -58,19 +58,20 @@ export default async function handler(
             price: req.body.price,
             image: req.body.image,
             userId: req.body.userId,
-            addressId: req.body.addressId,
-            orderItems: {
-              create: items.map((item) => ({
-                title: item.title,
-                price: item.price,
-                quantity: item.quantity,
-                image: item.image,
-              })),
+            address: {
+              postcode: address.postcode,
+              address: address.address,
+              detailAddress: address.detailAddress,
+              name: address.name,
+              contact: address.contact,
+              memo: address.memo,
             },
-          },
-          include: {
-            address: true,
-            orderItems: true,
+            orderItems: items.map((item) => ({
+              title: item.title,
+              price: item.price,
+              quantity: item.quantity,
+              image: item.image,
+            })),
           },
         });
 

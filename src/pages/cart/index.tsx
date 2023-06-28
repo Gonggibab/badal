@@ -7,6 +7,7 @@ import axios from "axios";
 
 import {
   cartItemsAtom,
+  isUserOrderAtom,
   orderItemsAtom,
   useSsrComplectedState,
 } from "common/recoil/atom";
@@ -17,6 +18,7 @@ import EmptyCartIcon from "assets/icon/emptyCart.svg";
 export default function Cart() {
   const router = useRouter();
   const { data } = useSession();
+  const setIsUserOrder = useSetRecoilState(isUserOrderAtom);
   const setOrderItems = useSetRecoilState(orderItemsAtom);
   const [cartItems, setCartItems] = useRecoilState(cartItemsAtom);
   const [totalPrice, setTotalPrice] = useState<number>(() => {
@@ -49,7 +51,7 @@ export default function Cart() {
   }, [cartItems]);
 
   return (
-    <main className="flex flex-col items-center justify-between">
+    <main className="min-h-[calc(100vh-80px)] flex flex-col items-center">
       {cartItems && cartItems.length === 0 ? (
         <section className="pb-10 h-[calc(90vh-80px)] flex flex-col justify-center items-center">
           <EmptyCartIcon className="w-28 h-28" />
@@ -104,6 +106,10 @@ export default function Cart() {
               bg-orange-500 px-6 py-3 text-base font-medium text-white shadow hover:bg-orange-600
                 hover:translate-y-[1px] transition-all"
               onClick={() => {
+                // 회원 주문인지 비회원 주문인지 상태 저장
+                if (data) setIsUserOrder(true);
+                else setIsUserOrder(false);
+
                 setOrderItems(cartItems);
                 router.push("/order");
               }}

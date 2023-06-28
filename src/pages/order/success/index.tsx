@@ -7,7 +7,8 @@ import axios from "axios";
 
 import {
   cartItemsAtom,
-  orderAdrsIdAtom,
+  isUserOrderAtom,
+  orderAdrsAtom,
   orderItemsAtom,
 } from "common/recoil/atom";
 import { OrderType } from "common/types/order";
@@ -19,7 +20,8 @@ export default function Success() {
   const { data } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderAdrsId = useRecoilValue(orderAdrsIdAtom);
+  const orderAdrs = useRecoilValue(orderAdrsAtom);
+  const isUserOrder = useRecoilValue(isUserOrderAtom);
   const setCartItems = useSetRecoilState(cartItemsAtom);
   const [orderItems, setOrderItems] = useRecoilState(orderItemsAtom);
 
@@ -31,7 +33,16 @@ export default function Success() {
 
   // 서버로 결제 승인 요청 보내기
   useEffect(() => {
-    if (!orderId || !paymentKey || !amount || !authKey || orderAdrsId === "")
+    if (isUserOrder && !data) return;
+
+    if (
+      !orderId ||
+      !paymentKey ||
+      !amount ||
+      !authKey ||
+      !orderAdrs ||
+      !orderItems
+    )
       return;
 
     const confirmOrder = async () => {
@@ -52,7 +63,7 @@ export default function Success() {
           price: orderItems.reduce((acc, item) => acc + item.price, 0),
           image: orderItems[0].image,
           userId: data?.user?.id,
-          addressId: orderAdrsId,
+          address: orderAdrs,
           items: orderItems,
         });
         const order: OrderType = orderRes.data.data;
@@ -72,7 +83,7 @@ export default function Success() {
           )
         );
         setCartItems([]);
-        setOrderItems([]);
+        setOrderItems(null);
 
         router.push(`/order/confirmation/${order.id}`);
       } catch (error) {
@@ -84,7 +95,16 @@ export default function Success() {
 
     confirmOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, authKey, data, orderAdrsId, orderId, paymentKey]);
+  }, [
+    amount,
+    authKey,
+    data,
+    isUserOrder,
+    orderAdrs,
+    orderId,
+    orderItems,
+    paymentKey,
+  ]);
 
   return <Loader isLoading={true} />;
 }

@@ -4,6 +4,8 @@ import axios from "axios";
 import { OrderStatus, OrderType } from "common/types/order";
 import OrderCard from "./OrderCard";
 import Loader from "components/Loader/Loader";
+import Link from "next/link";
+import NoRecordIcon from "assets/icon/noRecord.svg";
 
 type OrderSectionProps = {
   userId: string | undefined;
@@ -90,11 +92,27 @@ export default function OrderSection({ userId }: OrderSectionProps) {
             </div>
           </div>
 
-          <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
-            {orders.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-          </div>
+          {orders.length > 0 ? (
+            <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+              {orders.map((order) => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-14 w-full flex flex-col justify-center items-center">
+              <NoRecordIcon className="w-32 h-32" />
+              <p className="text-xl text-orange-500 font-semibold">
+                주문 기록이 없습니다
+              </p>
+              <Link
+                href={"/product"}
+                className="mt-8 px-3 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md
+                  transition-all hover:bg-orange-400"
+              >
+                제품 보러가기
+              </Link>
+            </div>
+          )}
         </>
       )}
 

@@ -5,6 +5,8 @@ import axios from "axios";
 import { notificationAtom } from "common/recoil/atom";
 import { AddressType, UserType } from "common/types/user";
 import AddressCard from "./AddressCard";
+import AddressEditModal from "./AddressEditModal";
+import PostSearchModal from "components/PostSearchModal";
 
 type UserSectionProps = {
   user: UserType;
@@ -18,12 +20,24 @@ export default function UserSection({
   const setNotification = useSetRecoilState(notificationAtom);
   const [name, setName] = useState<string>(user.name);
   const [addresses, setAdresses] = useState<AddressType[] | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [editAddress, setEditAddress] = useState<AddressType>({
+    id: "",
+    isDefault: false,
+    postcode: "",
+    address: "",
+    detailAddress: "",
+    name: "",
+    contact: "",
+    memo: "",
+  });
+  const [isPostSearchOpen, setIsPostSearchOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // 주소 데이터 불러오기
     setIsLoadAdress(true);
     const getAddressData = async () => {
-      const addressRes = await axios.get(`/api/address/${user.id}`);
+      const addressRes = await axios.get(`/api/address/user/${user.id}`);
       const addresses: AddressType[] = addressRes.data.data;
       setAdresses(addresses);
     };
@@ -131,10 +145,39 @@ export default function UserSection({
         <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
           {addresses &&
             addresses.map((adrs) => (
-              <AddressCard key={adrs.id} address={adrs} />
+              <AddressCard
+                key={adrs.id}
+                address={adrs}
+                setAddress={setEditAddress}
+                setIsEditModalOpen={setIsEditModalOpen}
+              />
             ))}
+
+          {addresses && addresses.length < 1 && (
+            <div>
+              <p className="font-semibold">등록된 주소가 없습니다.</p>
+              <p className="mt-2 text-sm text-orange-500">
+                제품 주문시 주소를 입력하면 자동으로 등록됩니다.
+              </p>
+            </div>
+          )}
         </div>
       </figure>
+
+      <AddressEditModal
+        isOpen={isEditModalOpen}
+        setIsOpen={setIsEditModalOpen}
+        user={user}
+        address={editAddress}
+        setAddress={setEditAddress}
+        setIsPostSearchOpen={setIsPostSearchOpen}
+      />
+
+      <PostSearchModal
+        isOpen={isPostSearchOpen}
+        setIsOpen={setIsPostSearchOpen}
+        setAdrs={setEditAddress}
+      />
     </section>
   );
 }
