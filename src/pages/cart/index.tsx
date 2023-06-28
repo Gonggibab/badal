@@ -51,7 +51,7 @@ export default function Cart() {
   }, [cartItems]);
 
   return (
-    <main className="flex flex-col items-center justify-between">
+    <main className="min-h-[calc(100vh-80px)] flex flex-col items-center">
       {cartItems && cartItems.length === 0 ? (
         <section className="pb-10 h-[calc(90vh-80px)] flex flex-col justify-center items-center">
           <EmptyCartIcon className="w-28 h-28" />

@@ -9,16 +9,16 @@ export default function FirstSection() {
     <section className="relative w-full h-[calc(100vh-80px)] flex">
       <div className="z-10 w-full h-full flex flex-col">
         <div className="p-8 w-full">
-          <h2 className="w-fit pt-6 text-2xl font-light backdrop-blur-[2px] bg-[#eae5e5]/[0.1]">
+          <h2 className="w-fit pt-6 text-2xl font-light drop-shadow shadow-white">
             눈부신 피부 재생
           </h2>
-          <div className="w-fit overflow-hidden backdrop-blur-[2px] bg-[#eae5e5]/[0.1]">
-            <h1 className="text-6xl font-bold tracking-tighter animate-appear">
+          <div className="w-fit overflow-hidden">
+            <h1 className="text-6xl font-bold tracking-tighter animate-appear drop-shadow shadow-white">
               LETHITINE
             </h1>
           </div>
-          <div className="w-fit overflow-hidden backdrop-blur-[2px] bg-[#eae5e5]/[0.1]">
-            <h1 className="text-6xl font-bold tracking-tighter animate-appear">
+          <div className="w-fit overflow-hidden">
+            <h1 className="text-6xl font-bold tracking-tighter animate-appear drop-shadow shadow-white">
               CONG CREAM
             </h1>
           </div>
