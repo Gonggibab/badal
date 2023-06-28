@@ -152,6 +152,15 @@ export default function UserSection({
                 setIsEditModalOpen={setIsEditModalOpen}
               />
             ))}
+
+          {addresses && addresses.length < 1 && (
+            <div>
+              <p className="font-semibold">등록된 주소가 없습니다.</p>
+              <p className="mt-2 text-sm text-orange-500">
+                제품 주문시 주소를 입력하면 자동으로 등록됩니다.
+              </p>
+            </div>
+          )}
         </div>
       </figure>
 

@@ -20,10 +20,6 @@ export default async function handler(
       try {
         const data = await prisma.order.findUnique({
           where: { id: id as string },
-          include: {
-            address: true,
-            orderItems: true,
-          },
         });
 
         res.status(200).json({ success: true, data: data });

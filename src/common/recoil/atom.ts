@@ -1,4 +1,4 @@
-import { CartItemType } from "common/types/user";
+import { AddressType, CartItemType } from "common/types/user";
 import { AtomEffect, atom, useSetRecoilState } from "recoil";
 import { recoilPersist } from "recoil-persist";
 
@@ -56,9 +56,15 @@ export const cartItemsAtom = atom<CartItemType[]>({
 });
 
 // 주문 Atoms
-export const orderAdrsIdAtom = atom<string>({
-  key: "orderAdrsId",
-  default: "",
+export const isUserOrderAtom = atom<boolean>({
+  key: "isUserOrder",
+  default: false,
+  effects_UNSTABLE: [persistAtomEffect],
+});
+
+export const orderAdrsAtom = atom<AddressType | null>({
+  key: "orderAdrs",
+  default: null,
   effects_UNSTABLE: [persistAtomEffect],
 });
 
@@ -71,9 +77,9 @@ export type OrderItemsAtomType = {
   quantity: number;
 };
 
-export const orderItemsAtom = atom<OrderItemsAtomType[]>({
+export const orderItemsAtom = atom<OrderItemsAtomType[] | null>({
   key: "orderItems",
-  default: [],
+  default: null,
   effects_UNSTABLE: [persistAtomEffect],
 });
 
