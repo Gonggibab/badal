@@ -1,7 +1,8 @@
-import { Dispatch, FormEvent, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 import { ShippingInfoType } from "common/types/user";
 import { NewAddressType } from "pages/order";
+import formatPhoneNumber from "common/utils/formatPhoneNumber";
 
 type ShippingInfoProps = {
   isNotUser: boolean;
@@ -28,24 +29,6 @@ export default function ShippingInfo({
   setIsNewDefault,
   setIsPostSearchOpen,
 }: ShippingInfoProps) {
-  // 전화번호 입력 포맷터
-  const formatPhoneNumber = (e: FormEvent<HTMLInputElement>) => {
-    const phoneNumber = e.currentTarget.value.replace(/\D/g, "");
-    const phoneNumberLength = phoneNumber.length;
-
-    if (phoneNumberLength > 0) {
-      e.currentTarget.value = phoneNumber.slice(0, 3);
-
-      if (phoneNumberLength >= 4) {
-        e.currentTarget.value += "-" + phoneNumber.slice(3, 7);
-      }
-
-      if (phoneNumberLength >= 8) {
-        e.currentTarget.value += "-" + phoneNumber.slice(7, 11);
-      }
-    }
-  };
-
   return (
     <div className="col-span-1">
       <h2 className="mb-4 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">

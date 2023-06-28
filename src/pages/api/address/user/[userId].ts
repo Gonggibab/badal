@@ -20,6 +20,9 @@ export default async function handler(
       try {
         const data = await prisma.address.findMany({
           where: { userId: userId as string },
+          orderBy: {
+            isDefault: "desc",
+          },
         });
 
         res.status(200).json({ success: true, data: data });

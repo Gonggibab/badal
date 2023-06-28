@@ -102,7 +102,7 @@ model CartItem {
 
 model Address {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
-  idDefault     Boolean    @default(false)
+  isDefault     Boolean    @default(false)
   postcode      String
   address       String
   detailAddress String

@@ -9,26 +9,17 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import axios from "axios";
 
-import { ShippingInfoType } from "common/types/user";
+import { AddressType, ShippingInfoType } from "common/types/user";
 import {
   notificationAtom,
   orderAdrsIdAtom,
   orderItemsAtom,
   useSsrComplectedState,
 } from "common/recoil/atom";
+import PostSearchModal from "components/PostSearchModal";
 import ShippingInfo from "components/Order/ShippingInfo";
 import OrderInfo from "components/Order/OrderInfo";
-import PostSearchModal from "components/Order/PostSearchModal";
 import Loader from "components/Loader/Loader";
-
-export type NewAddressType = {
-  name: string;
-  contact: string;
-  postcode: string;
-  address: string;
-  detailAddress: string;
-  memo: string;
-};
 
 export default function Order() {
   const { data } = useSession();
@@ -46,7 +37,7 @@ export default function Order() {
   const [orderTitle, setOrderTitle] = useState<string>("");
   const [selectedAdrs, setSelectedAdrs] = useState<ShippingInfoType>({
     id: "",
-    idDefault: true,
+    isDefault: true,
     name: "",
     contact: "",
     postcode: "",
@@ -54,7 +45,7 @@ export default function Order() {
     detailAddress: "",
     memo: "",
   });
-  const [newAdrs, setNewAdrs] = useState<NewAddressType>({
+  const [newAdrs, setNewAdrs] = useState<AddressType>({
     name: "",
     contact: "010-",
     postcode: "",
@@ -126,13 +117,13 @@ export default function Order() {
 
     // 유저일 경우 주소 정보 불러오기
     const getUserAddress = async () => {
-      const address = await axios.get(`api/address/${data?.user?.id}`);
+      const address = await axios.get(`api/address/user/${data?.user?.id}`);
       const adrsData: ShippingInfoType[] = address.data.data;
 
       if (adrsData.length > 0) {
         // 기본 배송지가 있으면 해당 주소로 설정한다.
         adrsData.map((adrs) => {
-          if (adrs.idDefault) {
+          if (adrs.isDefault) {
             setSelectedAdrs(adrs);
             setIsNewAdrs(false);
           }
@@ -251,7 +242,7 @@ export default function Order() {
       <PostSearchModal
         isOpen={isPostSearchOpen}
         setIsOpen={setIsPostSearchOpen}
-        setNewAdrs={setNewAdrs}
+        setAdrs={setNewAdrs}
       />
 
       <Loader isLoading={isLoading} />

@@ -1,15 +1,15 @@
 import React, { Dispatch, SetStateAction } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 
-import { NewAddressType } from "pages/order";
+import { AddressType } from "common/types/user";
 
 type ModalProps = {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
-  setNewAdrs: Dispatch<SetStateAction<NewAddressType>>;
+  setAdrs: Dispatch<SetStateAction<AddressType>>;
 };
 
-function PostSearchModal({ isOpen, setIsOpen, setNewAdrs }: ModalProps) {
+function PostSearchModal({ isOpen, setIsOpen, setAdrs }: ModalProps) {
   const handleComplete = (data: {
     address: string;
     addressType: string;
@@ -31,7 +31,7 @@ function PostSearchModal({ isOpen, setIsOpen, setNewAdrs }: ModalProps) {
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
 
-    setNewAdrs((prevAdrs) => ({
+    setAdrs((prevAdrs) => ({
       ...prevAdrs,
       postcode: data.zonecode,
       address: fullAddress,
