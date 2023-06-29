@@ -24,12 +24,9 @@ export default function OrderInformation() {
     callback: () => {},
   });
 
-  const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
-  const authKey = btoa(secretKey + ":");
-
   // 주문 정보 불러오기
   useEffect(() => {
-    if (!router.isReady || !authKey) return;
+    if (!router.isReady) return;
 
     const getOrderConfirmData = async () => {
       try {
@@ -39,10 +36,7 @@ export default function OrderInformation() {
         setOrder(order);
 
         // 결제 정보 불러오기
-        const paymentData = await tossPayment.getPaymentInfo(
-          order.paymentKey,
-          authKey
-        );
+        const paymentData = await tossPayment.getPaymentInfo(order.paymentKey);
         setPayment(paymentData);
       } catch (error) {
         console.log(
@@ -52,10 +46,10 @@ export default function OrderInformation() {
     };
 
     getOrderConfirmData();
-  }, [authKey, id, router.isReady]);
+  }, [id, router.isReady]);
 
   const cancelOrder = async () => {
-    if (!order || !payment || !authKey) return;
+    if (!order || !payment) return;
 
     setIsModalOpen(true);
     setModalContent({
@@ -63,11 +57,7 @@ export default function OrderInformation() {
       content: "정말로 해당 주문을 취소 하시겠습니까?",
       btnTitle: "주문 취소",
       callback: async () => {
-        await tossPayment.cancelPayment(
-          payment.paymentKey,
-          authKey,
-          "고객 변심"
-        );
+        await tossPayment.cancelPayment(payment.paymentKey, "고객 변심");
 
         await axios.put(`/api/order/${order.id}`, {
           status: "CANCLED",

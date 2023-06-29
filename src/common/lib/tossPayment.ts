@@ -2,12 +2,14 @@ import axios from "axios";
 import { OrderConfirmType, PaymentDataType } from "common/types/tosspayments";
 import { nanoid } from "nanoid";
 
+const secretKey = process.env.PAYMENTS_SECRET!;
+const authKey = btoa(secretKey + ":");
+
 const tossPayment = {
   approveRequest: async (
     paymentKey: string,
     amount: string,
-    orderId: string,
-    authKey: string
+    orderId: string
   ): Promise<OrderConfirmType> => {
     const confirm = await axios.post(
       "https://api.tosspayments.com/v1/payments/confirm",
@@ -21,10 +23,7 @@ const tossPayment = {
     );
     return confirm.data;
   },
-  getPaymentInfo: async (
-    paymentKey: string,
-    authKey: string
-  ): Promise<PaymentDataType> => {
+  getPaymentInfo: async (paymentKey: string): Promise<PaymentDataType> => {
     const paymentRes = await axios.get(
       `https://api.tosspayments.com/v1/payments/${paymentKey}`,
       {
@@ -37,7 +36,6 @@ const tossPayment = {
   },
   cancelPayment: async (
     paymentKey: string,
-    authKey: string,
     cancelReason: string
   ): Promise<PaymentDataType> => {
     const idempotencyKey = nanoid();

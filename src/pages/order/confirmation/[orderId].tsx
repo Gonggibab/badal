@@ -15,12 +15,9 @@ export default function Confirmation() {
   const [order, setOrder] = useState<OrderType | null>(null);
   const [payment, setPayment] = useState<PaymentDataType | null>(null);
 
-  const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
-  const authKey = btoa(secretKey + ":");
-
   // 주문 정보 불러오기
   useEffect(() => {
-    if (!router.query.orderId || !authKey) return;
+    if (!router.query.orderId) return;
 
     const getOrderConfirmData = async () => {
       try {
@@ -30,10 +27,7 @@ export default function Confirmation() {
         setOrder(order);
 
         // 결제 정보 불러오기
-        const paymentData = await tossPayment.getPaymentInfo(
-          order.paymentKey,
-          authKey
-        );
+        const paymentData = await tossPayment.getPaymentInfo(order.paymentKey);
 
         setPayment(paymentData);
       } catch (error) {
@@ -44,7 +38,7 @@ export default function Confirmation() {
     };
 
     getOrderConfirmData();
-  }, [authKey, router.query]);
+  }, [router.query]);
 
   return (
     <main className="px-4 py-6 flex flex-col items-center justify-start sm:px-6 sm:py-16 lg:px-8">
