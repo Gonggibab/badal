@@ -7,7 +7,6 @@ import { PaymentDataType } from "common/types/tosspayments";
 import Modal, { ModalContentType } from "components/Modal";
 import PurchaseItem from "components/Order/PurchaseItem";
 import Loader from "components/Loader/Loader";
-import tossPayment from "common/lib/tossPayment";
 import isoTimeToKRdate from "common/utils/isoTimeToKRdate";
 import OrderStatus from "components/Order/OrderStatus";
 
@@ -36,8 +35,9 @@ export default function OrderInformation() {
         setOrder(order);
 
         // 결제 정보 불러오기
-        const paymentData = await tossPayment.getPaymentInfo(order.paymentKey);
-        setPayment(paymentData);
+        const paymentData = await axios.get(`/api/payment/${order.paymentKey}`);
+        const payment: PaymentDataType = paymentData.data.data;
+        setPayment(payment);
       } catch (error) {
         console.log(
           "주문 데이터를 불러오는 도중 에러가 발생했습니다. " + error
@@ -57,7 +57,10 @@ export default function OrderInformation() {
       content: "정말로 해당 주문을 취소 하시겠습니까?",
       btnTitle: "주문 취소",
       callback: async () => {
-        await tossPayment.cancelPayment(payment.paymentKey, "고객 변심");
+        await axios.post("/api/payment/cancel", {
+          paymentKey: payment.paymentKey,
+          cancelReason: "고객 변심",
+        });
 
         await axios.put(`/api/order/${order.id}`, {
           status: "CANCLED",

@@ -12,8 +12,8 @@ import {
   orderItemsAtom,
 } from "common/recoil/atom";
 import { OrderType } from "common/types/order";
+import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
-import tossPayment from "common/lib/tossPayment";
 import sendMessage from "common/utils/sendMessage";
 
 export default function Success() {
@@ -32,20 +32,22 @@ export default function Success() {
   // 서버로 결제 승인 요청 보내기
   useEffect(() => {
     if (isUserOrder && !data) return;
+    console.log(orderItems);
 
     if (!orderId || !paymentKey || !amount || !orderAdrs || !orderItems) return;
 
     const confirmOrder = async () => {
       try {
-        const confirmData = await tossPayment.approveRequest(
-          paymentKey,
-          amount,
-          orderId
-        );
+        const confirmData = await axios.post(`/api/payment/apporve`, {
+          paymentKey: paymentKey,
+          amount: amount,
+          orderId: orderId,
+        });
+        const confirm: OrderConfirmType = confirmData.data.data;
 
         const orderRes = await axios.post("/api/order", {
-          orderId: confirmData.orderId,
-          paymentKey: confirmData.paymentKey,
+          orderId: confirm.orderId,
+          paymentKey: confirm.paymentKey,
           title: `${orderItems[0].title} ${
             orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""
           }`,
