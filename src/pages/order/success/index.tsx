@@ -12,8 +12,8 @@ import {
   orderItemsAtom,
 } from "common/recoil/atom";
 import { OrderType } from "common/types/order";
+import { OrderConfirmType } from "common/types/tosspayments";
 import Loader from "components/Loader/Loader";
-import tossPayment from "common/lib/tossPayment";
 import sendMessage from "common/utils/sendMessage";
 
 export default function Success() {
@@ -25,38 +25,28 @@ export default function Success() {
   const setCartItems = useSetRecoilState(cartItemsAtom);
   const [orderItems, setOrderItems] = useRecoilState(orderItemsAtom);
 
-  const secretKey = process.env.NEXT_PUBLIC_PAYMENTS_SECRET!;
   const orderId = searchParams.get("orderId");
   const paymentKey = searchParams.get("paymentKey");
   const amount = searchParams.get("amount");
-  const authKey = btoa(secretKey + ":");
 
   // 서버로 결제 승인 요청 보내기
   useEffect(() => {
     if (isUserOrder && !data) return;
 
-    if (
-      !orderId ||
-      !paymentKey ||
-      !amount ||
-      !authKey ||
-      !orderAdrs ||
-      !orderItems
-    )
-      return;
+    if (!orderId || !paymentKey || !amount || !orderAdrs || !orderItems) return;
 
     const confirmOrder = async () => {
       try {
-        const confirmData = await tossPayment.approveRequest(
-          paymentKey,
-          amount,
-          orderId,
-          authKey
-        );
+        const confirmData = await axios.post(`/api/payment/approve`, {
+          paymentKey: paymentKey,
+          amount: amount,
+          orderId: orderId,
+        });
+        const confirm: OrderConfirmType = confirmData.data.data;
 
         const orderRes = await axios.post("/api/order", {
-          orderId: confirmData.orderId,
-          paymentKey: confirmData.paymentKey,
+          orderId: confirm.orderId,
+          paymentKey: confirm.paymentKey,
           title: `${orderItems[0].title} ${
             orderItems.length - 1 > 0 ? `외 ${orderItems.length - 1}개` : ""
           }`,
@@ -95,16 +85,7 @@ export default function Success() {
 
     confirmOrder();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    amount,
-    authKey,
-    data,
-    isUserOrder,
-    orderAdrs,
-    orderId,
-    orderItems,
-    paymentKey,
-  ]);
+  }, [amount, data, isUserOrder, orderAdrs, orderId, orderItems, paymentKey]);
 
   return <Loader isLoading={true} />;
 }

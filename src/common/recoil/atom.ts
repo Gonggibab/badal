@@ -87,6 +87,7 @@ export const orderItemsAtom = atom<OrderItemsAtomType[] | null>({
 export enum Section {
   USER_INFO,
   ORDER_INFO,
+  REVIEW_MNGT,
 }
 
 export const mySectionAtom = atom<Section>({

@@ -54,15 +54,6 @@ export default function OrderCard({ order }: OrderCardProps) {
               <p className="text-sm text-orange-500">{Status[order.status]}</p>
               <p className="mt-2 text-xs">{order.createdAt.split("T")[0]}</p>
             </div>
-
-            {order.status === OrderStatus.DONE && (
-              <button
-                className="px-3 h-8 text-xs rounded-md shadow transition-all 
-                hover:shadow-lg hover:translate-y-[1px]"
-              >
-                리뷰 작성
-              </button>
-            )}
           </div>
         </div>
       </div>

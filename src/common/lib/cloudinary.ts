@@ -23,16 +23,16 @@ const cloudinary = {
     formData.append("file", image);
     formData.append("upload_preset", "focel_image");
     const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/image/upload`,
       formData
     );
 
     return data;
   },
   delete: async (public_id: string) => {
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME;
-    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-    const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET!;
+    const cloudName = process.env.CLOUDINARY_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET!;
     const timestamp = new Date().getTime();
     const signature = generateSHA1(
       generateSignature(public_id, apiSecret, timestamp)

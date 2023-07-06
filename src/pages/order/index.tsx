@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { nanoid, customAlphabet } from "nanoid";
@@ -24,8 +23,6 @@ import Loader from "components/Loader/Loader";
 
 export default function Order() {
   const { data } = useSession();
-  const router = useRouter();
-
   const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
   const paymentMethodsWidgetRef = useRef<ReturnType<
     PaymentWidgetInstance["renderPaymentMethods"]

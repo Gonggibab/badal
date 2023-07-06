@@ -12,6 +12,7 @@ import OrderSection from "components/My/OrderSection/OrderSection";
 import LogoutIcon from "assets/icon/logout.svg";
 import SettingIcon from "assets/icon/setting.svg";
 import Loader from "components/Loader/Loader";
+import ReviewSection from "components/My/ReviewSection/ReviewSection";
 
 export default function My() {
   const { data } = useSession();
@@ -80,9 +81,8 @@ export default function My() {
             <button
               type="button"
               className={`${
-                curSection === Section.USER_INFO
-                  ? "font-semibold border-gray-500"
-                  : "text-sm"
+                curSection === Section.USER_INFO &&
+                "font-semibold border-gray-500"
               } px-4 py-4 border-b-2 transition-all focus:border-orange-500`}
               onClick={() => setSection(Section.USER_INFO)}
             >
@@ -91,13 +91,22 @@ export default function My() {
             <button
               type="button"
               className={`${
-                curSection === Section.ORDER_INFO
-                  ? "font-semibold border-gray-500"
-                  : "text-sm"
+                curSection === Section.ORDER_INFO &&
+                "font-semibold border-gray-500"
               } px-4 py-4 border-b-2 transition-all focus:border-orange-500`}
               onClick={() => setSection(Section.ORDER_INFO)}
             >
               주문 정보
+            </button>
+            <button
+              type="button"
+              className={`${
+                curSection === Section.REVIEW_MNGT &&
+                "font-semibold border-gray-500"
+              } px-4 py-4 border-b-2 transition-all focus:border-orange-500`}
+              onClick={() => setSection(Section.REVIEW_MNGT)}
+            >
+              리뷰 관리
             </button>
           </nav>
 
@@ -106,6 +115,9 @@ export default function My() {
           )}
           {curSection === Section.ORDER_INFO && (
             <OrderSection userId={data?.user?.id} />
+          )}
+          {curSection === Section.REVIEW_MNGT && (
+            <ReviewSection userId={data?.user?.id} />
           )}
         </>
       )}
