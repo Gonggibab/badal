@@ -1,38 +1,117 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# FO:CEL
+FO:CEL 화장품 판매 쇼핑몰 제작 프로젝트.
 
-## Getting Started
+> ### 배포 주소
+[https://focel.vercel.app/](https://focel.vercel.app/)
 
-First, run the development server:
+> ### 개발기간 및 인원
+- 2023.6.10 ~ 진행중
+- 개인 프로젝트
+<br/>
 
+## 시작 가이드
+
+> ### 설치 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+$ git clone https://github.com/Gonggibab/focel.git
+$ cd focel
 ```
+<br/>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> ### 개발 서버 실행
+```bash
+$ yarn install
+$ yarn dev
+```
+이후 브라우저에서 [http://localhost:3000](http://localhost:3000) 주소로 들어가면 결과를 볼 수 있습니다.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+<br/>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+> ### 환경변수
+[env.example](https://github.com/Gonggibab/focel/blob/main/env.example) 파일을 참조하여 ```env.local``` 파일을 루트 폴더에 생성하면 됩니다.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<br/>
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 기술 스택
+### 언어 / 프레임워크
+<div>
+  <img src="https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
+  <img src="https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+  <img src="https://img.shields.io/badge/NextJS-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
+</div>
 
-## Learn More
+### 데이터베이스
+<div>
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white">
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
+</div>
 
-To learn more about Next.js, take a look at the following resources:
+### 인프라
+<div>
+  <img src="https://img.shields.io/badge/Cloudinary-3448c5?style=for-the-badge">
+</div>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 배포
+<div>
+  <img src="https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white">
+</div>
+<br/>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 스크린샷
 
-## Deploy on Vercel
+<br/>
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 주요 기능
+체크가 되지 않은 것은 구현 중 혹은 구현 예정인 기능들 입니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+> ### 사용자 기능
+- [x] 네이버, 카카오 간편 로그인
+- [x] 상품 장바구니 추가 삭제
+- [x] 제품 주문 및 결제 (토스 페이먼츠 도입)
+- [ ] 유저 정보 수정 및 주문 관리
+
+> ### 관리자 기능
+- [x] 상품 목록 확인, 검색 그리고 상품 추가, 삭제, 편집
+- [ ] 주문 목록 확인, 검색, 필터 그리고 주문 상태 업데이트
+- [ ] 사용자 목록 확인, 검색 그리고 사용자 정지
+- [ ] 사용자 통계 및 판매량, 주문현황등 종합 관리자 대시보드 
+<br/>
+
+## 해결했던 문제들
+
+<br/>
+
+
+## 느낀점
+
+<br/>
+
+## 부록
+### ERD
+![FOCEL ERD](https://github.com/Gonggibab/focel/assets/83758021/9e4ef114-f96b-4370-a5ab-29dc92a66521)
+<br/>
+
+### 시스템 구조
+![focel_sys_design](https://github.com/Gonggibab/focel/assets/83758021/fb8b2bd7-26ed-4f9f-a421-428ed72c36a7)
+<br/>
+
+### 폴더 구조
+```
+    .
+    ├── public                  # 정적 자산 폴더
+    ├── src                     
+    │   ├── assets              
+    │   │   └── icon            # 아이콘 파일
+    │   │   └── images          # 사진 파일
+    │   ├── common              
+    │   │   ├── lib             # ORM 연결 함수
+    │   │   ├── recoil          # Recoil atom
+    │   │   ├── types           # 타입 지정
+    │   │   └── utils           # 앱 전체에 사용되는 기능들
+    │   ├── components          # 컴포넌트들
+    │   ├── pages               # 페이지 라우터 파일
+    │   │   └── api             # Nextjs API 라우터
+    │   │   └── admin           # 어드민 관련 페이지
+    └── └── styles              # 글로벌 CSS 파일
+```
+<br/>
