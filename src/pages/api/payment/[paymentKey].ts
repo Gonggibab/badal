@@ -11,7 +11,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  console.log("called!");
   const { method } = req;
   const { paymentKey } = req.query;
   const secretKey = process.env.PAYMENTS_SECRET!;

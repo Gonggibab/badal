@@ -35,7 +35,6 @@ export default function UserSection({
 
   useEffect(() => {
     // 주소 데이터 불러오기
-    setIsLoadAdress(true);
     const getAddressData = async () => {
       const addressRes = await axios.get(`/api/address/user/${user.id}`);
       const addresses: AddressType[] = addressRes.data.data;
@@ -43,8 +42,6 @@ export default function UserSection({
     };
 
     getAddressData();
-    setIsLoadAdress(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const onNameChangeClicked = async () => {
@@ -65,6 +62,11 @@ export default function UserSection({
       });
     }
   };
+
+  useEffect(() => {
+    if (!addresses) setIsLoadAdress(true);
+    else setIsLoadAdress(false);
+  }, [addresses, setIsLoadAdress]);
 
   return (
     <section className="mt-4 relative w-full max-w-4xl flex flex-col">

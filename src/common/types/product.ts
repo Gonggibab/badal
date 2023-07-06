@@ -20,6 +20,7 @@ export type ProductDetailType = {
 
 export type ReviewType = {
   id: string;
+  product: ProductType;
   userId: string;
   name: string;
   rating: number;

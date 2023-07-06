@@ -19,6 +19,7 @@ export default async function handler(
     case "POST":
       // 토스 결제 승인 요청하기
       try {
+        console.log(req.body);
         const confirm = await axios.post(
           "https://api.tosspayments.com/v1/payments/confirm",
           {

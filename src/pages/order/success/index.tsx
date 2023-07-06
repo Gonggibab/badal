@@ -32,13 +32,12 @@ export default function Success() {
   // 서버로 결제 승인 요청 보내기
   useEffect(() => {
     if (isUserOrder && !data) return;
-    console.log(orderItems);
 
     if (!orderId || !paymentKey || !amount || !orderAdrs || !orderItems) return;
 
     const confirmOrder = async () => {
       try {
-        const confirmData = await axios.post(`/api/payment/apporve`, {
+        const confirmData = await axios.post(`/api/payment/approve`, {
           paymentKey: paymentKey,
           amount: amount,
           orderId: orderId,

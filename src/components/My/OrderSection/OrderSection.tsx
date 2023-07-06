@@ -3,7 +3,6 @@ import axios from "axios";
 
 import { OrderStatus, OrderType } from "common/types/order";
 import OrderCard from "./OrderCard";
-import Loader from "components/Loader/Loader";
 import Link from "next/link";
 import NoRecordIcon from "assets/icon/noRecord.svg";
 
@@ -115,8 +114,6 @@ export default function OrderSection({ userId }: OrderSectionProps) {
           )}
         </>
       )}
-
-      <Loader isLoading={!orders} />
     </section>
   );
 }

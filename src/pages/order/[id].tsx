@@ -65,10 +65,10 @@ export default function OrderInformation() {
         await axios.put(`/api/order/${order.id}`, {
           status: "CANCLED",
         });
+
+        router.back();
       },
     });
-
-    router.back();
   };
 
   // const reorder = async () => {
