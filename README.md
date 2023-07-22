@@ -1,8 +1,8 @@
-# FO:CEL
-FO:CEL 화장품 판매 쇼핑몰 제작 프로젝트.
+# Badal
+Badal 화장품 판매 쇼핑몰 제작 프로젝트.
 
 > ### 배포 주소
-[https://focel.vercel.app/](https://focel.vercel.app/)
+[https://badal.vercel.app/](https://badal.vercel.app/)
 
 > ### 개발기간 및 인원
 - 2023.6.10 ~ 진행중
@@ -13,7 +13,7 @@ FO:CEL 화장품 판매 쇼핑몰 제작 프로젝트.
 
 > ### 설치 
 ```bash
-$ git clone https://github.com/Gonggibab/focel.git
+$ git clone https://github.com/Gonggibab/badal.git
 $ cd focel
 ```
 <br/>
