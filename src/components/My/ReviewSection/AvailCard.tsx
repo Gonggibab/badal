@@ -35,7 +35,7 @@ export default function AvailCard({ item }: AvailCardProps) {
             해당 제품은 어떠셨나요?
           </p>
           <Link
-            href={"/"}
+            href={`/my/review/${item.title}`}
             className="mt-auto py-2.5 w-full flex justify-center items-center font-semibold tracking-wider	
               text-white text-sm bg-orange-500 rounded-lg hover:bg-orange-400 transition-all"
           >

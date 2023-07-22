@@ -53,15 +53,18 @@ export default function My() {
             </h1>
 
             <div className="flex-shrink-0 flex gap-x-4">
-              <Link
-                href={"/admin"}
-                className="px-2 py-1.5 flex items-center text-xs font-semibold rounded-md 
+              {data?.user?.role === "ADMIN" && (
+                <Link
+                  href={"/admin"}
+                  className="px-2 py-1.5 flex items-center text-xs font-semibold rounded-md 
                   shadow hover:shadow-lg hover:translate-y-[1px] transition-all 
                   sm:px-3.5 sm:py-2.5 focus:ring-2 focus:ring-inset focus:ring-orange-500"
-              >
-                <SettingIcon className="w-6 h-6 sm:mr-2" />
-                <span className="hidden sm:inline-block">관리자 페이지</span>
-              </Link>
+                >
+                  <SettingIcon className="w-6 h-6 sm:mr-2" />
+                  <span className="hidden sm:inline-block">관리자 페이지</span>
+                </Link>
+              )}
+
               <button
                 onClick={() => {
                   setCartItems([]);

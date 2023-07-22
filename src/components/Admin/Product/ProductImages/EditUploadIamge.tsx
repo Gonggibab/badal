@@ -69,8 +69,9 @@ export default function EditUploadIamge({
 
       imgList.push({ image: file, preview: URL.createObjectURL(file) });
     }
-    console.log(images);
+
     setImages([...images, ...imgList]);
+    e.target.value = "";
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +89,7 @@ export default function EditUploadIamge({
     }
 
     setDetailImage({ image: file, preview: URL.createObjectURL(file) });
+    e.target.value = "";
   };
 
   const deleteExDetailImg = () => {

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-import ImageCard from "./ImageCard";
+import ImageCard from "../../../ImageCard";
 import { ImageFileType } from "pages/admin/product/add";
 import { ImageType } from "common/types/image";
 import ExImageCard from "./ExImageCard";

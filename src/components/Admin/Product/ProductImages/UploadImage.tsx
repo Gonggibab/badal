@@ -4,7 +4,7 @@ import Image from "next/image";
 
 import { notificationAtom } from "common/recoil/atom";
 import { ImageFileType } from "pages/admin/product/add";
-import ImageGallery from "./ImageGallery";
+import ImageGallery from "../../../ImageGallery";
 import CameraIcon from "assets/icon/camera.svg";
 import CloseIcon from "assets/icon/close.svg";
 
@@ -58,6 +58,7 @@ export default function UploadImage({
     }
 
     setImages([...images, ...imgList]);
+    e.target.value = "";
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {

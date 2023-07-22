@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import Image from "next/image";
 
-import { ImageFileType } from "pages/admin/product/add";
+import { ImageFileType } from "./ImageGallery";
 import CloseIcon from "assets/icon/close.svg";
 
 type ImageCardProps = {
