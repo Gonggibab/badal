@@ -2,7 +2,7 @@
 Badal 화장품 판매 쇼핑몰 제작 프로젝트.
 
 > ### 배포 주소
-[https://badal.vercel.app/](https://ba-dal.vercel.app/)
+[https://ba-dal.vercel.app/](https://ba-dal.vercel.app/)
 
 > ### 개발기간 및 인원
 - 2023.6.10 ~ 진행중
