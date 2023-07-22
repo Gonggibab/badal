@@ -38,20 +38,6 @@ model Product {
   reviews       Review[]
 }
 
-model Review {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  user          User        @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId        String      @db.ObjectId
-  product       Product     @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  productId     String      @db.ObjectId
-  rating        Int
-  content       String
-  images        Image[]
-  createdAt     DateTime    @default(now())
-
-  @@unique([productId, userId])
-}
-
 model Image {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   asset_id        String
@@ -151,5 +137,19 @@ model Order {
   address       OrderAddress
   orderItems    OrderItem[]
   createdAt     DateTime    @default(now())
+}
+
+model Review {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  user          User        @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId        String      @db.ObjectId
+  product       Product     @relation(fields: [productId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  productId     String      @db.ObjectId
+  rating        Int
+  content       String
+  images        Image[]
+  createdAt     DateTime    @default(now())
+
+  @@unique([productId, userId])
 }
 

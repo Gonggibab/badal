@@ -59,27 +59,27 @@ export default function Review({
           <div className="flex items-center">
             <StarIcon
               className={`${
-                rating >= 1 ? "text-yellow-400" : "text-gray-200"
+                rating >= 1 ? "text-orange-400" : "text-gray-200"
               } w-5 h-5`}
             />
             <StarIcon
               className={`${
-                rating >= 2 ? "text-yellow-400" : "text-gray-200"
+                rating >= 2 ? "text-orange-400" : "text-gray-200"
               } w-5 h-5`}
             />
             <StarIcon
               className={`${
-                rating >= 3 ? "text-yellow-400" : "text-gray-200"
+                rating >= 3 ? "text-orange-400" : "text-gray-200"
               } w-5 h-5`}
             />
             <StarIcon
               className={`${
-                rating >= 4 ? "text-yellow-400" : "text-gray-200"
+                rating >= 4 ? "text-orange-400" : "text-gray-200"
               } w-5 h-5`}
             />
             <StarIcon
               className={`${
-                rating >= 5 ? "text-yellow-400" : "text-gray-200"
+                rating >= 5 ? "text-orange-400" : "text-gray-200"
               } w-5 h-5`}
             />
           </div>

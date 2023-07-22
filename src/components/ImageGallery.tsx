@@ -1,7 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 
 import ImageCard from "./ImageCard";
-import { ImageFileType } from "pages/admin/product/add";
+
+export type ImageFileType = {
+  image: File;
+  preview: string;
+};
 
 type ImageGalleryProps = {
   images: ImageFileType[];
