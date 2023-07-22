@@ -13,28 +13,31 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const {
-    query: { userId },
+    query: { userId, gte, lte },
     method,
   } = req;
 
   switch (method) {
     case "GET":
       try {
-        let data;
-        if (userId) {
-          data = await prisma.order.findMany({
-            where: { userId: userId as string },
-            orderBy: {
-              createdAt: "desc",
+        const startDate = gte ? new Date(gte as string) : undefined;
+        const endDate = lte ? new Date(lte as string) : undefined;
+
+        const data = await prisma.order.findMany({
+          where: {
+            userId: userId as string,
+            createdAt: {
+              gte: startDate,
+              lte: endDate,
             },
-          });
-        } else {
-          data = await prisma.order.findMany({
-            include: {
-              user: true,
-            },
-          });
-        }
+          },
+          include: {
+            user: !userId,
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
 
         res.status(200).json({ success: true, data: data });
       } catch (error) {

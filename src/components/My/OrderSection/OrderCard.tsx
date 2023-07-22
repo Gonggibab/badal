@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { OrderStatus, OrderType } from "common/types/order";
+import { OrderType } from "common/types/order";
 import NoImage from "components/NoImage";
 import Link from "next/link";
 

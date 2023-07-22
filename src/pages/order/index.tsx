@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { nanoid, customAlphabet } from "nanoid";
+import { customAlphabet } from "nanoid";
 import {
   loadPaymentWidget,
   PaymentWidgetInstance,
+  ANONYMOUS,
 } from "@tosspayments/payment-widget-sdk";
 import axios from "axios";
 
@@ -73,7 +74,7 @@ export default function Order() {
     5
   );
   const orderId = yymmdd + customNanoid();
-  const customerKey = data ? data.user?.id! : nanoid();
+  const customerKey = data ? data.user?.id! : ANONYMOUS;
 
   // Recoil Persist Hydration 에러로 인해 SSR 체크
   const setSsrCompleted = useSsrComplectedState();

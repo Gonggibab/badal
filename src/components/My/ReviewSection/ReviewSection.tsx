@@ -3,14 +3,18 @@ import Link from "next/link";
 import axios from "axios";
 
 import { ReviewType } from "common/types/product";
-import { OrderType } from "common/types/order";
-import NoRecordIcon from "assets/icon/noRecord.svg";
+import { OrderItemType, OrderStatus, OrderType } from "common/types/order";
+import NeutralFaceIcon from "assets/icon/neutral.svg";
+import AvailCard from "./AvailCard";
 
 type ReviewSectionProps = {
   userId: string | undefined;
 };
 
 export default function ReviewSection({ userId }: ReviewSectionProps) {
+  const [reviewAvails, setReviewAvails] = useState<OrderItemType[] | null>(
+    null
+  );
   const [reviews, setReviews] = useState<ReviewType[] | null>(null);
 
   useEffect(() => {
@@ -21,10 +25,26 @@ export default function ReviewSection({ userId }: ReviewSectionProps) {
       const reviews: ReviewType[] = reviewRes.data.data;
       setReviews(reviews);
 
-      const orderRes = await axios.get(`/api/order?userId=${userId}`);
+      // 한달 간의 주문 기록 중 리뷰를 작성하지 않은 제품 목록을 가져옴.
+      const date = new Date();
+      date.setDate(date.getDate() - 30);
+
+      const orderRes = await axios.get(
+        `/api/order?userId=${userId}&gte=${date}`
+      );
       const orders: OrderType[] = orderRes.data.data;
 
-      console.log(orders);
+      const items: OrderItemType[] = orders
+        .filter((order) => {
+          return order.status === OrderStatus.DONE;
+        })
+        .flatMap((order) =>
+          order.orderItems.filter(
+            (item) =>
+              !reviews.some((review) => review.product.title === item.title)
+          )
+        );
+      setReviewAvails(items);
     };
 
     getReviewData();
@@ -32,25 +52,38 @@ export default function ReviewSection({ userId }: ReviewSectionProps) {
 
   return (
     <section className="mt-4 relative w-full max-w-4xl">
+      <figure className="border-b border-gray-900/10 pt-6 pb-12">
+        <h2 className="text-base font-semibold leading-7 text-gray-900">
+          리뷰 작성 가능 제품
+        </h2>
+        <p className="text-xs leading-6 text-gray-600">
+          회원님의 소중한 리뷰를 남겨주세요.
+        </p>
+        <div className="mt-6 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+          {reviewAvails &&
+            reviewAvails.map((item) => (
+              <AvailCard key={item.title} item={item} />
+            ))}
+        </div>
+      </figure>
+
+      <figure className="border-gray-900/10 py-6">
+        <h2 className="text-base font-semibold leading-7 text-gray-900">
+          리뷰 관리
+        </h2>
+        <p className="text-xs leading-6 text-gray-600">
+          회원님이 작성한 리뷰를 관리해보세요.
+        </p>
+      </figure>
+
       {reviews && (
         <>
-          <div className="my-4 w-full flex flex-col rounded-md shadow"></div>
-
           {reviews.length > 0 ? (
             <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2"></div>
           ) : (
             <div className="mt-14 w-full flex flex-col justify-center items-center">
-              <NoRecordIcon className="w-32 h-32" />
-              <p className="text-xl text-orange-500 font-semibold">
-                등록한 리뷰가 없습니다
-              </p>
-              <Link
-                href={"/product"}
-                className="mt-8 px-3 py-2 text-sm font-semibold text-white bg-orange-500 rounded-md
-                  transition-all hover:bg-orange-400"
-              >
-                제품 보러가기
-              </Link>
+              <NeutralFaceIcon className="w-20 h-20" />
+              <p className="mt-2 text-lg font-medium">등록한 리뷰가 없습니다</p>
             </div>
           )}
         </>
