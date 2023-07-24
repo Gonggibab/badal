@@ -18,19 +18,13 @@ export default async function handler(
 
   switch (method) {
     case "GET":
-      // Product 정보 가져오기
+      // Review 정보 가져오기
       try {
-        const data = await prisma.product.findUnique({
+        const data = await prisma.review.findUnique({
           where: { id: id as string },
           include: {
+            product: true,
             images: true,
-            detailImage: true,
-            reviews: {
-              include: {
-                user: true,
-                images: true,
-              },
-            },
           },
         });
 
@@ -47,7 +41,7 @@ export default async function handler(
       const detailImage: ImageType = req.body.detailImage;
 
       try {
-        // 해당 Product 업데이트하기
+        // 해당 Review 업데이트하기
         const product = await prisma.product.update({
           where: { id: id as string },
           data: {
@@ -89,42 +83,36 @@ export default async function handler(
 
         res.status(200).json({ success: true, data: product });
       } catch (error) {
-        console.log("제품 정보 업데이트 도중 에러가 발생했습니다. " + error);
+        console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 
       break;
 
     case "DELETE":
-      // Product 정보 삭제하기
+      // Review 정보 삭제하기
       try {
-        const product = await prisma.product.delete({
+        const review = await prisma.review.delete({
           where: { id: id as string },
           include: {
             images: true,
-            detailImage: true,
           },
         });
 
         // 관련 이미지들 클라우드에서 삭제
         const deletePromises = [];
-        if (product.images) {
+        if (review.images) {
           deletePromises.push(
-            product.images.map(async (img) => {
+            review.images.map(async (img) => {
               await cloudinary.delete(img.public_id);
             })
           );
         }
-        if (product.detailImage) {
-          deletePromises.push(
-            await cloudinary.delete(product.detailImage.public_id)
-          );
-        }
         if (deletePromises.length > 0) await Promise.all(deletePromises);
 
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true, data: review });
       } catch (error) {
-        console.log("제품 정보를 삭제하는 도중 에러가 발생했습니다. " + error);
+        console.log("리뷰를 삭제하는 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 

@@ -1,4 +1,5 @@
 import prisma from "common/lib/prisma";
+import { ImageType } from "common/types/image";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -19,27 +20,16 @@ export default async function handler(
   switch (method) {
     case "GET":
       try {
-        let data;
-        if (userId) {
-          data = await prisma.review.findMany({
-            where: { userId: userId as string },
-            orderBy: {
-              createdAt: "desc",
-            },
-            include: {
-              product: true,
-            },
-          });
-        } else {
-          data = await prisma.review.findMany({
-            orderBy: {
-              createdAt: "desc",
-            },
-            include: {
-              user: true,
-            },
-          });
-        }
+        const data = await prisma.review.findMany({
+          where: { userId: userId as string },
+          orderBy: {
+            createdAt: "desc",
+          },
+          include: {
+            product: true,
+            images: true,
+          },
+        });
 
         res.status(200).json({ success: true, data: data });
       } catch (error) {
@@ -50,23 +40,45 @@ export default async function handler(
       }
       break;
 
-    // case "POST":
-    //   try {
-    //     const data = await prisma.order.create({
-    //       data: {
-    //         orderId: req.body.orderId,
-    //       },
-    //     });
+    case "POST":
+      try {
+        const product = await prisma.product.findUnique({
+          where: {
+            title: req.body.title,
+          },
+        });
 
-    //     res.status(200).json({ success: true, data: data });
-    //   } catch (error) {
-    //     console.log("주문 정보 저장중 에러가 발생했습니다. " + error);
-    //     res.status(500).json({ success: false, error: error });
-    //   }
-    //   break;
+        if (!product) throw new Error("잘못된 제품명입니다!");
+
+        const images: ImageType[] = req.body.images;
+        const data = await prisma.review.create({
+          data: {
+            userId: req.body.userId,
+            productId: product.id,
+            rating: req.body.rating,
+            content: req.body.content,
+            images: {
+              create: images.map((image) => ({
+                asset_id: image.asset_id,
+                public_id: image.public_id,
+                signature: image.signature,
+                url: image.url,
+                secure_url: image.secure_url,
+                createdAt: new Date(image.createdAt),
+              })),
+            },
+          },
+        });
+
+        res.status(200).json({ success: true, data: data });
+      } catch (error) {
+        console.log("리뷰 저장중 에러가 발생했습니다. " + error);
+        res.status(500).json({ success: false, error: error });
+      }
+      break;
 
     default:
-      res.setHeader("Allow", ["POST"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useSetRecoilState } from "recoil";
 import axios from "axios";
 
+import { ReviewType } from "common/types/product";
+import { ImageType } from "common/types/image";
 import { notificationAtom } from "common/recoil/atom";
 import UploadImages from "components/My/AddReview/UploadImages";
 import Loader from "components/Loader/Loader";
@@ -24,28 +26,44 @@ const evaluation = [
   "강추해요!",
 ];
 
-export default function NewReview() {
+export default function UpdateReview() {
   const { data } = useSession();
   const router = useRouter();
   const setNotification = useSetRecoilState(notificationAtom);
+  const [title, setTitle] = useState<string>("");
   const [rating, setRating] = useState<number>(5);
+  const [exImages, setExImages] = useState<ImageType[]>([]);
+  const [deleteImages, setDeleteImages] = useState<ImageType[]>([]);
   const [images, setImages] = useState<ImageFileType[]>([]);
   const [content, setContent] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const getReviewData = async () => {
+      const reviewRes = await axios.get(`/api/review/${router.query.id}`);
+      const review: ReviewType = reviewRes.data.data;
+
+      // 리뷰 데이터 불러와서 적용
+      setTitle(review.product.title);
+      setRating(review.rating);
+      setExImages(review.images);
+      setContent(review.content);
+    };
+
+    getReviewData();
+  }, [router]);
+
   const register = async () => {
     if (!data?.user) return;
-
     setIsLoading(true);
 
     try {
       // Cloudinary에 이미지들 업로드
-      const cloudImage = await cloudinary.upload(
+      const cloudImage: ImageType[] = await cloudinary.upload(
         images.map((img) => img.image)
       );
-
-      console.log("클라우드엔 저장됨");
-      console.log({ cloudImage });
 
       try {
         // 리뷰 데이터 등록
@@ -64,31 +82,31 @@ export default function NewReview() {
         });
         router.push("/my");
       } catch (error) {
-        // 디비 저장중 에러발생 시 클라우드에 저장 시켰던 이미지를 삭제
+        // 클라우드에 저장 시켰던 이미지를 삭제
         const deletePromises = [];
         if (cloudImage.length > 0) {
           deletePromises.push(
             cloudImage.map(async (img) => {
-              await axios.delete(`/api/images/${img.public_id}`);
+              await cloudinary.delete(img.public_id);
             })
           );
         }
 
-        setIsLoading(false);
         setNotification({
           isOpen: true,
           content: "리뷰 등록중에 에러가 발생했습니다. 다시 시도해주세요.",
         });
+
         console.log("리뷰 등록중에 에러가 발생했습니다. " + error);
         setIsLoading(false);
       }
     } catch (error) {
-      setIsLoading(false);
       setNotification({
         isOpen: true,
         content: "리뷰 등록중에 에러가 발생했습니다. 다시 시도해주세요.",
       });
 
+      setIsLoading(false);
       console.log("Cloudinary와 통신에 에러가 발생했습니다. " + error);
     }
   };
@@ -99,11 +117,9 @@ export default function NewReview() {
         <form>
           <div className="pb-12">
             <h2 className="text-xl font-semibold leading-7 text-gray-900">
-              <span className="text-orange-500 font-bold">
-                {`"${router.query.title}"`}
-              </span>
+              <span className="text-orange-500 font-bold">{title}</span>
               {"  "}
-              리뷰 작성하기
+              리뷰 수정하기
             </h2>
             <p className="mt-1 pb-4 text-xs leading-6 text-gray-600 border-b border-gray-900/10">
               제품이 어땠는지 입력해 주세요.

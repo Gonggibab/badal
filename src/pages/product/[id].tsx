@@ -330,16 +330,7 @@ export default function ProductDetail() {
                   <div className="w-full flex flex-col">
                     {productData.reviews?.length > 0 ? (
                       productData.reviews.map((review) => {
-                        return (
-                          <Review
-                            key={review.id}
-                            name={review.name}
-                            rating={review.rating}
-                            updatedAt={review.updatedAt}
-                            images={review.images}
-                            content={review.content}
-                          />
-                        );
+                        return <Review key={review.id} review={review} />;
                       })
                     ) : (
                       <div className="w-full flex flex-col justify-center items-center">
