@@ -81,6 +81,10 @@ export default function ProductAdd() {
         });
 
         setIsLoading(false);
+        setNotification({
+          isOpen: true,
+          content: "성공적으로 제품을 등록했습니다.",
+        });
         router.push("/admin/product");
       } catch (error) {
         // 클라우드에 저장 시켰던 이미지를 삭제

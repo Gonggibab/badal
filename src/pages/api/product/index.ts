@@ -35,7 +35,8 @@ export default async function handler(
 
     case "POST":
       const images: ImageType[] = req.body.images;
-      const detailImage: ImageType = req.body.detailImage;
+      const detailImage: ImageType[] = req.body.detailImage;
+      console.log(detailImage);
 
       try {
         // Product 데이터베이스에 추가하기
@@ -57,21 +58,20 @@ export default async function handler(
           },
         });
 
-        if (detailImage) {
+        if (detailImage && detailImage.length > 0) {
           await prisma.detailImage.create({
             data: {
               productId: product.id,
-              asset_id: detailImage.asset_id,
-              public_id: detailImage.public_id,
-              signature: detailImage.signature,
-              url: detailImage.url,
-              secure_url: detailImage.secure_url,
-              createdAt: new Date(detailImage.createdAt),
+              asset_id: detailImage[0].asset_id,
+              public_id: detailImage[0].public_id,
+              signature: detailImage[0].signature,
+              url: detailImage[0].url,
+              secure_url: detailImage[0].secure_url,
             },
           });
         }
 
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true });
       } catch (error) {
         console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });

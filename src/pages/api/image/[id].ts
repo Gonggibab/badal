@@ -9,6 +9,20 @@ type Data = {
   error?: unknown;
 };
 
+const generateSHA1 = (data: string) => {
+  const hash = crypto.createHash("sha1");
+  hash.update(data);
+  return hash.digest("hex");
+};
+
+const generateSignature = (
+  publicId: string,
+  apiSecret: string,
+  timestamp: number
+) => {
+  return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -25,31 +39,26 @@ export default async function handler(
       const publicId = id as string;
 
       try {
-        // 이미지 DB에서 삭제
-        await prisma.image.delete({
-          where: { public_id: publicId },
+        // 이미지가 DB에 있는지 체크
+        const data = await prisma.image.findUnique({
+          where: {
+            public_id: publicId,
+          },
         });
 
-        const generateSHA1 = (data: string) => {
-          const hash = crypto.createHash("sha1");
-          hash.update(data);
-          return hash.digest("hex");
-        };
+        if (data) {
+          // 이미지가 DB에 있으면 삭제한다
+          await prisma.image.delete({
+            where: { public_id: publicId },
+          });
+        }
 
-        const generateSignature = (
-          publicId: string,
-          apiSecret: string,
-          timestamp: number
-        ) => {
-          return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
-        };
-
+        // 이미지 클라우드에서 삭제
         const timestamp = new Date().getTime();
         const signature = generateSHA1(
           generateSignature(publicId, apiSecret, timestamp)
         );
 
-        // 이미지 클라우드에서 삭제
         await axios.post(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,
           {
