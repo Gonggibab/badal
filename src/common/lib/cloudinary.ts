@@ -1,53 +1,34 @@
 import axios from "axios";
-import crypto from "crypto";
 
-import { CloudinaryImageType } from "common/types/image";
-
-const generateSHA1 = (data: string) => {
-  const hash = crypto.createHash("sha1");
-  hash.update(data);
-  return hash.digest("hex");
-};
-
-const generateSignature = (
-  publicId: string,
-  apiSecret: string,
-  timestamp: number
-) => {
-  return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
-};
+import { ImageType } from "common/types/image";
 
 const cloudinary = {
-  upload: async (image: File): Promise<CloudinaryImageType> => {
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", "focel_image");
-    const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_NAME}/image/upload`,
-      formData
-    );
+  upload: async (images: File[]): Promise<ImageType[]> => {
+    const cloudImage: ImageType[] = [];
+    const uploadPromises = images.map(async (image) => {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "focel_image");
+      const cloudinaryRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`,
+        formData
+      );
 
-    return data;
-  },
-  delete: async (public_id: string) => {
-    const cloudName = process.env.CLOUDINARY_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET!;
-    const timestamp = new Date().getTime();
-    const signature = generateSHA1(
-      generateSignature(public_id, apiSecret, timestamp)
-    );
-    const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,
-      {
-        public_id: public_id,
-        signature: signature,
-        api_key: apiKey,
-        timestamp: timestamp,
-      }
-    );
+      const imageData = cloudinaryRes.data;
 
-    return data;
+      cloudImage.push({
+        asset_id: imageData.asset_id,
+        public_id: imageData.public_id,
+        signature: imageData.signature,
+        url: imageData.url,
+        secure_url: imageData.secure_url,
+        createdAt: imageData.created_at,
+      });
+    });
+
+    await Promise.all(uploadPromises);
+
+    return cloudImage;
   },
 };
 

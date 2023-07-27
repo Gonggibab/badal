@@ -1,7 +1,7 @@
 import prisma from "common/lib/prisma";
-import type { NextApiRequest, NextApiResponse } from "next";
-
 import { ImageType } from "common/types/image";
+import type { NextApiRequest, NextApiResponse } from "next";
+import axios from "axios";
 
 type Data = {
   success: boolean;
@@ -14,13 +14,16 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const { method } = req;
+  const { id } = req.query;
 
   switch (method) {
     case "GET":
-      // 모든 Product 데이터 가져오기
+      // Review 정보 가져오기
       try {
-        const data = await prisma.product.findMany({
+        const data = await prisma.review.findUnique({
+          where: { id: id as string },
           include: {
+            product: true,
             images: true,
           },
         });
@@ -33,18 +36,27 @@ export default async function handler(
 
       break;
 
-    case "POST":
+    case "PUT":
       const images: ImageType[] = req.body.images;
-      const detailImage: ImageType[] = req.body.detailImage;
-      console.log(detailImage);
+
+      const product = await prisma.product.findUnique({
+        where: {
+          title: req.body.title,
+        },
+      });
+
+      if (!product) throw new Error("잘못된 제품명입니다!");
 
       try {
-        // Product 데이터베이스에 추가하기
-        const product = await prisma.product.create({
+        // 해당 Review 업데이트하기
+        const data = await prisma.review.update({
+          where: { id: id as string },
           data: {
-            title: req.body.title,
-            price: req.body.price,
-            stock: req.body.stock,
+            userId: req.body.userId,
+            productId: product.id,
+            rating: req.body.rating,
+            content: req.body.content,
+            updatedAt: new Date(),
             images: {
               create: images.map((image) => ({
                 asset_id: image.asset_id,
@@ -58,20 +70,7 @@ export default async function handler(
           },
         });
 
-        if (detailImage && detailImage.length > 0) {
-          await prisma.detailImage.create({
-            data: {
-              productId: product.id,
-              asset_id: detailImage[0].asset_id,
-              public_id: detailImage[0].public_id,
-              signature: detailImage[0].signature,
-              url: detailImage[0].url,
-              secure_url: detailImage[0].secure_url,
-            },
-          });
-        }
-
-        res.status(200).json({ success: true });
+        res.status(200).json({ success: true, data: data });
       } catch (error) {
         console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
@@ -79,8 +78,26 @@ export default async function handler(
 
       break;
 
+    case "DELETE":
+      // Review 정보 삭제하기
+      try {
+        const data = await prisma.review.delete({
+          where: { id: id as string },
+          include: {
+            images: true,
+          },
+        });
+
+        res.status(200).json({ success: true, data: data });
+      } catch (error) {
+        console.log("리뷰를 삭제하는 도중 에러가 발생했습니다. " + error);
+        res.status(500).json({ success: false, error: error });
+      }
+
+      break;
+
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

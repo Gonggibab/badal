@@ -1,6 +1,5 @@
 import prisma from "common/lib/prisma";
 import { ImageType } from "common/types/image";
-import cloudinary from "common/lib/cloudinary";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -25,7 +24,12 @@ export default async function handler(
           include: {
             images: true,
             detailImage: true,
-            reviews: true,
+            reviews: {
+              include: {
+                user: true,
+                images: true,
+              },
+            },
           },
         });
 
@@ -39,7 +43,7 @@ export default async function handler(
 
     case "PUT":
       const images: ImageType[] = req.body.images;
-      const detailImage: ImageType = req.body.detailImage;
+      const detailImage: ImageType[] = req.body.detailImage;
 
       try {
         // 해당 Product 업데이트하기
@@ -68,23 +72,23 @@ export default async function handler(
           });
         }
 
-        if (detailImage) {
+        if (detailImage && detailImage.length > 0) {
           await prisma.detailImage.create({
             data: {
               productId: product.id,
-              asset_id: detailImage.asset_id,
-              public_id: detailImage.public_id,
-              signature: detailImage.signature,
-              url: detailImage.url,
-              secure_url: detailImage.secure_url,
-              createdAt: new Date(detailImage.createdAt),
+              asset_id: detailImage[0].asset_id,
+              public_id: detailImage[0].public_id,
+              signature: detailImage[0].signature,
+              url: detailImage[0].url,
+              secure_url: detailImage[0].secure_url,
+              createdAt: new Date(detailImage[0].createdAt),
             },
           });
         }
 
         res.status(200).json({ success: true, data: product });
       } catch (error) {
-        console.log("제품 추가 도중 에러가 발생했습니다. " + error);
+        console.log("제품 정보 업데이트 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 
@@ -93,7 +97,7 @@ export default async function handler(
     case "DELETE":
       // Product 정보 삭제하기
       try {
-        const product = await prisma.product.delete({
+        const data = await prisma.product.delete({
           where: { id: id as string },
           include: {
             images: true,
@@ -101,25 +105,9 @@ export default async function handler(
           },
         });
 
-        // 관련 이미지들 클라우드에서 삭제
-        const deletePromises = [];
-        if (product.images) {
-          deletePromises.push(
-            product.images.map(async (img) => {
-              await cloudinary.delete(img.public_id);
-            })
-          );
-        }
-        if (product.detailImage) {
-          deletePromises.push(
-            await cloudinary.delete(product.detailImage.public_id)
-          );
-        }
-        if (deletePromises.length > 0) await Promise.all(deletePromises);
-
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true, data: data });
       } catch (error) {
-        console.log("제품 정보를 불러오는 도중 에러가 발생했습니다. " + error);
+        console.log("제품 정보를 삭제하는 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
       }
 

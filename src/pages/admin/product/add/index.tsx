@@ -60,32 +60,14 @@ export default function ProductAdd() {
     setIsLoading(true);
     try {
       // Cloudinary에 이미지들 업로드
-      const cloudImage: ImageType[] = [];
-      const uploadPromises = images.map(async (img) => {
-        const imageData = await cloudinary.upload(img.image);
-        cloudImage.push({
-          asset_id: imageData.asset_id,
-          public_id: imageData.public_id,
-          signature: imageData.signature,
-          url: imageData.url,
-          secure_url: imageData.secure_url,
-          createdAt: imageData.created_at,
-        });
-      });
-      await Promise.all(uploadPromises);
+      const cloudImage: ImageType[] = await cloudinary.upload(
+        images.map((img) => img.image)
+      );
 
-      // Cloudinary에 상세 이미지 업로드
       let cloudDetailImage;
+      // Cloudinary에 상세 이미지 업로드
       if (detailImage) {
-        const detailImageData = await cloudinary.upload(detailImage.image);
-        cloudDetailImage = {
-          asset_id: detailImageData.asset_id,
-          public_id: detailImageData.public_id,
-          signature: detailImageData.signature,
-          url: detailImageData.url,
-          secure_url: detailImageData.secure_url,
-          createdAt: detailImageData.created_at,
-        };
+        cloudDetailImage = await cloudinary.upload([detailImage.image]);
       }
 
       try {
@@ -99,20 +81,24 @@ export default function ProductAdd() {
         });
 
         setIsLoading(false);
+        setNotification({
+          isOpen: true,
+          content: "성공적으로 제품을 등록했습니다.",
+        });
         router.push("/admin/product");
       } catch (error) {
         // 클라우드에 저장 시켰던 이미지를 삭제
         const deletePromises = [];
         if (cloudImage.length > 0) {
           deletePromises.push(
-            cloudImage.map(async (img) => {
-              await cloudinary.delete(img.public_id);
-            })
+            cloudImage.map((image) =>
+              axios.delete(`/api/image/${image.public_id}`)
+            )
           );
         }
         if (cloudDetailImage) {
           deletePromises.push(
-            await cloudinary.delete(cloudDetailImage.public_id)
+            axios.delete(`/api/image/${cloudDetailImage[0].public_id}`)
           );
         }
         if (deletePromises.length > 0) await Promise.all(deletePromises);

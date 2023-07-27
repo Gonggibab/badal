@@ -1,7 +1,8 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useSetRecoilState } from "recoil";
 import Link from "next/link";
 import axios from "axios";
-import { useSetRecoilState } from "recoil";
 
 import { notificationAtom } from "common/recoil/atom";
 import { ProductType } from "common/types/product";
@@ -16,6 +17,7 @@ import PlusIcon from "assets/icon/plus.svg";
 import EmptyBoxIcon from "assets/icon/emptyCart.svg";
 
 export default function ProductAdmin() {
+  const router = useRouter();
   const allCheckRef = useRef<HTMLInputElement>(null);
   const setNotification = useSetRecoilState(notificationAtom);
   const [productData, setProductData] = useState<ProductType[] | null>(null);
@@ -58,15 +60,30 @@ export default function ProductAdmin() {
     setIsModalOpen(false);
 
     try {
-      await Promise.all(
-        Array.from(selectedData).map((productId) =>
-          axios.delete(`/api/product/${productId}`)
-        )
-      );
+      Array.from(selectedData).map(async (productId) => {
+        const productRes = await axios.delete(`/api/product/${productId}`);
+        const productData: ProductType = productRes.data.data;
+
+        // 관련 이미지들 클라우드에서 삭제
+        const deletePromises = [];
+        if (productData.images) {
+          deletePromises.push(
+            productData.images.map(async (image) => {
+              axios.delete(`/api/image/${image.public_id}`);
+            })
+          );
+        }
+        if (productData.detailImage) {
+          deletePromises.push(
+            axios.delete(`/api/image/${productData.detailImage.public_id}`)
+          );
+        }
+        if (deletePromises.length > 0) await Promise.all(deletePromises);
+      });
 
       const size = selectedData.size;
       selectedData.clear(); // 선택 데이터 삭제
-      getProductData(); // 제품 리스트 업데이트
+      router.reload(); // 페이지 새로고침
       setNotification({
         isOpen: true,
         content: `성공적으로 ${size}개의 제품을 삭제했습니다.`,

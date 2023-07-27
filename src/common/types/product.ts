@@ -1,4 +1,5 @@
 import { ImageType } from "./image";
+import { UserType } from "./user";
 
 export type ProductType = {
   id: string;
@@ -21,10 +22,11 @@ export type ProductDetailType = {
 export type ReviewType = {
   id: string;
   product: ProductType;
+  productId: string;
+  user: UserType;
   userId: string;
-  name: string;
   rating: number;
-  images: string[];
   content: string;
-  updatedAt: string;
+  images: ImageType[];
+  createdAt: string;
 };

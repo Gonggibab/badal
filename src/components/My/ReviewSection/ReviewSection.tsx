@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import axios from "axios";
 
 import { ReviewType } from "common/types/product";
 import { OrderItemType, OrderStatus, OrderType } from "common/types/order";
 import NeutralFaceIcon from "assets/icon/neutral.svg";
 import AvailCard from "./AvailCard";
+import ReviewCard from "./ReviewCard";
 
 type ReviewSectionProps = {
   userId: string | undefined;
@@ -59,12 +59,21 @@ export default function ReviewSection({ userId }: ReviewSectionProps) {
         <p className="text-xs leading-6 text-gray-600">
           회원님의 소중한 리뷰를 남겨주세요.
         </p>
-        <div className="mt-6 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
-          {reviewAvails &&
-            reviewAvails.map((item) => (
+
+        {reviewAvails && reviewAvails.length > 0 ? (
+          <div className="mt-6 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+            {reviewAvails.map((item) => (
               <AvailCard key={item.title} item={item} />
             ))}
-        </div>
+          </div>
+        ) : (
+          <div className="mt-14 w-full flex flex-col justify-center items-center">
+            <NeutralFaceIcon className="w-20 h-20" />
+            <p className="mt-2 font-medium">
+              리뷰 등록이 가능한 제품이 없습니다
+            </p>
+          </div>
+        )}
       </figure>
 
       <figure className="border-gray-900/10 py-6">
@@ -79,7 +88,11 @@ export default function ReviewSection({ userId }: ReviewSectionProps) {
       {reviews && (
         <>
           {reviews.length > 0 ? (
-            <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2"></div>
+            <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+              {reviews.map((review) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
+            </div>
           ) : (
             <div className="mt-14 w-full flex flex-col justify-center items-center">
               <NeutralFaceIcon className="w-20 h-20" />
