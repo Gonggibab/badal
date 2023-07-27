@@ -44,9 +44,6 @@ export default function NewReview() {
         images.map((img) => img.image)
       );
 
-      console.log("클라우드엔 저장됨");
-      console.log({ cloudImage });
-
       try {
         // 리뷰 데이터 등록
         await axios.post("/api/review", {

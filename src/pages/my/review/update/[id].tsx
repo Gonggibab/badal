@@ -7,7 +7,7 @@ import axios from "axios";
 import { ReviewType } from "common/types/product";
 import { ImageType } from "common/types/image";
 import { notificationAtom } from "common/recoil/atom";
-import UploadImages from "components/My/AddReview/UploadImages";
+import EditUploadIamge from "components/My/AddReview/EditUploadImage";
 import Loader from "components/Loader/Loader";
 import cloudinary from "common/lib/cloudinary";
 import StarIcon from "assets/icon/star.svg";
@@ -55,7 +55,7 @@ export default function UpdateReview() {
     getReviewData();
   }, [router]);
 
-  const register = async () => {
+  const update = async () => {
     if (!data?.user) return;
     setIsLoading(true);
 
@@ -66,29 +66,35 @@ export default function UpdateReview() {
       );
 
       try {
-        // 리뷰 데이터 등록
-        await axios.post("/api/review", {
+        // 리뷰 데이터 수정
+        await axios.put(`/api/review/${router.query.id}`, {
           userId: data.user.id,
-          title: router.query.title,
+          title: title,
           rating: rating,
           content: content,
           images: cloudImage,
         });
 
+        // 삭제할 이미지들 삭제
+        await Promise.all(
+          deleteImages.map((image) =>
+            axios.delete(`/api/image/${image.public_id}`)
+          )
+        );
+
         setIsLoading(false);
         setNotification({
           isOpen: true,
-          content: "성공적으로 리뷰를 등록했습니다.",
+          content: "성공적으로 리뷰를 수정했습니다.",
         });
         router.push("/my");
       } catch (error) {
         // 클라우드에 저장 시켰던 이미지를 삭제
-        const deletePromises = [];
         if (cloudImage.length > 0) {
-          deletePromises.push(
-            cloudImage.map(async (img) => {
-              await cloudinary.delete(img.public_id);
-            })
+          await Promise.all(
+            cloudImage.map((image) =>
+              axios.delete(`/api/image/${image.public_id}`)
+            )
           );
         }
 
@@ -195,15 +201,22 @@ export default function UpdateReview() {
         </form>
 
         <section className="relative py-10 border-t border-gray-900/10">
-          <UploadImages images={images} setImages={setImages} />
+          <EditUploadIamge
+            exImages={exImages}
+            setExImages={setExImages}
+            deleteImages={deleteImages}
+            setDeleteImages={setDeleteImages}
+            images={images}
+            setImages={setImages}
+          />
         </section>
 
         <button
           className="py-2.5 w-full text-white text-sm font-semibold bg-orange-500 rounded-lg
             hover:bg-orange-400 transition-all"
-          onClick={register}
+          onClick={update}
         >
-          리뷰 등록하기
+          리뷰 수정하기
         </button>
       </div>
 

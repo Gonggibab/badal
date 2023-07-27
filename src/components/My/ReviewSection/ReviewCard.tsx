@@ -24,7 +24,14 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
   const deleteReview = async () => {
     try {
-      await axios.delete(`/api/review/${review.id}`);
+      const reviewRes = await axios.delete(`/api/review/${review.id}`);
+      const reviewData: ReviewType = reviewRes.data.data;
+
+      await Promise.all(
+        reviewData.images.map((image) =>
+          axios.delete(`/api/image/${image.public_id}`)
+        )
+      );
 
       setIsModalOpen(false);
       router.reload();

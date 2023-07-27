@@ -18,13 +18,18 @@ export default async function handler(
 
   switch (method) {
     case "DELETE":
-      const cloudName = process.env.CLOUDINARY_NAME;
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_NAME;
       const apiKey = process.env.CLOUDINARY_API_KEY;
       const apiSecret = process.env.CLOUDINARY_API_SECRET!;
 
       const publicId = id as string;
 
       try {
+        // 이미지 DB에서 삭제
+        await prisma.image.delete({
+          where: { public_id: publicId },
+        });
+
         const generateSHA1 = (data: string) => {
           const hash = crypto.createHash("sha1");
           hash.update(data);
@@ -44,7 +49,7 @@ export default async function handler(
           generateSignature(publicId, apiSecret, timestamp)
         );
 
-        // 해당 이미지 클라우드에서 삭제
+        // 이미지 클라우드에서 삭제
         await axios.post(
           `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`,
           {
@@ -55,14 +60,11 @@ export default async function handler(
           }
         );
 
-        // DB 에서 삭제
-        const image = await prisma.image.delete({
-          where: { public_id: publicId },
-        });
-
-        res.status(200).json({ success: true, data: image });
+        res.status(200).json({ success: true });
       } catch (error) {
-        console.log("제품 정보를 불러오는 도중 에러가 발생했습니다. " + error);
+        console.log(
+          "cloudinary 에서 이미지를 삭제하는 도중 에러가 발생했습니다. " + error
+        );
         res.status(500).json({ success: false, error: error });
       }
 

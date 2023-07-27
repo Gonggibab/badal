@@ -1,7 +1,7 @@
 import prisma from "common/lib/prisma";
 import { ImageType } from "common/types/image";
-import cloudinary from "common/lib/cloudinary";
 import type { NextApiRequest, NextApiResponse } from "next";
+import axios from "axios";
 
 type Data = {
   success: boolean;
@@ -38,50 +38,39 @@ export default async function handler(
 
     case "PUT":
       const images: ImageType[] = req.body.images;
-      const detailImage: ImageType = req.body.detailImage;
+
+      const product = await prisma.product.findUnique({
+        where: {
+          title: req.body.title,
+        },
+      });
+
+      if (!product) throw new Error("잘못된 제품명입니다!");
 
       try {
         // 해당 Review 업데이트하기
-        const product = await prisma.product.update({
+        const data = await prisma.review.update({
           where: { id: id as string },
           data: {
-            title: req.body.title,
-            price: req.body.price,
-            stock: req.body.stock,
-          },
-        });
-
-        if (images && images.length > 0) {
-          await prisma.image.createMany({
-            data: images.map((image) => {
-              return {
-                productId: product.id,
+            userId: req.body.userId,
+            productId: product.id,
+            rating: req.body.rating,
+            content: req.body.content,
+            updatedAt: new Date(),
+            images: {
+              create: images.map((image) => ({
                 asset_id: image.asset_id,
                 public_id: image.public_id,
                 signature: image.signature,
                 url: image.url,
                 secure_url: image.secure_url,
                 createdAt: new Date(image.createdAt),
-              };
-            }),
-          });
-        }
-
-        if (detailImage) {
-          await prisma.detailImage.create({
-            data: {
-              productId: product.id,
-              asset_id: detailImage.asset_id,
-              public_id: detailImage.public_id,
-              signature: detailImage.signature,
-              url: detailImage.url,
-              secure_url: detailImage.secure_url,
-              createdAt: new Date(detailImage.createdAt),
+              })),
             },
-          });
-        }
+          },
+        });
 
-        res.status(200).json({ success: true, data: product });
+        res.status(200).json({ success: true, data: data });
       } catch (error) {
         console.log("제품 추가 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
@@ -92,25 +81,14 @@ export default async function handler(
     case "DELETE":
       // Review 정보 삭제하기
       try {
-        const review = await prisma.review.delete({
+        const data = await prisma.review.delete({
           where: { id: id as string },
           include: {
             images: true,
           },
         });
 
-        // 관련 이미지들 클라우드에서 삭제
-        const deletePromises = [];
-        if (review.images) {
-          deletePromises.push(
-            review.images.map(async (img) => {
-              await cloudinary.delete(img.public_id);
-            })
-          );
-        }
-        if (deletePromises.length > 0) await Promise.all(deletePromises);
-
-        res.status(200).json({ success: true, data: review });
+        res.status(200).json({ success: true, data: data });
       } catch (error) {
         console.log("리뷰를 삭제하는 도중 에러가 발생했습니다. " + error);
         res.status(500).json({ success: false, error: error });
