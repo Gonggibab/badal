@@ -91,8 +91,36 @@ export default function OrderSection({ userId }: OrderSectionProps) {
             </div>
           </div>
 
+          <div className="mt-4 pt-4 w-full flex items-center text-sm gap-x-3">
+            <button
+              type="button"
+              className="px-2.5 py-1 text-white bg-orange-500 rounded-lg transition-all 
+                hover:bg-orange-400"
+            >
+              하루
+            </button>
+            <button
+              type="button"
+              className="px-2.5 py-1 text-white bg-orange-500 rounded-lg"
+            >
+              한주
+            </button>
+            <button
+              type="button"
+              className="px-2.5 py-1 text-white bg-orange-500 rounded-lg"
+            >
+              한달
+            </button>
+            <button
+              type="button"
+              className="px-2.5 py-1 text-white bg-orange-500 rounded-lg"
+            >
+              전체
+            </button>
+          </div>
+
           {orders.length > 0 ? (
-            <div className="my-4 pt-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
+            <div className="my-4 w-full grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2">
               {orders.map((order) => (
                 <OrderCard key={order.id} order={order} />
               ))}

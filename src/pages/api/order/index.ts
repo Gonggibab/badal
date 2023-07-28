@@ -1,4 +1,5 @@
 import prisma from "common/lib/prisma";
+import { OrderStatus } from "common/types/order";
 import { AddressType, CartItemType } from "common/types/user";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -13,19 +14,26 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   const {
-    query: { userId, gte, lte },
+    query: { userId, status, gte, lte },
     method,
   } = req;
 
   switch (method) {
     case "GET":
       try {
-        const startDate = gte ? new Date(gte as string) : undefined;
-        const endDate = lte ? new Date(lte as string) : undefined;
+        const tStatus = status!?.length > 0 ? (status as string) : undefined;
+        const startDate =
+          gte && gte !== "null" ? new Date(gte as string) : undefined;
+        const endDate =
+          lte && lte !== "null" ? new Date(lte as string) : undefined;
+
+        let orderStatus;
+        orderStatus = tStatus ? (tStatus.split(",") as OrderStatus[]) : [];
 
         const data = await prisma.order.findMany({
           where: {
             userId: userId as string,
+            status: { in: orderStatus },
             createdAt: {
               gte: startDate,
               lte: endDate,
