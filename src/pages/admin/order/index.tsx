@@ -58,8 +58,8 @@ export default function OrderAdmin() {
         className="p-2 flex flex-col items-center w-full h-[calc(100vh-100px)] overflow-x-scroll
           shadow-md sm:rounded-lg lg:h-[calc(100vh-20px)]"
       >
-        <div className="pb-4 w-full flex flex-col justify-between items-center text-sm sm:flex-row">
-          <div className="mb-4 w-full flex items-center sm:m-0">
+        <div className="pb-4 w-full flex justify-between items-center text-sm">
+          <div className="w-full flex items-center sm:m-0">
             <div className="w-full text-base bg-white">
               <label htmlFor="table-search" className="sr-only">
                 검색
@@ -80,7 +80,7 @@ export default function OrderAdmin() {
             </div>
           </div>
 
-          <div className="w-full h-full flex items-center justify-end">
+          <div className="flex-shrink-0 flex items-center justify-end">
             <button
               className="ml-4 px-2.5 h-10 flex items-center text-orange-500 rounded-md shadow
                 hover:shadow-lg hover:translate-y-[1px] transition-all"

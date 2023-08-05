@@ -9,6 +9,21 @@ type OrderFilterProps = {
 };
 
 export default function OrderFilter({ filter, setFilter }: OrderFilterProps) {
+  const initialize = () => {
+    setFilter({
+      status: [
+        "READY",
+        "IN_DELIVERY",
+        "DONE",
+        "CANCLED",
+        "RETURN_REQUESTED",
+        "RETURN_COMPLETE",
+      ],
+      gte: null,
+      lte: null,
+    });
+  };
+
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     status: OrderStatus
@@ -32,26 +47,13 @@ export default function OrderFilter({ filter, setFilter }: OrderFilterProps) {
         <button
           type="button"
           className="text-orange-500 font-bold hover:underline"
-          onClick={() =>
-            setFilter({
-              status: [
-                "READY",
-                "IN_DELIVERY",
-                "DONE",
-                "CANCLED",
-                "RETURN_REQUESTED",
-                "RETURN_COMPLETE",
-              ],
-              gte: null,
-              lte: null,
-            })
-          }
+          onClick={initialize}
         >
           필터 초기화
         </button>
       </div>
       <fieldset>
-        <div className="relative flex gap-x-6">
+        <div className="relative flex gap-x-6 flex-wrap">
           <div className="flex h-6 items-center">
             <input
               id="comments"
