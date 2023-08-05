@@ -11,29 +11,46 @@ import EmptyBoxIcon from "assets/icon/emptyCart.svg";
 
 export type OrderFilterType = {
   status: string[];
-  period: string[];
+  gte: Date | null;
+  lte: Date | null;
 };
 
 export default function OrderAdmin() {
   const [order, setOrder] = useState<OrderType[] | null>(null);
   const [filter, setFilter] = useState<OrderFilterType>({
-    status: [],
-    period: [],
+    status: [
+      "READY",
+      "IN_DELIVERY",
+      "DONE",
+      "CANCLED",
+      "RETURN_REQUESTED",
+      "RETURN_COMPLETE",
+    ],
+    gte: null,
+    lte: null,
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const getOrderData = async () => {
+  const getOrderData = async (filter: OrderFilterType) => {
     setIsLoading(true);
 
-    // 전체 주문 데이터를 불러온다
-    const { data } = await axios.get("/api/order");
-    setOrder(data.data);
+    // 한달 간의 주문 기록 중 리뷰를 작성하지 않은 제품 목록을 가져옴.
+    // const date = new Date();
+    // date.setDate(date.getDate() - 30);
+
+    // 주문 데이터를 불러온다
+    const orderRef = await axios.get(
+      `/api/order?status=${filter.status}&gte=${filter.gte}&lte=${filter.lte}`
+    );
+    const orderData: OrderType[] = orderRef.data.data;
+    setOrder(orderData);
+
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getOrderData();
-  }, []);
+    getOrderData(filter);
+  }, [filter]);
 
   return (
     <main className="p-4 lg:ml-64">
@@ -41,8 +58,8 @@ export default function OrderAdmin() {
         className="p-2 flex flex-col items-center w-full h-[calc(100vh-100px)] overflow-x-scroll
           shadow-md sm:rounded-lg lg:h-[calc(100vh-20px)]"
       >
-        <div className="pb-4 w-full flex flex-col justify-between items-center text-sm sm:flex-row">
-          <div className="mb-4 w-full flex items-center sm:m-0">
+        <div className="pb-4 w-full flex justify-between items-center text-sm">
+          <div className="w-full flex items-center sm:m-0">
             <div className="w-full text-base bg-white">
               <label htmlFor="table-search" className="sr-only">
                 검색
@@ -63,11 +80,11 @@ export default function OrderAdmin() {
             </div>
           </div>
 
-          <div className="w-full h-full flex items-center justify-end">
+          <div className="flex-shrink-0 flex items-center justify-end">
             <button
               className="ml-4 px-2.5 h-10 flex items-center text-orange-500 rounded-md shadow
                 hover:shadow-lg hover:translate-y-[1px] transition-all"
-              onClick={getOrderData}
+              onClick={() => getOrderData}
             >
               <RefreshIcon className="w-4 h-4 md:mr-2" />
               <span className="hidden md:block">새로고침</span>
@@ -76,7 +93,7 @@ export default function OrderAdmin() {
         </div>
 
         <div className="mb-4 px-4 py-3 w-full flex items-center text-xs rounded-md shadow">
-          <OrderFilter />
+          <OrderFilter filter={filter} setFilter={setFilter} />
         </div>
 
         <div className="w-full y-full overflow-x-scroll">
@@ -124,6 +141,7 @@ export default function OrderAdmin() {
             <p className="mt-2 text-sm font-medium leading-7 text-gray-900">
               진행중인 주문이 없습니다.
             </p>
+            <p className="mt-1 text-xs text-gray-900">필터를 조절해 보세요</p>
           </div>
         )}
 

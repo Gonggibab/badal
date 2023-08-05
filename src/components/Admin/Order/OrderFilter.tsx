@@ -1,6 +1,43 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
-export default function OrderFilter() {
+import { OrderFilterType } from "pages/admin/order";
+import { OrderStatus } from "common/types/order";
+
+type OrderFilterProps = {
+  filter: OrderFilterType;
+  setFilter: Dispatch<SetStateAction<OrderFilterType>>;
+};
+
+export default function OrderFilter({ filter, setFilter }: OrderFilterProps) {
+  const initialize = () => {
+    setFilter({
+      status: [
+        "READY",
+        "IN_DELIVERY",
+        "DONE",
+        "CANCLED",
+        "RETURN_REQUESTED",
+        "RETURN_COMPLETE",
+      ],
+      gte: null,
+      lte: null,
+    });
+  };
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    status: OrderStatus
+  ) => {
+    const checked = e.currentTarget.checked;
+
+    setFilter({
+      ...filter,
+      status: checked
+        ? filter.status.concat(status)
+        : filter.status.filter((stat) => stat !== status),
+    });
+  };
+
   return (
     <div className="w-full flex flex-col gap-y-4">
       <div className="w-full flex justify-between">
@@ -10,18 +47,21 @@ export default function OrderFilter() {
         <button
           type="button"
           className="text-orange-500 font-bold hover:underline"
+          onClick={initialize}
         >
           필터 초기화
         </button>
       </div>
       <fieldset>
-        <div className="relative flex gap-x-6">
+        <div className="relative flex gap-x-6 flex-wrap">
           <div className="flex h-6 items-center">
             <input
               id="comments"
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.READY)}
+              onChange={(e) => onChange(e, OrderStatus.READY)}
             />
             <label
               htmlFor="comments"
@@ -36,6 +76,8 @@ export default function OrderFilter() {
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.IN_DELIVERY)}
+              onChange={(e) => onChange(e, OrderStatus.IN_DELIVERY)}
             />
             <label
               htmlFor="comments"
@@ -50,6 +92,8 @@ export default function OrderFilter() {
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.DONE)}
+              onChange={(e) => onChange(e, OrderStatus.DONE)}
             />
             <label
               htmlFor="comments"
@@ -64,6 +108,8 @@ export default function OrderFilter() {
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.CANCLED)}
+              onChange={(e) => onChange(e, OrderStatus.CANCLED)}
             />
             <label
               htmlFor="comments"
@@ -78,6 +124,8 @@ export default function OrderFilter() {
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.RETURN_REQUESTED)}
+              onChange={(e) => onChange(e, OrderStatus.RETURN_REQUESTED)}
             />
             <label
               htmlFor="comments"
@@ -92,6 +140,8 @@ export default function OrderFilter() {
               name="comments"
               type="checkbox"
               className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-600"
+              checked={filter.status.includes(OrderStatus.RETURN_COMPLETE)}
+              onChange={(e) => onChange(e, OrderStatus.RETURN_COMPLETE)}
             />
             <label
               htmlFor="comments"
